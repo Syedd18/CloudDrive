@@ -17,7 +17,16 @@ if (!process.env.DATABASE_URL) {
   // assign proxy to _prisma so imports still work but throw when used
   _prisma = proxy as unknown as PrismaClient;
 } else {
-  _prisma = globalForPrisma.prisma ?? new PrismaClient();
+  // Configure Prisma with connection pooling for serverless
+  _prisma = globalForPrisma.prisma ?? new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
+  });
+  
   if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = _prisma;
 }
 
