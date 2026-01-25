@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -58,11 +58,7 @@ export function Navbar({
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    loadUser();
-  }, [session]);
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     try {
       // If user is logged in via NextAuth (Google)
       if (session?.user) {
@@ -96,7 +92,11 @@ export function Navbar({
     } catch (error) {
       console.error("Failed to load user:", error);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
   const handleLogout = async () => {
     // Check if user is logged in via NextAuth

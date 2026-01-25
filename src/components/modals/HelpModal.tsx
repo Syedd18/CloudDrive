@@ -248,7 +248,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                         </h3>
                         <p className="text-xs sm:text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
                           Cloud Drive is your secure cloud storage solution. Store, organize, and share 
-                          your files from anywhere. Here's how to get started:
+                          your files from anywhere. Here&apos;s how to get started:
                         </p>
                       </div>
 

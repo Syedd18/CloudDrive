@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
@@ -176,7 +177,7 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
                   <div className="relative">
                     <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden">
                       {user?.avatar ? (
-                        <img src={user.avatar} alt="" className="w-full h-full object-cover" />
+                        <Image src={user.avatar} alt="" fill className="object-cover" />
                       ) : (
                         <User className="w-8 h-8 text-white" />
                       )}

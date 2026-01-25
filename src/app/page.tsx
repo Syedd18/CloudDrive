@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Navbar } from "@/components/layout/Navbar";
@@ -26,24 +26,8 @@ export default function Home() {
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   // Check authentication and load files
-  useEffect(() => {
-    // Wait for session to load
-    if (status === "loading") return;
-
-    const token = localStorage.getItem("token");
-    
-    // User must have either JWT token OR NextAuth session
-    if (!token && status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
-
-    loadFiles();
-  }, [router, status, currentFolder]);
-
-  const loadFiles = async () => {
+  const loadFiles = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
@@ -86,7 +70,22 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router, currentFolder]);
+
+  useEffect(() => {
+    // Wait for session to load
+    if (status === "loading") return;
+
+    const token = localStorage.getItem("token");
+    
+    // User must have either JWT token OR NextAuth session
+    if (!token && status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+
+    loadFiles();
+  }, [status, loadFiles, router]);
 
   const filteredFiles = files.filter(
     (file) =>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   X,
   Download,
@@ -72,11 +73,15 @@ export function PreviewModal({ file, onClose }: PreviewModalProps) {
       case "image":
         return (
           <div className="flex-1 flex items-center justify-center p-4 bg-surface-950">
-            <img
-              src={file.thumbnail || "/placeholder.jpg"}
-              alt={file.name}
-              className="max-w-full max-h-full object-contain rounded-lg"
-            />
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src={file.thumbnail || "/placeholder.jpg"}
+                alt={file.name}
+                fill
+                className="object-contain rounded-lg"
+                sizes="100vw"
+              />
+            </div>
           </div>
         );
       case "video":

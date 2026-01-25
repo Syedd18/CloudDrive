@@ -24,10 +24,18 @@ dev.db-journal
 .DS_Store
 *.pem
 
+# secrets and local envs
+.env
+.env.backup
+.env.local
+
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# logs
+logs/
 
 # vercel
 .vercel

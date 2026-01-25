@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import NextImage from "next/image";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import {
@@ -222,10 +223,12 @@ export function FileCard({
       {/* Thumbnail / Icon Area */}
       <div className="relative aspect-[4/3] sm:aspect-[4/3] rounded-t-[14px] overflow-hidden bg-surface-50 dark:bg-surface-900/50">
         {file.thumbnail ? (
-          <img
+          <NextImage
             src={file.thumbnail}
             alt={file.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

@@ -1,23 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Client for server-side operations (with service role key)
-export const supabaseAdmin = createClient(
-  supabaseUrl,
-  supabaseServiceKey || supabaseAnonKey,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+// Only initialize Supabase clients if a URL is provided. This prevents build-time
+// errors when environment variables are not set (e.g., during static builds).
+export const supabaseAdmin: SupabaseClient | null = supabaseUrl
+  ? createClient(supabaseUrl, supabaseServiceKey ?? supabaseAnonKey ?? '', {
+      auth: { autoRefreshToken: false, persistSession: false },
+    })
+  : null;
 
-// Client for client-side operations
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient | null = supabaseUrl
+  ? createClient(supabaseUrl, supabaseAnonKey ?? '')
+  : null;
 
 // Storage bucket name
 export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'files';
@@ -30,6 +28,7 @@ export async function uploadFileToSupabase(
   fileBuffer: Buffer,
   contentType: string
 ): Promise<string> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
     .upload(filePath, fileBuffer, {
@@ -56,6 +55,7 @@ export async function getSignedUrlFromSupabase(
   filePath: string,
   expiresIn: number = 3600
 ): Promise<string> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
     .createSignedUrl(filePath, expiresIn);
@@ -71,6 +71,7 @@ export async function getSignedUrlFromSupabase(
  * Delete file from Supabase Storage
  */
 export async function deleteFileFromSupabase(filePath: string): Promise<void> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
   const { error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
     .remove([filePath]);
@@ -84,6 +85,7 @@ export async function deleteFileFromSupabase(filePath: string): Promise<void> {
  * Check if file exists in Supabase Storage
  */
 export async function fileExistsInSupabase(filePath: string): Promise<boolean> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
     .list(filePath.split('/').slice(0, -1).join('/'), {

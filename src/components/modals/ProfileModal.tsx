@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import NextImage from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -40,6 +41,7 @@ interface StorageStats {
     starred: number;
     trashed: number;
     shared: number;
+
   };
 }
 
@@ -159,12 +161,14 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
               {/* Avatar */}
               <div className="relative -mt-12 sm:-mt-16 px-4 sm:px-6">
                 <div className="relative w-20 h-20 sm:w-28 sm:h-28 mx-auto">
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center ring-4 ring-white dark:ring-surface-900 shadow-xl">
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center ring-4 ring-white dark:ring-surface-900 shadow-xl overflow-hidden">
                     {user.avatar ? (
-                      <img
+                      <NextImage
                         src={user.avatar}
                         alt={user.name}
-                        className="w-full h-full rounded-full object-cover"
+                        width={112}
+                        height={112}
+                        className="object-cover w-full h-full"
                       />
                     ) : (
                       <span className="text-2xl sm:text-4xl font-bold text-white">
