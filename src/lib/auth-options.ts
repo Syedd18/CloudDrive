@@ -3,8 +3,11 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 
+// Only use PrismaAdapter if DATABASE_URL is available
+const adapter = process.env.DATABASE_URL ? PrismaAdapter(prisma) : undefined;
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -17,8 +20,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id;
-        session.user.role = (user as any).role;
+        session.user.id = user?.id || "";
+        session.user.role = (user as any)?.role;
       }
       return session;
     },
@@ -31,8 +34,9 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    strategy: "database",
+    strategy: adapter ? "database" : "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   debug: process.env.NODE_ENV === "development",
 };
+
