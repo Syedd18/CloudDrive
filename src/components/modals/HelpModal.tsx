@@ -38,7 +38,7 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "How do I upload files?",
-    answer: "Click the 'Upload File' button in the sidebar or drag and drop files directly into the main area. You can upload multiple files at once.",
+    answer: "Click the &apos;Upload File&apos; button in the sidebar or drag and drop files directly into the main area. You can upload multiple files at once.",
   },
   {
     question: "How much storage do I have?",
@@ -46,11 +46,11 @@ const faqs: FAQItem[] = [
   },
   {
     question: "Can I recover deleted files?",
-    answer: "Yes! Deleted files are moved to Trash where they stay for 30 days. Go to Trash and click 'Restore' to recover files.",
+    answer: "Yes! Deleted files are moved to Trash where they stay for 30 days. Go to Trash and click &apos;Restore&apos; to recover files.",
   },
   {
     question: "How do I share files with others?",
-    answer: "Right-click on any file and select 'Share'. You can generate a shareable link or share directly with other users.",
+    answer: "Right-click on any file and select &apos;Share&apos;. You can generate a shareable link or share directly with other users.",
   },
   {
     question: "Are my files secure?",
@@ -257,17 +257,17 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                           {
                             step: 1,
                             title: "Upload your first file",
-                            description: "Click the 'Upload File' button or drag and drop files into the main area.",
+                            description: "Click the &apos;Upload File&apos; button or drag and drop files into the main area.",
                           },
                           {
                             step: 2,
                             title: "Create folders to organize",
-                            description: "Use 'New Folder' to create folders and keep your files organized.",
+                            description: "Use &apos;New Folder&apos; to create folders and keep your files organized.",
                           },
                           {
                             step: 3,
                             title: "Star important files",
-                            description: "Right-click any file and select 'Star' for quick access later.",
+                            description: "Right-click any file and select &apos;Star&apos; for quick access later.",
                           },
                           {
                             step: 4,

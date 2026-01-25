@@ -177,7 +177,7 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
                   <div className="relative">
                     <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden">
                       {user?.avatar ? (
-                        <Image src={user.avatar} alt="" fill className="object-cover" />
+                        <Image src={user.avatar} alt="" width={64} height={64} className="object-cover" />
                       ) : (
                         <User className="w-8 h-8 text-white" />
                       )}
