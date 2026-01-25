@@ -1,0 +1,786 @@
+2026-01-25 00:08:18 [error]: UnauthorizedError: Invalid email or password
+    at AuthService.login (webpack-internal:///(rsc)/./src/services/auth.service.ts:60:19)
+    at async loginHandler (webpack-internal:///(rsc)/./src/app/api/auth/login/route.ts:22:20)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async rateLimit (webpack-internal:///(rsc)/./src/middleware/rateLimit.middleware.ts:45:22)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 00:08:30 [error]: ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 8,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "Password must be at least 8 characters",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "validation": "regex",
+    "code": "invalid_string",
+    "message": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+    "path": [
+      "password"
+    ]
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at registerHandler (webpack-internal:///(rsc)/./src/app/api/auth/register/route.ts:20:87)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async rateLimit (webpack-internal:///(rsc)/./src/middleware/rateLimit.middleware.ts:45:22)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 00:09:58 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 00:09:58 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 00:11:09 [error]: InvalidAccessKeyId: The AWS Access Key Id you provided does not exist in our records.
+    at ProtocolLib.getErrorSchemaOrThrowBaseException (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:69:67)
+    at AwsRestXmlProtocol.handleError (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:1830:65)
+    at AwsRestXmlProtocol.deserializeResponse (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@smithy\core\dist-cjs\submodules\protocols\index.js:309:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@smithy\core\dist-cjs\submodules\schema\index.js:26:24
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\index.js:386:20
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@smithy\middleware-retry\dist-cjs\index.js:254:46
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\middleware-flexible-checksums\dist-cjs\index.js:241:24
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\index.js:63:28
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\index.js:90:20
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\@aws-sdk\middleware-logger\dist-cjs\index.js:5:26
+    at async uploadToS3 (webpack-internal:///(rsc)/./src/lib/s3.ts:52:9)
+    at async FileService.uploadFile (webpack-internal:///(rsc)/./src/services/file.service.ts:48:34)
+    at async uploadFileHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:31:20)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 00:11:09 [error]: Error: Failed to upload file to cloud storage
+    at uploadToS3 (webpack-internal:///(rsc)/./src/lib/s3.ts:62:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async FileService.uploadFile (webpack-internal:///(rsc)/./src/services/file.service.ts:48:34)
+    at async uploadFileHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:31:20)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 00:11:09 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:21:50 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:21:50 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:21:52 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:21:52 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:24:13 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:24:13 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:24:14 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:24:14 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:24:31 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:24:31 [error]: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "page"
+    ],
+    "message": "Expected string, received number"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "number",
+    "path": [
+      "limit"
+    ],
+    "message": "Expected string, received number"
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at getFilesHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:60:90)
+    at eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:26)
+    at requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:22)
+    at GET (webpack-internal:///(rsc)/./src/app/api/files/route.ts:73:84)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57234
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:48896
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:40958)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47472
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at Object.wrap (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:38293)
+    at C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:47434
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46881)
+    at eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58771)
+    at doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:60)
+    at cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:34)
+    at ResponseCache.get (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:53)
+2026-01-25 01:24:31 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:24:31 [error]: NotFoundError: User not found
+    at AuthService.getCurrentUser (webpack-internal:///(rsc)/./src/services/auth.service.ts:92:19)
+    at async getCurrentUserHandler (webpack-internal:///(rsc)/./src/app/api/auth/me/route.ts:16:18)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 01:27:20 [error]: Error: Failed to upload to Supabase Storage: Invalid Compact JWS
+    at uploadFileToSupabase (webpack-internal:///(rsc)/./src/lib/supabase.ts:35:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async FileService.uploadFile (webpack-internal:///(rsc)/./src/services/file.service.ts:54:25)
+    at async uploadFileHandler (webpack-internal:///(rsc)/./src/app/api/files/route.ts:31:20)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async requireAuth (webpack-internal:///(rsc)/./src/middleware/auth.middleware.ts:24:16)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)
+2026-01-25 13:45:31 [error]: ZodError: [
+  {
+    "validation": "email",
+    "code": "invalid_string",
+    "message": "Invalid email address",
+    "path": [
+      "email"
+    ]
+  },
+  {
+    "code": "too_small",
+    "minimum": 1,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "Password is required",
+    "path": [
+      "password"
+    ]
+  }
+]
+    at get error (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:134:31)
+    at ZodObject.parse (webpack-internal:///(rsc)/./node_modules/zod/v3/types.js:209:22)
+    at loginHandler (webpack-internal:///(rsc)/./src/app/api/auth/login/route.ts:20:84)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async eval (webpack-internal:///(rsc)/./src/middleware/error.middleware.ts:60:20)
+    at async rateLimit (webpack-internal:///(rsc)/./src/middleware/rateLimit.middleware.ts:45:22)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:57228
+    at async eT.execute (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46851)
+    at async eT.handle (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:58760)
+    at async doRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1366:42)
+    at async cacheEntry.responseCache.get.routeKind (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1588:28)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1496:28)
+    at async DevServer.renderPageComponent (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:922:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\base-server.js:818:17)
+    at async C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:179:21)
+    at async handleRequest (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:359:24)
+    at async requestHandlerImpl (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\router-server.js:383:13)
+    at async Server.requestListener (C:\Users\acer\Google Drive Clone\cloud-drive\node_modules\next\dist\server\lib\start-server.js:141:13)

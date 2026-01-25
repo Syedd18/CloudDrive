@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  password      String?
+  avatar        String?
+  role          String    @default("user") // user, admin
+  isActive      Boolean   @default(true)
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  files         File[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model File {
+  id           String   @id @default(uuid())
+  name         String
+  originalName String
+  type         String   // folder, document, spreadsheet, etc.
+  size         BigInt
+  mimeType     String
+  s3Key        String   @unique // AWS S3 object key
+  s3Url        String   // Full S3 URL
+  thumbnail    String?  // S3 URL for thumbnail
+  starred      Boolean  @default(false)
+  trashed      Boolean  @default(false)
+  trashedAt    DateTime?
+  folderId     String?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent       File?    @relation("FileHierarchy", fields: [folderId], references: [id], onDelete: Cascade)
+  children     File[]   @relation("FileHierarchy")
+  sharedWith   Share[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([folderId])
+  @@index([trashed])
+  @@index([starred])
+  @@index([s3Key])
+  @@map("files")
+}
+
+model Share {
+  id        String   @id @default(uuid())
+  fileId    String
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  email     String
+  canEdit   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([fileId, email])
+  @@index([fileId])
+  @@index([email])
+  @@map("shares")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String   // upload, download, delete, share, etc.
+  resource  String   // file ID or resource identifier
+  details   String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
