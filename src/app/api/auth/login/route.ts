@@ -4,6 +4,9 @@ import { loginSchema } from '@/lib/validation';
 import { AppError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const authService = new AuthService();
 
 export async function POST(request: NextRequest) {

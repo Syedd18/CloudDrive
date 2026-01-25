@@ -7,19 +7,20 @@ const logFormat = printf(({ level, message, timestamp, stack }) => {
   return `${timestamp} [${level}]: ${stack || message}`;
 });
 
-// Create logger instance
-export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  format: combine(
-    errors({ stack: true }),
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    logFormat
-  ),
-  transports: [
-    // Console transport
-    new winston.transports.Console({
-      format: combine(colorize(), logFormat),
-    }),
+// Determine if we're on Vercel (read-only filesystem)
+const isVercel = process.env.VERCEL === '1';
+
+// Create transports array
+const transports: winston.transport[] = [
+  // Console transport (always available)
+  new winston.transports.Console({
+    format: combine(colorize(), logFormat),
+  }),
+];
+
+// Only add file transports if not on Vercel
+if (!isVercel) {
+  transports.push(
     // File transport for errors
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -32,12 +33,23 @@ export const logger = winston.createLogger({
       filename: 'logs/combined.log',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    }),
-  ],
-  exceptionHandlers: [
+    })
+  );
+}
+
+// Create logger instance
+export const logger = winston.createLogger({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  format: combine(
+    errors({ stack: true }),
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    logFormat
+  ),
+  transports,
+  exceptionHandlers: isVercel ? [] : [
     new winston.transports.File({ filename: 'logs/exceptions.log' }),
   ],
-  rejectionHandlers: [
+  rejectionHandlers: isVercel ? [] : [
     new winston.transports.File({ filename: 'logs/rejections.log' }),
   ],
 });
