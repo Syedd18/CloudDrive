@@ -186,6 +186,95 @@ export class AuthService {
 
     logger.info(`Password changed for user: ${user.email}`);
   }
+
+  /**
+   * Request password reset - creates a verification token and returns a reset URL
+   */
+  async requestPasswordReset(email: string): Promise<{ resetUrl: string | null }> {
+    const user = await userRepository.findByEmail(email);
+
+    // don't reveal whether user exists
+    if (!user) {
+      return { resetUrl: null };
+    }
+
+    const crypto = await import('crypto');
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+
+    // store token in verification_tokens table
+    const { prisma } = await import('@/lib/prisma');
+    await prisma.verificationToken.create({
+      data: {
+        identifier: user.email,
+        token,
+        expires,
+      },
+    });
+
+    const resetUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+
+    // If SMTP is configured, send email. Otherwise log and return the URL (dev).
+    const smtpHost = process.env.SMTP_HOST;
+    if (smtpHost) {
+      try {
+        const nodemailer = await import('nodemailer');
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '587', 10),
+          secure: (process.env.SMTP_SECURE === 'true') || false,
+          auth: process.env.SMTP_USER
+            ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+            : undefined,
+        });
+
+        const from = process.env.SMTP_FROM || `no-reply@${new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || 'example.com').host}`;
+
+        await transporter.sendMail({
+          from,
+          to: user.email,
+          subject: 'Reset your CloudDrive password',
+          html: `<p>Click the link below to reset your password. This link expires in 1 hour.</p>
+                 <p><a href="${resetUrl}">${resetUrl}</a></p>`,
+        });
+
+        logger.info(`Password reset email sent to ${user.email}`);
+        return { resetUrl: null };
+      } catch (err: any) {
+        logger.error('Failed to send reset email', err);
+        // fallthrough to returning the resetUrl for dev
+      }
+    }
+
+    // Log the reset URL (dev) if SMTP not configured or sending failed
+    logger.info(`Password reset requested for ${user.email}. Reset URL: ${resetUrl}`);
+
+    return { resetUrl };
+  }
+
+  /**
+   * Reset password using token
+   */
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const { prisma } = await import('@/lib/prisma');
+
+    const record = await prisma.verificationToken.findUnique({ where: { token } });
+    if (!record || record.expires < new Date()) {
+      throw new Error('Invalid or expired token');
+    }
+
+    const user = await userRepository.findByEmail(record.identifier);
+    if (!user) throw new Error('User not found');
+
+    const bcrypt = await import('bcryptjs');
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await userRepository.update(user.id, { password: hashed });
+
+    // delete token
+    await prisma.verificationToken.delete({ where: { token } });
+
+    logger.info(`Password reset for user: ${user.email}`);
+  }
 }
 
 export const authService = new AuthService();

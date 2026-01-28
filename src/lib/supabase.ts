@@ -5,20 +5,47 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Only initialize Supabase clients if a URL is provided. This prevents build-time
-// errors when environment variables are not set (e.g., during static builds).
-export const supabaseAdmin: SupabaseClient | null = supabaseUrl
-  ? createClient(supabaseUrl, supabaseServiceKey ?? supabaseAnonKey ?? '', {
-      auth: { autoRefreshToken: false, persistSession: false },
+// Storage bucket name
+export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'files';
+
+// Check if we have the minimum required configuration
+const hasMinimumConfig = supabaseUrl && (supabaseAnonKey || supabaseServiceKey);
+
+// Create Supabase admin client (for server-side operations)
+export const supabaseAdmin: SupabaseClient | null = hasMinimumConfig && supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { 
+        autoRefreshToken: false, 
+        persistSession: false 
+      },
     })
   : null;
 
-export const supabase: SupabaseClient | null = supabaseUrl
-  ? createClient(supabaseUrl, supabaseAnonKey ?? '')
+// Create Supabase client (for client-side operations)
+export const supabase: SupabaseClient | null = hasMinimumConfig && supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    })
   : null;
 
-// Storage bucket name
-export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'files';
+// Helper to check if Supabase is properly configured
+export function isSupabaseConfigured(): boolean {
+  return !!supabaseAdmin;
+}
+
+// Helper to get configuration status for debugging
+export function getSupabaseConfigStatus() {
+  return {
+    hasUrl: !!supabaseUrl,
+    hasAnonKey: !!supabaseAnonKey,
+    hasServiceKey: !!supabaseServiceKey,
+    hasBucket: !!process.env.SUPABASE_STORAGE_BUCKET,
+    isConfigured: isSupabaseConfigured(),
+  };
+}
 
 /**
  * Upload file to Supabase Storage
@@ -29,6 +56,12 @@ export async function uploadFileToSupabase(
   contentType: string
 ): Promise<string> {
   if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
+  
+  // Log for debugging
+  console.log('Uploading to bucket:', STORAGE_BUCKET);
+  console.log('File path:', filePath);
+  console.log('Content type:', contentType);
+  
   const { data, error } = await supabaseAdmin.storage
     .from(STORAGE_BUCKET)
     .upload(filePath, fileBuffer, {
@@ -37,7 +70,8 @@ export async function uploadFileToSupabase(
     });
 
   if (error) {
-    throw new Error(`Failed to upload to Supabase Storage: ${error.message}`);
+    console.error('Supabase upload error:', error);
+    throw new Error(`Failed to upload to Supabase Storage: ${error.message} (Bucket: ${STORAGE_BUCKET})`);
   }
 
   // Get public URL
