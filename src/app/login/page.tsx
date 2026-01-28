@@ -16,10 +16,6 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
-  const [showForgot, setShowForgot] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [forgotLoading, setForgotLoading] = useState(false);
-  const [resetLink, setResetLink] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,18 +53,13 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
-    console.log("Starting Google sign-in...");
-    
     try {
       const result = await signIn("google", {
         callbackUrl: "/",
-        redirect: false, // Don't auto-redirect so we can see errors
+        redirect: false,
       });
       
-      console.log("SignIn result:", result);
-      
       if (result?.error) {
-        console.error("SignIn error:", result.error);
         toast.error(`Failed to sign in: ${result.error}`);
       } else if (result?.ok) {
         toast.success("Signed in successfully!");
@@ -78,27 +69,6 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Exception during sign in:", error);
       toast.error("An error occurred during sign in");
-    }
-  };
-
-  const handleForgotSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setForgotLoading(true);
-    setResetLink(null);
-    try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: forgotEmail }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to request password reset');
-      setResetLink(data.resetUrl || null);
-      toast.success('If an account exists, reset instructions were sent (dev: link returned)');
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Error');
-    } finally {
-      setForgotLoading(false);
     }
   };
 
@@ -183,18 +153,6 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            {/* Forgot password link */}
-            {isLogin && (
-              <div className="mt-2 text-right">
-                <button
-                  type="button"
-                  onClick={() => setShowForgot(true)}
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            )}
 
             <button
               type="submit"
@@ -261,51 +219,6 @@ export default function LoginPage() {
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-8">
           Secure cloud storage for all your files
         </p>
-        {/* Forgot password modal */}
-        {showForgot && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Reset your password</h3>
-              <form onSubmit={(e) => { e.preventDefault(); handleForgotSubmit(); }} className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={forgotEmail}
-                    onChange={(e) => setForgotEmail(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="you@example.com"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between gap-3">
-                  <button
-                    type="submit"
-                    disabled={forgotLoading}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
-                  >
-                    {forgotLoading ? 'Sending...' : 'Send reset link'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setShowForgot(false); setResetLink(null); }}
-                    className="text-sm text-gray-600 dark:text-gray-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-
-              {resetLink && (
-                <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">Reset link (dev):</p>
-                  <pre className="text-xs break-words mt-2 text-blue-700 dark:text-blue-300">{resetLink}</pre>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
