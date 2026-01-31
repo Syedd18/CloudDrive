@@ -54,6 +54,46 @@ export function Sidebar({
   const [isLoading, setIsLoading] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [pendingModal, setPendingModal] = useState<'settings' | 'help' | null>(null);
+
+  // Handle opening modals with a delay to prevent touch event conflicts
+  useEffect(() => {
+    if (pendingModal) {
+      const timer = setTimeout(() => {
+        if (pendingModal === 'settings') {
+          setIsSettingsOpen(true);
+        } else if (pendingModal === 'help') {
+          setIsHelpOpen(true);
+        }
+        setPendingModal(null);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [pendingModal]);
+
+  const handleOpenSettings = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Close sidebar on mobile first, then open modal after a delay
+    if (window.innerWidth < 1024) {
+      onClose();
+      setPendingModal('settings');
+    } else {
+      setIsSettingsOpen(true);
+    }
+  };
+
+  const handleOpenHelp = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Close sidebar on mobile first, then open modal after a delay
+    if (window.innerWidth < 1024) {
+      onClose();
+      setPendingModal('help');
+    } else {
+      setIsHelpOpen(true);
+    }
+  };
 
   useEffect(() => {
     loadStorageInfo();
@@ -275,28 +315,14 @@ export function Sidebar({
           {/* Quick Links */}
           <div className="mt-3 flex gap-1">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsSettingsOpen(true);
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                setIsSettingsOpen(true);
-              }}
+              onClick={handleOpenSettings}
               className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700 touch-manipulation"
             >
               <Settings className="w-4 h-4" />
               <span>Settings</span>
             </button>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsHelpOpen(true);
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                setIsHelpOpen(true);
-              }}
+              onClick={handleOpenHelp}
               className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700 touch-manipulation"
             >
               <HelpCircle className="w-4 h-4" />

@@ -97,6 +97,24 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     { id: "privacy", label: "Privacy & Data", icon: Shield },
   ] as const;
 
+  // Prevent modal from closing immediately after opening (for mobile touch events)
+  const [canClose, setCanClose] = useState(false);
+  
+  useEffect(() => {
+    if (isOpen) {
+      setCanClose(false);
+      const timer = setTimeout(() => setCanClose(true), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (canClose) {
+      onClose();
+    }
+  };
+
   // Use portal to render modal at document root level
   const modalContent = (
     <AnimatePresence>
@@ -107,12 +125,17 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleBackdropClick}
+            onTouchEnd={(e) => e.stopPropagation()}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
           />
 
           {/* Modal Container */}
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
+          <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4" 
+            onClick={handleBackdropClick}
+            onTouchEnd={(e) => e.stopPropagation()}
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
