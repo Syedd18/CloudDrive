@@ -81,12 +81,24 @@ export function AvatarUploadModal({
 
   // Connect camera stream to video element when both are available
   useEffect(() => {
-    if (cameraStream && videoRef.current && showCamera) {
-      videoRef.current.srcObject = cameraStream;
-      // Ensure video plays
-      videoRef.current.play().catch(err => {
-        console.error("Error playing video:", err);
-      });
+    if (cameraStream && showCamera) {
+      // Use a small delay to ensure the video element is rendered
+      const connectStream = () => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = cameraStream;
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current?.play().catch(err => {
+              console.error("Error playing video:", err);
+            });
+          };
+        } else {
+          // Retry after a short delay if video element is not ready
+          setTimeout(connectStream, 50);
+        }
+      };
+      
+      // Initial delay to allow DOM to render
+      setTimeout(connectStream, 100);
     }
   }, [cameraStream, showCamera]);
 
