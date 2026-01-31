@@ -21,6 +21,7 @@ import {
   Users,
   RotateCcw,
   Info,
+  MoreHorizontal,
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
@@ -73,9 +74,12 @@ export function FileListItem({
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(file.name);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isLongPressing, setIsLongPressing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const Icon = fileTypeIcons[file.type];
   const colors = getFileColors(file);
 
@@ -114,6 +118,94 @@ export function FileListItem({
     setIsRenaming(false);
   };
 
+  // Touch handlers for long-press selection on mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    setIsLongPressing(false);
+    
+    longPressTimer.current = setTimeout(() => {
+      setIsLongPressing(true);
+      // Vibrate for haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      // Trigger selection on long press
+      onClick(e as unknown as React.MouseEvent);
+    }, 500);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartPos.current) {
+      const touch = e.touches[0];
+      const dx = Math.abs(touch.clientX - touchStartPos.current.x);
+      const dy = Math.abs(touch.clientY - touchStartPos.current.y);
+      
+      if (dx > 10 || dy > 10) {
+        if (longPressTimer.current) {
+          clearTimeout(longPressTimer.current);
+          longPressTimer.current = null;
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    
+    // If it wasn't a long press, treat as a tap (open preview/folder) - mobile/tablet only
+    if (!isLongPressing) {
+      onDoubleClick();
+    }
+    
+    setIsLongPressing(false);
+    touchStartPos.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    setIsLongPressing(false);
+    touchStartPos.current = null;
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
+  }, []);
+
+  // Track if we're using touch (to prevent click from firing after touch)
+  const isTouchDevice = useRef(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Skip click handling if this was a touch interaction (touch already handled it)
+    if (isTouchDevice.current) {
+      isTouchDevice.current = false;
+      return;
+    }
+    // Desktop: normal click to select
+    onClick(e);
+  };
+
+  const handleDoubleClick = () => {
+    // Desktop: double-click to open
+    onDoubleClick();
+  };
+
+  const handleTouchStartWrapper = (e: React.TouchEvent) => {
+    isTouchDevice.current = true;
+    handleTouchStart(e);
+  };
+
   return (
     <div
       className={cn(
@@ -122,10 +214,15 @@ export function FileListItem({
         "transition-all duration-150",
         isSelected
           ? "bg-primary-50/80 dark:bg-primary-500/10"
-          : "hover:bg-surface-50 dark:hover:bg-surface-800/30"
+          : "hover:bg-surface-50 dark:hover:bg-surface-800/30",
+        isLongPressing && "bg-primary-100/80 dark:bg-primary-500/20"
       )}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      onTouchStart={handleTouchStartWrapper}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
       {/* Name Column */}
       <div className="col-span-5 sm:col-span-6 flex items-center gap-3 min-w-0">

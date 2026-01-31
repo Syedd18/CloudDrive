@@ -400,6 +400,155 @@ export default function Home() {
     }
   };
 
+  // Handle batch delete (move multiple files to trash)
+  const handleBatchDelete = async (fileIds: string[]) => {
+    // Check if confirmation is required from settings
+    const savedSettings = localStorage.getItem("driveSettings");
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        if (settings.confirmBeforeDelete) {
+          const confirmed = window.confirm(`Are you sure you want to move ${fileIds.length} file(s) to trash?`);
+          if (!confirmed) return;
+        }
+      } catch {
+        // Proceed without confirmation
+      }
+    }
+
+    const token = localStorage.getItem("token");
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const fileId of fileIds) {
+      try {
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`/api/files/${fileId}`, {
+          method: "PATCH",
+          headers,
+          credentials: "include",
+          body: JSON.stringify({ trashed: true }),
+        });
+
+        if (response.ok) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch {
+        failCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      toast.success(`${successCount} file(s) moved to trash`);
+      setSelectedFiles([]);
+      loadFiles();
+    }
+    if (failCount > 0) {
+      toast.error(`Failed to move ${failCount} file(s)`);
+    }
+  };
+
+  // Handle batch star (toggle star on multiple files)
+  const handleBatchStar = async (fileIds: string[]) => {
+    const token = localStorage.getItem("token");
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const fileId of fileIds) {
+      const file = files.find(f => f.id === fileId);
+      if (!file) continue;
+
+      try {
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`/api/files/${fileId}`, {
+          method: "PATCH",
+          headers,
+          credentials: "include",
+          body: JSON.stringify({ starred: !file.starred }),
+        });
+
+        if (response.ok) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch {
+        failCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      toast.success(`${successCount} file(s) updated`);
+      setSelectedFiles([]);
+      loadFiles();
+    }
+    if (failCount > 0) {
+      toast.error(`Failed to update ${failCount} file(s)`);
+    }
+  };
+
+  // Handle batch download
+  const handleBatchDownload = async (fileIds: string[]) => {
+    const token = localStorage.getItem("token");
+    const toastId = toast.loading(`Downloading ${fileIds.length} file(s)...`);
+    let successCount = 0;
+
+    for (const fileId of fileIds) {
+      const file = files.find(f => f.id === fileId);
+      if (!file || file.type === "folder") continue;
+
+      try {
+        const headers: Record<string, string> = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+
+        const response = await fetch(`/api/files/${fileId}/download?direct=true`, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+
+        if (!response.ok) continue;
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        successCount++;
+        
+        // Small delay between downloads to prevent browser blocking
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch {
+        // Continue to next file
+      }
+    }
+
+    if (successCount > 0) {
+      toast.success(`Downloaded ${successCount} file(s)`, { id: toastId });
+      setSelectedFiles([]);
+    } else {
+      toast.error("Failed to download files", { id: toastId });
+    }
+  };
+
   // Handle empty trash
   const handleEmptyTrash = async () => {
     const token = localStorage.getItem("token");
@@ -629,6 +778,9 @@ export default function Home() {
           onFileDetails={setDetailsFile}
           selectedFiles={selectedFiles}
           onSelectionChange={setSelectedFiles}
+          onBatchDelete={handleBatchDelete}
+          onBatchStar={handleBatchStar}
+          onBatchDownload={handleBatchDownload}
           currentFolder={currentFolder}
           isLoading={isLoading}
           breadcrumbPath={breadcrumbPath}

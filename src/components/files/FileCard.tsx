@@ -247,7 +247,10 @@ export function FileCard({
   const [newName, setNewName] = useState(file.name);
   const [isHovered, setIsHovered] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isLongPressing, setIsLongPressing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const justOpenedRef = useRef(false);
@@ -404,6 +407,96 @@ export function FileCard({
     if (coords) setMenuCoords(coords);
   };
 
+  // Touch handlers for long-press selection on mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    setIsLongPressing(false);
+    
+    longPressTimer.current = setTimeout(() => {
+      setIsLongPressing(true);
+      // Vibrate for haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      // Trigger selection on long press
+      onClick(e as unknown as React.MouseEvent);
+    }, 500); // 500ms for long press
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartPos.current) {
+      const touch = e.touches[0];
+      const dx = Math.abs(touch.clientX - touchStartPos.current.x);
+      const dy = Math.abs(touch.clientY - touchStartPos.current.y);
+      
+      // Cancel long press if user moved finger significantly (scrolling)
+      if (dx > 10 || dy > 10) {
+        if (longPressTimer.current) {
+          clearTimeout(longPressTimer.current);
+          longPressTimer.current = null;
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    
+    // If it wasn't a long press, treat as a tap (open preview/folder) - only on touch devices
+    if (!isLongPressing) {
+      // Open folder or preview file on single tap (mobile/tablet only)
+      onDoubleClick();
+    }
+    
+    setIsLongPressing(false);
+    touchStartPos.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    setIsLongPressing(false);
+    touchStartPos.current = null;
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
+  }, []);
+
+  // Track if we're using touch (to prevent click from firing after touch)
+  const isTouchDevice = useRef(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Skip click handling if this was a touch interaction (touch already handled it)
+    if (isTouchDevice.current) {
+      isTouchDevice.current = false;
+      return;
+    }
+    // Desktop: normal click to select
+    onClick(e);
+  };
+
+  const handleDoubleClick = () => {
+    // Desktop: double-click to open
+    onDoubleClick();
+  };
+
+  const handleTouchStartWrapper = (e: React.TouchEvent) => {
+    isTouchDevice.current = true;
+    handleTouchStart(e);
+  };
+
   // Quick action bar items
   const quickActions = isInTrash
     ? [
@@ -433,10 +526,15 @@ export function FileCard({
           "file-card group relative cursor-pointer",
           "rounded-2xl overflow-hidden",
           "transition-all duration-300 ease-out",
-          isSelected && "ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-surface-900"
+          isSelected && "ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-surface-900",
+          isLongPressing && "scale-95 ring-2 ring-primary-400"
         )}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+        onTouchStart={handleTouchStartWrapper}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
       >
         {/* Thumbnail / Icon Area */}
         <div className={cn(
@@ -488,6 +586,14 @@ export function FileCard({
           </div>
 
           <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+            {/* Mobile-only more button - always visible */}
+            <button
+              ref={menuButtonRef}
+              onClick={handleMenuToggle}
+              className="lg:hidden w-7 h-7 rounded-full bg-white/90 dark:bg-surface-800/90 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-surface-700 transition-colors"
+            >
+              <MoreHorizontal className="w-4 h-4 text-surface-600 dark:text-surface-300" />
+            </button>
             {file.shared && (
               <div className="w-7 h-7 rounded-full bg-primary-500 shadow-lg flex items-center justify-center">
                 <Users className="w-3.5 h-3.5 text-white" />
@@ -495,9 +601,9 @@ export function FileCard({
             )}
           </div>
 
-          {/* Quick Action Bar - appears on hover */}
+          {/* Quick Action Bar - appears on hover on desktop, always visible on mobile */}
           <AnimatePresence>
-            {isHovered && !isRenaming && (
+            {(isHovered || isSelected) && !isRenaming && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

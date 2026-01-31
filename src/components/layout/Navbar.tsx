@@ -136,7 +136,7 @@ export function Navbar({
     <header className="sticky top-0 z-50 h-16 glass border-b border-surface-200/50 dark:border-surface-800/50">
       <div className="h-full px-3 sm:px-4 flex items-center justify-between gap-3">
         {/* Left Section - Logo & Menu */}
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={onMenuClick}
             className="lg:hidden p-2.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
@@ -145,18 +145,18 @@ export function Navbar({
             <Menu className="w-5 h-5 text-surface-600 dark:text-surface-400" />
           </button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-soft hover-lift">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="w-9 h-9 min-w-[36px] rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-soft hover-lift">
               <Cloud className="w-5 h-5 text-white" />
             </div>
-            <span className="hidden sm:block text-lg font-semibold text-surface-900 dark:text-white tracking-tight">
+            <span className="hidden sm:block text-lg font-semibold text-surface-900 dark:text-white tracking-tight whitespace-nowrap">
               CloudDrive
             </span>
           </div>
         </div>
 
         {/* Center - Search Bar */}
-        <div className="flex-1 max-w-2xl mx-2 sm:mx-4">
+        <div className="flex-1 min-w-0 max-w-2xl mx-2 sm:mx-4">
           <div
             className={cn(
               "relative flex items-center transition-all duration-200",

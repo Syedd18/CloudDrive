@@ -24,6 +24,8 @@ import {
   Archive,
   ArrowUpDown,
   X,
+  Star,
+  Download,
 } from "lucide-react";
 import { FileItem, ViewMode } from "@/types";
 import { FileCard } from "@/components/files/FileCard";
@@ -51,6 +53,9 @@ interface MainContentProps {
   onFileDetails?: (file: FileItem) => void;
   selectedFiles: string[];
   onSelectionChange: (files: string[]) => void;
+  onBatchDelete?: (fileIds: string[]) => void;
+  onBatchStar?: (fileIds: string[]) => void;
+  onBatchDownload?: (fileIds: string[]) => void;
   currentFolder: string;
   isLoading: boolean;
   breadcrumbPath?: { id: string; name: string }[];
@@ -92,6 +97,9 @@ export function MainContent({
   onFileDetails,
   selectedFiles,
   onSelectionChange,
+  onBatchDelete,
+  onBatchStar,
+  onBatchDownload,
   currentFolder,
   isLoading,
   breadcrumbPath,
@@ -497,23 +505,64 @@ export function MainContent({
               exit={{ opacity: 0, height: 0 }}
               className="mt-4 overflow-hidden"
             >
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-200/50 dark:border-primary-800/50">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-200/50 dark:border-primary-800/50">
                 <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
                   {selectedFiles.length} selected
                 </span>
-                <div className="h-4 w-px bg-primary-200 dark:bg-primary-700" />
-                <button
-                  onClick={() => onSelectionChange([])}
-                  className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
-                >
-                  Clear selection
-                </button>
-                <button
-                  onClick={() => onSelectionChange(sortedFiles.map((f) => f.id))}
-                  className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
-                >
-                  Select all
-                </button>
+                <div className="hidden sm:block h-4 w-px bg-primary-200 dark:bg-primary-700" />
+                
+                {/* Selection controls */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onSelectionChange([])}
+                    className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    onClick={() => onSelectionChange(sortedFiles.map((f) => f.id))}
+                    className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                  >
+                    Select all
+                  </button>
+                </div>
+                
+                {/* Batch Action Buttons */}
+                <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+                  {currentFolder !== "Trash" && (
+                    <>
+                      {/* Star Selected */}
+                      <Tooltip content="Star selected" side="bottom">
+                        <button
+                          onClick={() => onBatchStar?.(selectedFiles)}
+                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                        >
+                          <Star className="w-4 h-4" />
+                        </button>
+                      </Tooltip>
+                      
+                      {/* Download Selected */}
+                      <Tooltip content="Download selected" side="bottom">
+                        <button
+                          onClick={() => onBatchDownload?.(selectedFiles)}
+                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+                      </Tooltip>
+                      
+                      {/* Move to Trash */}
+                      <Tooltip content="Move to trash" side="bottom">
+                        <button
+                          onClick={() => onBatchDelete?.(selectedFiles)}
+                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </Tooltip>
+                    </>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
