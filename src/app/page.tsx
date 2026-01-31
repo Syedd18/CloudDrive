@@ -11,10 +11,18 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { UploadModal } from "@/components/modals/UploadModal";
 import { PreviewModal } from "@/components/modals/PreviewModal";
 import { CreateFolderModal } from "@/components/modals/CreateFolderModal";
+import { DuplicateFileModal } from "@/components/modals/DuplicateFileModal";
 import { FileDetailsPanel } from "@/components/files/FileDetailsPanel";
 import { UploadStatusPanel, UploadItem } from "@/components/ui/UploadStatusPanel";
 import { FileItem, ViewMode } from "@/types";
 import toast from "react-hot-toast";
+
+// Type for duplicate file handling
+interface DuplicateFile {
+  file: File;
+  existingFileId: string;
+  existingFileName: string;
+}
 
 export default function Home() {
   const router = useRouter();
@@ -33,6 +41,9 @@ export default function Home() {
   const [createFolderModalOpen, setCreateFolderModalOpen] = useState(false);
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
   const [detailsFile, setDetailsFile] = useState<FileItem | null>(null);
+  const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
+  const [duplicateFiles, setDuplicateFiles] = useState<DuplicateFile[]>([]);
+  const [pendingUploads, setPendingUploads] = useState<File[]>([]);
 
   // File State
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -148,6 +159,118 @@ export default function Home() {
         (currentFolder === "Recent" && file.recent) ||
         (currentFolder === "Shared" && file.shared))
   );
+
+  // Check for duplicate files before upload
+  const checkForDuplicates = (newFiles: File[]): { duplicates: DuplicateFile[]; nonDuplicates: File[] } => {
+    const duplicates: DuplicateFile[] = [];
+    const nonDuplicates: File[] = [];
+
+    for (const file of newFiles) {
+      // Check if file with same name exists in current folder
+      const existingFile = files.find(
+        (f) => f.name.toLowerCase() === file.name.toLowerCase() && !f.trashed
+      );
+      
+      if (existingFile) {
+        duplicates.push({
+          file,
+          existingFileId: existingFile.id,
+          existingFileName: existingFile.name,
+        });
+      } else {
+        nonDuplicates.push(file);
+      }
+    }
+
+    return { duplicates, nonDuplicates };
+  };
+
+  // Generate unique filename by adding (1), (2), etc.
+  const generateUniqueFilename = (filename: string): string => {
+    const lastDotIndex = filename.lastIndexOf('.');
+    const baseName = lastDotIndex > 0 ? filename.slice(0, lastDotIndex) : filename;
+    const extension = lastDotIndex > 0 ? filename.slice(lastDotIndex) : '';
+    
+    let counter = 1;
+    let newName = `${baseName} (${counter})${extension}`;
+    
+    // Keep incrementing until we find a unique name
+    while (files.some(f => f.name.toLowerCase() === newName.toLowerCase() && !f.trashed)) {
+      counter++;
+      newName = `${baseName} (${counter})${extension}`;
+    }
+    
+    return newName;
+  };
+
+  // Handle initial upload request - check for duplicates first
+  const handleUploadRequest = (newFiles: File[]) => {
+    const { duplicates, nonDuplicates } = checkForDuplicates(newFiles);
+    
+    // Upload non-duplicate files immediately
+    if (nonDuplicates.length > 0) {
+      handleUpload(nonDuplicates);
+    }
+    
+    // Show duplicate modal if there are duplicates
+    if (duplicates.length > 0) {
+      setDuplicateFiles(duplicates);
+      setPendingUploads(duplicates.map(d => d.file));
+      setDuplicateModalOpen(true);
+    }
+  };
+
+  // Handle replace duplicate files
+  const handleReplaceDuplicates = async (duplicates: DuplicateFile[]) => {
+    setDuplicateModalOpen(false);
+    const token = localStorage.getItem("token");
+    
+    // Delete existing files first
+    for (const dup of duplicates) {
+      try {
+        const headers: Record<string, string> = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+        
+        // Permanently delete the existing file
+        await fetch(`/api/files/${dup.existingFileId}`, {
+          method: "DELETE",
+          headers,
+          credentials: "include",
+        });
+      } catch (error) {
+        console.error("Failed to delete existing file:", error);
+      }
+    }
+    
+    // Upload the new files
+    handleUpload(duplicates.map(d => d.file));
+    setDuplicateFiles([]);
+    setPendingUploads([]);
+  };
+
+  // Handle rename and upload duplicate files
+  const handleRenameDuplicates = (duplicates: DuplicateFile[]) => {
+    setDuplicateModalOpen(false);
+    
+    // Create renamed files
+    const renamedFiles: File[] = duplicates.map(dup => {
+      const newName = generateUniqueFilename(dup.file.name);
+      // Create a new File object with the new name
+      return new File([dup.file], newName, { type: dup.file.type });
+    });
+    
+    handleUpload(renamedFiles);
+    setDuplicateFiles([]);
+    setPendingUploads([]);
+  };
+
+  // Handle skip duplicates
+  const handleSkipDuplicates = () => {
+    setDuplicateModalOpen(false);
+    setDuplicateFiles([]);
+    setPendingUploads([]);
+    toast("Skipped duplicate files", { icon: "⏭️" });
+  };
 
   // Handle file upload - uses direct Supabase upload for large files (bypasses Vercel 4.5MB limit)
   const handleUpload = async (newFiles: File[]) => {
@@ -812,7 +935,7 @@ export default function Home() {
           onFilePermanentDelete={handlePermanentDelete}
           onFileStar={handleStar}
           onFileRename={handleRename}
-          onUpload={handleUpload}
+          onUpload={handleUploadRequest}
           onUploadClick={() => setUploadModalOpen(true)}
           onEmptyTrash={handleEmptyTrash}
           onFileDetails={setDetailsFile}
@@ -853,7 +976,16 @@ export default function Home() {
       <UploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
-        onUpload={handleUpload}
+        onUpload={handleUploadRequest}
+      />
+
+      <DuplicateFileModal
+        isOpen={duplicateModalOpen}
+        duplicates={duplicateFiles}
+        onClose={() => setDuplicateModalOpen(false)}
+        onReplace={handleReplaceDuplicates}
+        onRename={handleRenameDuplicates}
+        onSkip={handleSkipDuplicates}
       />
 
       <CreateFolderModal
