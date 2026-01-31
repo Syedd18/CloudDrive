@@ -109,21 +109,21 @@ export function Sidebar({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:relative z-50 lg:z-0 h-full w-[280px]",
+          "fixed lg:relative z-50 lg:z-0 h-full w-[280px] max-h-screen",
           "bg-white dark:bg-[#0d1117]",
           "border-r border-surface-200/60 dark:border-surface-800/60",
-          "flex flex-col",
+          "flex flex-col overflow-hidden",
           "transition-transform duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Mobile Header - Close button only */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-surface-200/60 dark:border-surface-800/60">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm">
-              <Cloud className="w-5 h-5 text-white" />
+        <div className="lg:hidden flex items-center justify-between p-3 border-b border-surface-200/60 dark:border-surface-800/60 flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm">
+              <Cloud className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-lg text-surface-900 dark:text-white">CloudDrive</span>
+            <span className="font-bold text-base text-surface-900 dark:text-white">CloudDrive</span>
           </div>
           <button
             onClick={onClose}
@@ -135,12 +135,12 @@ export function Sidebar({
         </div>
 
         {/* New Button */}
-        <div className="px-4 pt-4 pb-3">
+        <div className="px-3 lg:px-4 pt-3 lg:pt-4 pb-2 lg:pb-3 flex-shrink-0">
           <motion.button
             onClick={onUploadClick}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
-            className="w-full btn-primary py-3.5 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-200"
+            className="w-full btn-primary py-3 lg:py-3.5 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             <span className="font-semibold">New</span>
@@ -148,7 +148,7 @@ export function Sidebar({
         </div>
 
         {/* Quick Actions */}
-        <div className="px-4 pb-4 flex gap-2">
+        <div className="px-3 lg:px-4 pb-3 lg:pb-4 flex gap-2 flex-shrink-0">
           <button
             onClick={onFolderClick}
             className="flex-1 btn-secondary py-2.5 text-sm gap-1.5 hover:border-primary-300 dark:hover:border-primary-700"
@@ -166,10 +166,10 @@ export function Sidebar({
         </div>
 
         {/* Divider */}
-        <div className="mx-4 border-t border-surface-200/60 dark:border-surface-800/60" />
+        <div className="mx-3 lg:mx-4 border-t border-surface-200/60 dark:border-surface-800/60 flex-shrink-0" />
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-3 overflow-y-auto scrollbar-thin">
+        <nav className="flex-1 px-3 py-3 overflow-y-auto scrollbar-thin min-h-0">
           <ul className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -211,8 +211,8 @@ export function Sidebar({
         </nav>
 
         {/* Storage Indicator */}
-        <div className="p-4 border-t border-surface-200/60 dark:border-surface-800/60">
-          <div className="p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50">
+        <div className="p-3 lg:p-4 border-t border-surface-200/60 dark:border-surface-800/60 flex-shrink-0">
+          <div className="p-2.5 lg:p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50">
             {isLoading ? (
               <div className="space-y-2">
                 <div className="h-4 skeleton rounded w-20" />
