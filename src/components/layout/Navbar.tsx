@@ -259,10 +259,10 @@ export function Navbar({
                     <img
                       src={user.avatar}
                       alt={user.name}
-                      className="w-8 h-8 rounded-full ring-2 ring-surface-200 dark:ring-surface-700"
+                      className="w-8 h-8 min-w-[32px] min-h-[32px] shrink-0 rounded-full ring-2 ring-surface-200 dark:ring-surface-700 object-cover"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center ring-2 ring-surface-200 dark:ring-surface-700">
+                    <div className="w-8 h-8 min-w-[32px] min-h-[32px] shrink-0 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center ring-2 ring-surface-200 dark:ring-surface-700">
                       <span className="text-sm font-semibold text-white">
                         {user.name.charAt(0).toUpperCase()}
                       </span>
@@ -288,10 +288,10 @@ export function Navbar({
                         <img
                           src={user.avatar}
                           alt={user.name}
-                          className="w-12 h-12 rounded-full"
+                          className="w-12 h-12 min-w-[48px] min-h-[48px] shrink-0 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+                        <div className="w-12 h-12 min-w-[48px] min-h-[48px] shrink-0 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
                           <span className="text-xl font-semibold text-white">
                             {user.name.charAt(0).toUpperCase()}
                           </span>

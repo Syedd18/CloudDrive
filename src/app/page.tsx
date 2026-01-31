@@ -575,7 +575,7 @@ export default function Home() {
     if (mimeType.startsWith("video/")) return "video";
     if (mimeType.startsWith("audio/")) return "audio";
     if (mimeType === "application/pdf") return "pdf";
-    if (mimeType.includes("zip") || mimeType.includes("rar") || mimeType.includes("7z"))
+    if (mimeType.includes("zip") || mimeType.includes("rar") || mimeType.includes("7z") || mimeType.includes("tar") || mimeType.includes("gzip") || mimeType.includes("x-compressed") || mimeType.includes("x-bzip"))
       return "archive";
     if (
       mimeType.includes("document") ||

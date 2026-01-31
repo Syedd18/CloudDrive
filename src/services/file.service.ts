@@ -49,7 +49,11 @@ function getFileType(mimeType: string): string {
   if (
     mimeType.includes('zip') ||
     mimeType.includes('rar') ||
-    mimeType.includes('7z')
+    mimeType.includes('7z') ||
+    mimeType.includes('tar') ||
+    mimeType.includes('gzip') ||
+    mimeType.includes('x-compressed') ||
+    mimeType.includes('x-bzip')
   )
     return 'archive';
   return 'file';
