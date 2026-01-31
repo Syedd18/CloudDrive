@@ -97,53 +97,32 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     { id: "privacy", label: "Privacy & Data", icon: Shield },
   ] as const;
 
-  // Prevent modal from closing immediately after opening (for mobile touch events)
-  const [canClose, setCanClose] = useState(false);
-  
-  useEffect(() => {
-    if (isOpen) {
-      setCanClose(false);
-      const timer = setTimeout(() => setCanClose(true), 200);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (canClose) {
-      onClose();
-    }
-  };
-
   // Use portal to render modal at document root level
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{ touchAction: 'none' }}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleBackdropClick}
-            onTouchEnd={(e) => e.stopPropagation()}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
+            onClick={onClose}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
 
-          {/* Modal Container */}
-          <div 
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4" 
-            onClick={handleBackdropClick}
-            onTouchEnd={(e) => e.stopPropagation()}
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-2xl max-h-[85vh] sm:max-h-[80vh] mx-4 bg-white dark:bg-surface-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl max-h-[85vh] sm:max-h-[80vh] bg-white dark:bg-surface-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-            >
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-surface-200 dark:border-surface-700">
               <div className="flex items-center gap-3">
@@ -444,8 +423,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
             </div>
           </motion.div>
-          </div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );
