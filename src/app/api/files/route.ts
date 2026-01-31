@@ -25,8 +25,16 @@ async function uploadFileHandler(request: AuthenticatedRequest) {
       );
     }
 
+    console.log('Upload request received:', {
+      filename: file.name,
+      size: file.size,
+      type: file.type,
+      sizeInMB: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+    });
+
     // Convert File to Buffer
     const buffer = Buffer.from(await file.arrayBuffer());
+    console.log('Buffer created, size:', buffer.length);
 
     const result = await fileService.uploadFile({
       userId: request.user!.userId,
@@ -37,9 +45,14 @@ async function uploadFileHandler(request: AuthenticatedRequest) {
       folderId: folderId,
     });
 
+    console.log('Upload successful:', result.id);
     return NextResponse.json({ file: result }, { status: 201 });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      error,
+    });
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to upload file' },
       { status: 500 }

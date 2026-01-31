@@ -167,8 +167,15 @@ export default function Home() {
     for (let i = 0; i < newFiles.length; i++) {
       const file = newFiles[i];
       const uploadItem = uploadItems[i];
+      let progressInterval: NodeJS.Timeout | null = null;
 
       try {
+        // Check file size before upload (warn for large files on mobile)
+        const maxSizeMB = 50;
+        if (file.size > maxSizeMB * 1024 * 1024) {
+          throw new Error(`File too large. Maximum size is ${maxSizeMB}MB`);
+        }
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", file.name);
@@ -185,7 +192,7 @@ export default function Home() {
         }
 
         // Simulate progress (real implementation would use XMLHttpRequest with progress events)
-        const progressInterval = setInterval(() => {
+        progressInterval = setInterval(() => {
           setUploads((prev) =>
             prev.map((u) =>
               u.id === uploadItem.id && u.progress < 90
@@ -195,14 +202,20 @@ export default function Home() {
           );
         }, 200);
 
+        // Use AbortController for timeout (60 seconds for mobile)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+
         const response = await fetch("/api/files", {
           method: "POST",
           headers,
           credentials: "include",
           body: formData,
+          signal: controller.signal,
         });
 
-        clearInterval(progressInterval);
+        clearTimeout(timeoutId);
+        if (progressInterval) clearInterval(progressInterval);
 
         if (response.status === 401) {
           localStorage.removeItem("token");
@@ -211,7 +224,18 @@ export default function Home() {
         }
 
         if (!response.ok) {
-          throw new Error(`Failed to upload ${file.name}`);
+          // Try to get error message from response
+          let errorMessage = `Failed to upload ${file.name}`;
+          try {
+            const errorData = await response.json();
+            if (errorData.error) {
+              errorMessage = errorData.error;
+            }
+          } catch {
+            // If we can't parse JSON, use status text
+            errorMessage = `Upload failed: ${response.status} ${response.statusText}`;
+          }
+          throw new Error(errorMessage);
         }
 
         // Update upload status to completed
@@ -225,12 +249,21 @@ export default function Home() {
 
         toast.success(`${file.name} uploaded`);
       } catch (error) {
+        if (progressInterval) clearInterval(progressInterval);
         setUploads((prev) =>
           prev.map((u) =>
             u.id === uploadItem.id ? { ...u, status: "error" as const } : u
           )
         );
-        toast.error(`Failed to upload ${file.name}`);
+        
+        // Show more detailed error message
+        const errorMsg = error instanceof Error ? error.message : "Upload failed";
+        if (error instanceof Error && error.name === 'AbortError') {
+          toast.error(`Upload timed out for ${file.name}. Try a smaller file or better connection.`);
+        } else {
+          toast.error(errorMsg);
+        }
+        console.error('Upload error:', error);
       }
     }
 
