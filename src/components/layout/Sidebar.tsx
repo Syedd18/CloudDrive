@@ -110,14 +110,15 @@ export function Sidebar({
       <aside
         className={cn(
           "fixed lg:relative z-50 lg:z-0 w-[280px]",
-          "top-0 left-0 bottom-0",
+          "top-0 left-0",
           "bg-white dark:bg-[#0d1117]",
           "border-r border-surface-200/60 dark:border-surface-800/60",
           "flex flex-col",
           "transition-transform duration-300 ease-in-out",
+          // Mobile: stop above bottom nav (64px + safe area). Desktop: full height
+          "h-[calc(100dvh-4rem)] lg:h-screen",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
-        style={{ height: '100dvh' }}
       >
         {/* Mobile Header - Close button only */}
         <div className="lg:hidden flex items-center justify-between p-3 border-b border-surface-200/60 dark:border-surface-800/60 flex-shrink-0">
@@ -170,8 +171,8 @@ export function Sidebar({
         {/* Divider */}
         <div className="mx-3 lg:mx-4 border-t border-surface-200/60 dark:border-surface-800/60 flex-shrink-0" />
 
-        {/* Navigation - scrollable area */}
-        <nav className="flex-1 px-3 py-2 overflow-y-auto scrollbar-thin">
+        {/* Navigation */}
+        <nav className="px-3 py-2">
           <ul className="space-y-0.5">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -212,108 +213,119 @@ export function Sidebar({
           </ul>
         </nav>
 
-        {/* Storage Indicator - Fixed at bottom */}
-        <div className="p-2 lg:p-4 border-t border-surface-200/60 dark:border-surface-800/60 bg-white dark:bg-[#0d1117]">
-          <div className="p-2 lg:p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50">
+        {/* Spacer to push storage to bottom */}
+        <div className="flex-1" />
+
+        {/* Storage Section - Premium Design */}
+        <div className="p-3 lg:p-4 mt-auto">
+          <div className={cn(
+            "relative overflow-hidden rounded-2xl",
+            "bg-gradient-to-br from-primary-500/10 via-primary-500/5 to-transparent",
+            "dark:from-primary-400/15 dark:via-primary-500/10 dark:to-surface-800/50",
+            "border border-primary-200/50 dark:border-primary-500/20",
+            "p-3 lg:p-4"
+          )}>
+            {/* Decorative background circles */}
+            <div className="absolute -top-6 -right-6 w-20 h-20 bg-primary-400/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary-500/10 rounded-full blur-xl" />
+            
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="h-2 skeleton rounded-full flex-1" />
-                <div className="h-3 skeleton rounded w-12" />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 skeleton rounded-xl" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-2 skeleton rounded-full w-full" />
+                  <div className="h-3 skeleton rounded w-16" />
+                </div>
               </div>
             ) : (
-              <>
-                {/* Compact view for mobile */}
-                <div className="flex items-center gap-2 lg:hidden">
-                  <Cloud className={cn(
-                    "w-4 h-4 flex-shrink-0",
-                    isStorageLow ? "text-danger-500" :
-                    isStorageWarning ? "text-warning-500" :
-                    "text-primary-500"
-                  )} />
-                  <div className="flex-1 h-1.5 bg-surface-200 dark:bg-surface-700 rounded-full overflow-hidden">
-                    <div
-                      style={{ width: `${storage.used > 0 ? Math.max(storagePercentage, 2) : 0}%` }}
-                      className={cn(
-                        "h-full rounded-full",
-                        isStorageLow
-                          ? "bg-danger-500"
-                          : isStorageWarning
-                            ? "bg-warning-500"
-                            : "bg-primary-500"
-                      )}
-                    />
-                  </div>
-                  <span className="text-xs text-surface-500 flex-shrink-0">
-                    {formatFileSize(storage.used)} / {formatFileSize(storage.total)}
-                  </span>
-                </div>
-
-                {/* Full view for desktop */}
-                <div className="hidden lg:block">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Cloud className={cn(
-                        "w-4 h-4",
-                        isStorageLow ? "text-danger-500" :
-                        isStorageWarning ? "text-warning-500" :
-                        "text-primary-500"
-                      )} />
-                      <span className="text-xs font-medium text-surface-700 dark:text-surface-300">
-                        Storage
-                      </span>
-                    </div>
-                    <span className={cn(
-                      "text-xs font-medium",
+              <div className="relative z-10">
+                {/* Header with icon */}
+                <div className="flex items-start gap-3 mb-3">
+                  <div className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
+                    "shadow-sm",
+                    isStorageLow
+                      ? "bg-danger-100 dark:bg-danger-500/20"
+                      : isStorageWarning
+                        ? "bg-warning-100 dark:bg-warning-500/20"
+                        : "bg-primary-100 dark:bg-primary-500/20"
+                  )}>
+                    <Cloud className={cn(
+                      "w-5 h-5",
                       isStorageLow ? "text-danger-500" :
                       isStorageWarning ? "text-warning-500" :
-                      "text-surface-500"
-                    )}>
-                      {storagePercentage < 0.1 && storage.used > 0
-                        ? '<0.1'
-                        : storagePercentage.toFixed(1)}%
-                    </span>
+                      "text-primary-500"
+                    )} />
                   </div>
-
-                  {/* Progress Bar */}
-                  <div className="h-2 bg-surface-200 dark:bg-surface-700 rounded-full overflow-hidden mb-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${storage.used > 0 ? Math.max(storagePercentage, 2) : 0}%` }}
-                      transition={{ duration: 0.8, ease: "easeOut" }}
-                      className={cn(
-                        "h-full rounded-full",
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-sm font-semibold text-surface-800 dark:text-surface-200">
+                        Storage
+                      </span>
+                      <span className={cn(
+                        "text-xs font-bold px-1.5 py-0.5 rounded-full",
                         isStorageLow
-                          ? "bg-gradient-to-r from-danger-400 to-danger-500"
+                          ? "bg-danger-100 text-danger-600 dark:bg-danger-500/20 dark:text-danger-400"
                           : isStorageWarning
-                            ? "bg-gradient-to-r from-warning-400 to-warning-500"
-                            : "bg-gradient-to-r from-primary-400 to-primary-500"
-                      )}
-                    />
+                            ? "bg-warning-100 text-warning-600 dark:bg-warning-500/20 dark:text-warning-400"
+                            : "bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-400"
+                      )}>
+                        {storagePercentage < 0.1 && storage.used > 0
+                          ? '<0.1'
+                          : storagePercentage.toFixed(0)}%
+                      </span>
+                    </div>
+                    <p className="text-xs text-surface-500 dark:text-surface-400">
+                      {formatFileSize(storage.used)} of {formatFileSize(storage.total)}
+                    </p>
                   </div>
+                </div>
 
-                  <p className="text-xs text-surface-500">
-                    <span className="font-medium text-surface-700 dark:text-surface-300">
-                      {formatFileSize(storage.used)}
-                    </span>
-                    {" "}of {formatFileSize(storage.total)} used
+                {/* Progress Bar - Enhanced */}
+                <div className="h-2.5 bg-surface-200/80 dark:bg-surface-700/80 rounded-full overflow-hidden shadow-inner">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${storage.used > 0 ? Math.max(storagePercentage, 2) : 0}%` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className={cn(
+                      "h-full rounded-full shadow-sm",
+                      isStorageLow
+                        ? "bg-gradient-to-r from-danger-400 via-danger-500 to-danger-600"
+                        : isStorageWarning
+                          ? "bg-gradient-to-r from-warning-400 via-warning-500 to-warning-600"
+                          : "bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600"
+                    )}
+                  />
+                </div>
+
+                {/* Upgrade hint - Desktop only */}
+                <div className="hidden lg:block mt-3 pt-3 border-t border-primary-200/30 dark:border-primary-500/10">
+                  <p className="text-[11px] text-surface-500 dark:text-surface-400 leading-relaxed">
+                    {isStorageLow ? (
+                      <span className="text-danger-500 font-medium">Storage almost full!</span>
+                    ) : isStorageWarning ? (
+                      <span className="text-warning-600 dark:text-warning-400">Running low on space</span>
+                    ) : (
+                      <span>Free plan • 15 GB included</span>
+                    )}
                   </p>
                 </div>
-              </>
+              </div>
             )}
           </div>
 
           {/* Quick Links - Desktop only */}
-          <div className="mt-3 hidden lg:flex gap-1">
+          <div className="mt-3 hidden lg:flex gap-2">
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-surface-600 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800/80 transition-all duration-200 active:scale-95"
             >
               <Settings className="w-4 h-4" />
               <span>Settings</span>
             </button>
             <button
               onClick={() => setIsHelpOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-surface-600 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800/80 transition-all duration-200 active:scale-95"
             >
               <HelpCircle className="w-4 h-4" />
               <span>Help</span>
