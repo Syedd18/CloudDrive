@@ -64,15 +64,16 @@ export function DuplicateFileModal({
               "fixed z-[10000]",
               // Mobile: bottom sheet style
               "inset-x-0 bottom-0",
-              // Desktop: centered modal with proper centering
-              "lg:inset-auto lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2",
-              "lg:w-full lg:max-w-md"
+              // Desktop: centered with flex container
+              "lg:inset-0 lg:flex lg:items-center lg:justify-center lg:p-4"
             )}
           >
             <div className={cn(
               "bg-white dark:bg-surface-900 shadow-2xl overflow-hidden",
               // Mobile: rounded top corners only, Desktop: all corners
               "rounded-t-3xl lg:rounded-2xl",
+              // Desktop: constrain width and max-height
+              "lg:w-full lg:max-w-md lg:max-h-[90vh] lg:overflow-y-auto",
               // Safe area padding for iOS
               "pb-safe"
             )}>
