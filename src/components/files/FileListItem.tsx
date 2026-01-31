@@ -20,9 +20,12 @@ import {
   FileType,
   Users,
   RotateCcw,
+  Info,
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
+import { ShareModal } from "@/components/modals/ShareModal";
+import { getFileColors } from "./FileCard";
 import toast from "react-hot-toast";
 
 interface FileListItemProps {
@@ -33,6 +36,7 @@ interface FileListItemProps {
   onDelete: () => void;
   onStar: () => void;
   onRename: (name: string) => void;
+  onDetails?: () => void;
   isInTrash?: boolean;
   onRestore?: () => void;
   onPermanentDelete?: () => void;
@@ -51,19 +55,6 @@ const fileTypeIcons: Record<FileItem["type"], typeof File> = {
   file: File,
 };
 
-const fileTypeColors: Record<FileItem["type"], string> = {
-  folder: "text-amber-500",
-  document: "text-blue-500",
-  spreadsheet: "text-emerald-500",
-  presentation: "text-orange-500",
-  pdf: "text-red-500",
-  image: "text-purple-500",
-  video: "text-pink-500",
-  audio: "text-cyan-500",
-  archive: "text-gray-500",
-  file: "text-surface-500",
-};
-
 export function FileListItem({
   file,
   isSelected,
@@ -72,6 +63,7 @@ export function FileListItem({
   onDelete,
   onStar,
   onRename,
+  onDetails,
   isInTrash = false,
   onRestore,
   onPermanentDelete,
@@ -80,10 +72,12 @@ export function FileListItem({
   const [menuPosition, setMenuPosition] = useState<'top' | 'bottom'>('bottom');
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(file.name);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const Icon = fileTypeIcons[file.type];
+  const colors = getFileColors(file);
 
   // Calculate menu position based on available space
   const calculateMenuPosition = () => {
@@ -138,10 +132,10 @@ export function FileListItem({
         <div
           className={cn(
             "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
-            "bg-surface-100 dark:bg-surface-800/80"
+            colors.bg
           )}
         >
-          <Icon className={cn("w-5 h-5", fileTypeColors[file.type])} />
+          <Icon className={cn("w-5 h-5", colors.icon)} />
         </div>
         <div className="flex-1 min-w-0">
           {isRenaming ? (
@@ -325,13 +319,23 @@ export function FileListItem({
                   </button>
                   <button
                     onClick={() => {
-                      toast.success("Share link copied");
+                      setIsShareModalOpen(true);
                       setShowMenu(false);
                     }}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
                   >
                     <Share2 className="w-4 h-4 text-surface-400" />
                     Share
+                  </button>
+                  <button
+                    onClick={() => {
+                      onDetails?.();
+                      setShowMenu(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                  >
+                    <Info className="w-4 h-4 text-surface-400" />
+                    Details
                   </button>
                   <div className="h-px bg-surface-200 dark:bg-surface-700/60 my-1.5 mx-2" />
                   <button
@@ -351,6 +355,13 @@ export function FileListItem({
           )}
         </div>
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        file={file}
+      />
     </div>
   );
 }

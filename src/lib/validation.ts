@@ -38,7 +38,7 @@ export const shareFileSchema = z.object({
 export const fileQuerySchema = z.object({
   starred: z.string().transform((val) => val === 'true').optional(),
   trashed: z.string().transform((val) => val === 'true').optional(),
-  folderId: z.string().uuid().optional(),
+  folderId: z.string().transform((val) => val === 'null' ? null : val).optional(),
   search: z.string().optional(),
   type: z.string().optional(),
   sortBy: z.enum(['name', 'size', 'updatedAt', 'createdAt']).optional(),

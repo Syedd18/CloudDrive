@@ -19,6 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface NavSettingsModalProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ const defaultSettings: SettingsState = {
 };
 
 export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
+  const { theme: currentTheme, setTheme } = useTheme();
   const [settings, setSettings] = useState<SettingsState>(defaultSettings);
   const [activeSection, setActiveSection] = useState<"appearance" | "preferences" | "privacy">("appearance");
   const [saved, setSaved] = useState(false);
@@ -60,12 +62,15 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
     const savedSettings = localStorage.getItem("driveSettings");
     if (savedSettings) {
       try {
-        setSettings(JSON.parse(savedSettings));
+        const parsed = JSON.parse(savedSettings);
+        setSettings({ ...parsed, theme: currentTheme });
       } catch {
         // Use defaults
       }
+    } else {
+      setSettings({ ...defaultSettings, theme: currentTheme });
     }
-  }, []);
+  }, [currentTheme]);
 
   const handleSettingChange = <K extends keyof SettingsState>(
     key: K,
@@ -75,28 +80,18 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
     setSettings(newSettings);
     localStorage.setItem("driveSettings", JSON.stringify(newSettings));
     
+    // Apply theme immediately using ThemeProvider
     if (key === "theme") {
-      applyTheme(value as ThemeOption);
+      setTheme(value as ThemeOption);
+    }
+    
+    // Dispatch custom event for view mode change so page.tsx can listen
+    if (key === "defaultView") {
+      window.dispatchEvent(new CustomEvent("viewModeChange", { detail: value }));
     }
     
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
-  };
-
-  const applyTheme = (theme: ThemeOption) => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else if (theme === "light") {
-      root.classList.remove("dark");
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    }
   };
 
   const sections = [

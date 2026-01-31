@@ -167,6 +167,7 @@ export class FileService {
         shared: file.sharedWith.length > 0,
         sharedWith: file.sharedWith.map((s) => s.email),
         modified: file.updatedAt.toISOString(),
+        folderId: file.folderId, // Include parent folder ID
         recent:
           new Date(file.updatedAt).getTime() >
           Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -199,9 +200,17 @@ export class FileService {
   }
 
   /**
-   * Generate signed download URL
+   * Generate signed download URL (legacy - kept for compatibility)
    */
   async getDownloadUrl(fileId: string, userId: string): Promise<string> {
+    const { downloadUrl } = await this.getDownloadInfo(fileId, userId);
+    return downloadUrl;
+  }
+
+  /**
+   * Get download info including URL, filename, and mime type
+   */
+  async getDownloadInfo(fileId: string, userId: string): Promise<{ downloadUrl: string; filename: string; mimeType: string }> {
     const file = await fileRepository.findById(fileId, userId);
     if (!file) {
       throw new NotFoundError('File not found');
@@ -220,7 +229,11 @@ export class FileService {
       filename: file.name,
     });
 
-    return signedUrl;
+    return {
+      downloadUrl: signedUrl,
+      filename: file.name,
+      mimeType: file.mimeType,
+    };
   }
 
   /**

@@ -16,13 +16,14 @@ import {
   Trash2,
   Share2,
   LogOut,
-  Edit3,
   Camera,
 } from "lucide-react";
+import { AvatarUploadModal } from "./AvatarUploadModal";
 
 interface NavProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onAvatarChange?: (avatarUrl: string) => void;
 }
 
 interface UserData {
@@ -33,10 +34,11 @@ interface UserData {
   createdAt?: string;
 }
 
-export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
+export function NavProfileModal({ isOpen, onClose, onAvatarChange }: NavProfileModalProps) {
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [storageData, setStorageData] = useState({
     used: 0,
     total: 15 * 1024 * 1024 * 1024, // 15GB default
@@ -55,7 +57,32 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
 
   useEffect(() => {
     const loadUser = async () => {
-      // If user is logged in via NextAuth (Google)
+      const token = localStorage.getItem("token");
+
+      // Try to fetch user from API first (to get updated avatar)
+      if (token || session?.user) {
+        try {
+          const headers: Record<string, string> = {};
+          if (token) {
+            headers.Authorization = `Bearer ${token}`;
+          }
+          
+          const response = await fetch("/api/auth/me", {
+            headers,
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUser(data.user);
+            return;
+          }
+        } catch (error) {
+          console.error("Failed to load user from API:", error);
+        }
+      }
+
+      // Fallback to NextAuth session data if API call fails
       if (session?.user) {
         setUser({
           id: session.user.id || "",
@@ -63,25 +90,6 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
           email: session.user.email || "",
           avatar: session.user.image || undefined,
         });
-        return;
-      }
-
-      // If user is logged in via JWT (email/password)
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      try {
-        const response = await fetch("/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.error("Failed to load user:", error);
       }
     };
 
@@ -174,16 +182,26 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
                 </button>
 
                 <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center overflow-hidden">
+                  <div className="relative group">
+                    <button
+                      onClick={() => setIsAvatarModalOpen(true)}
+                      className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center overflow-hidden ring-4 ring-white/30 hover:ring-white/50 transition-all cursor-pointer"
+                    >
                       {user?.avatar ? (
-                        <Image src={user.avatar} alt="" width={64} height={64} className="object-cover" />
+                        <Image src={user.avatar} alt="" width={80} height={80} className="w-full h-full object-cover" />
                       ) : (
-                        <User className="w-8 h-8 text-white" />
+                        <User className="w-10 h-10 text-white" />
                       )}
-                    </div>
-                    <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
-                      <Camera className="w-3.5 h-3.5 text-primary-600" />
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-full">
+                        <Camera className="w-6 h-6 text-white" />
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setIsAvatarModalOpen(true)}
+                      className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <Camera className="w-4 h-4 text-primary-600" />
                     </button>
                   </div>
                   <div>
@@ -299,9 +317,12 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
 
               {/* Footer */}
               <div className="p-4 border-t border-surface-200 dark:border-surface-700 space-y-2">
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-colors">
-                  <Edit3 className="w-4 h-4" />
-                  Edit Profile
+                <button
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-colors"
+                >
+                  <Camera className="w-4 h-4" />
+                  Update Photo
                 </button>
                 <button
                   onClick={handleLogout}
@@ -318,5 +339,20 @@ export function NavProfileModal({ isOpen, onClose }: NavProfileModalProps) {
     </AnimatePresence>
   );
 
-  return createPortal(modalContent, document.body);
+  const handleAvatarUpdate = (avatarUrl: string) => {
+    setUser((prev) => prev ? { ...prev, avatar: avatarUrl } : null);
+    onAvatarChange?.(avatarUrl);
+  };
+
+  return (
+    <>
+      {createPortal(modalContent, document.body)}
+      <AvatarUploadModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        onAvatarUpdate={handleAvatarUpdate}
+        currentAvatar={user?.avatar}
+      />
+    </>
+  );
 }

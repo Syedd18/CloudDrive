@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import NextImage from "next/image";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  MoreVertical,
+  MoreHorizontal,
   Star,
   Download,
   Trash2,
@@ -24,10 +24,125 @@ import {
   FileType,
   Users,
   RotateCcw,
+  ExternalLink,
+  Info,
+  Check,
+  X,
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
+import { Tooltip } from "@/components/ui/Tooltip";
+import { ShareModal } from "@/components/modals/ShareModal";
 import toast from "react-hot-toast";
+
+// Extension-based color configuration
+const extensionColors: Record<string, { bg: string; icon: string; gradient: string }> = {
+  // Spreadsheets - Green family
+  csv: { bg: "bg-green-50 dark:bg-green-950/30", icon: "text-green-600 dark:text-green-400", gradient: "from-green-500 to-green-600" },
+  xlsx: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
+  xls: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
+  
+  // PDF - Red
+  pdf: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-red-600" },
+  
+  // Presentations - Dark red/Orange
+  pptx: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
+  ppt: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
+  
+  // Documents - Blue family
+  doc: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
+  docx: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
+  txt: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-400 to-slate-600" },
+  rtf: { bg: "bg-sky-50 dark:bg-sky-950/30", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-sky-600" },
+  odt: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  
+  // Images - Purple/Pink family
+  jpg: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
+  jpeg: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
+  png: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-pink-500" },
+  gif: { bg: "bg-pink-50 dark:bg-pink-950/30", icon: "text-pink-600 dark:text-pink-400", gradient: "from-pink-500 to-rose-500" },
+  svg: { bg: "bg-violet-50 dark:bg-violet-950/30", icon: "text-violet-600 dark:text-violet-400", gradient: "from-violet-500 to-purple-500" },
+  webp: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-purple-500" },
+  ico: { bg: "bg-amber-50 dark:bg-amber-950/30", icon: "text-amber-600 dark:text-amber-400", gradient: "from-amber-500 to-orange-500" },
+  bmp: { bg: "bg-rose-50 dark:bg-rose-950/30", icon: "text-rose-600 dark:text-rose-400", gradient: "from-rose-500 to-pink-500" },
+  
+  // Videos - Rose/Pink family
+  mp4: { bg: "bg-rose-50 dark:bg-rose-950/30", icon: "text-rose-600 dark:text-rose-400", gradient: "from-rose-500 to-red-500" },
+  mov: { bg: "bg-pink-50 dark:bg-pink-950/30", icon: "text-pink-600 dark:text-pink-400", gradient: "from-pink-500 to-rose-500" },
+  avi: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-500 dark:text-red-400", gradient: "from-red-400 to-rose-500" },
+  mkv: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
+  webm: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-rose-500" },
+  wmv: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-indigo-500" },
+  flv: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
+  
+  // Audio - Cyan/Teal family
+  mp3: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-teal-500" },
+  wav: { bg: "bg-teal-50 dark:bg-teal-950/30", icon: "text-teal-600 dark:text-teal-400", gradient: "from-teal-500 to-cyan-500" },
+  ogg: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-teal-500" },
+  flac: { bg: "bg-sky-50 dark:bg-sky-950/30", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-cyan-500" },
+  aac: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-cyan-500" },
+  m4a: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-blue-500" },
+  
+  // Archives - Slate/Gray family
+  zip: { bg: "bg-amber-50 dark:bg-amber-950/30", icon: "text-amber-600 dark:text-amber-400", gradient: "from-amber-500 to-yellow-500" },
+  rar: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-violet-500" },
+  "7z": { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-500 to-gray-600" },
+  tar: { bg: "bg-stone-50 dark:bg-stone-950/30", icon: "text-stone-600 dark:text-stone-400", gradient: "from-stone-500 to-gray-600" },
+  gz: { bg: "bg-zinc-50 dark:bg-zinc-950/30", icon: "text-zinc-600 dark:text-zinc-400", gradient: "from-zinc-500 to-slate-600" },
+  
+  // Code files - Various vibrant colors
+  js: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-yellow-400 to-amber-500" },
+  ts: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
+  jsx: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-400 to-blue-500" },
+  tsx: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-400 to-cyan-500" },
+  py: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-blue-500 to-yellow-500" },
+  java: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-orange-500" },
+  cpp: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-600" },
+  c: { bg: "bg-gray-50 dark:bg-gray-950/30", icon: "text-gray-600 dark:text-gray-400", gradient: "from-gray-500 to-blue-500" },
+  html: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
+  css: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-purple-500" },
+  json: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-700 dark:text-yellow-400", gradient: "from-yellow-500 to-amber-500" },
+  xml: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-400 to-amber-500" },
+  md: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-500 to-gray-600" },
+  sql: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-yellow-500" },
+  php: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-purple-500" },
+  rb: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-rose-500" },
+  go: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-blue-500" },
+  rs: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-700 dark:text-orange-400", gradient: "from-orange-600 to-red-600" },
+  swift: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
+  kt: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-violet-500" },
+  
+  // Executable/System files
+  exe: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-700 dark:text-slate-400", gradient: "from-slate-600 to-gray-700" },
+  msi: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-600" },
+  dmg: { bg: "bg-gray-50 dark:bg-gray-950/30", icon: "text-gray-600 dark:text-gray-400", gradient: "from-gray-500 to-slate-600" },
+  iso: { bg: "bg-neutral-50 dark:bg-neutral-950/30", icon: "text-neutral-600 dark:text-neutral-400", gradient: "from-neutral-500 to-gray-600" },
+  
+  // Design files
+  psd: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-700" },
+  ai: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-700 dark:text-orange-400", gradient: "from-orange-600 to-amber-600" },
+  sketch: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-yellow-500 to-orange-500" },
+  figma: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
+  xd: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-purple-500" },
+};
+
+// Helper to get file extension
+function getFileExtension(filename: string): string {
+  const parts = filename.split(".");
+  return parts.length > 1 ? parts.pop()?.toLowerCase() || "" : "";
+}
+
+// Get colors based on extension or fall back to type
+export function getFileColors(file: FileItem): { bg: string; icon: string; gradient: string } {
+  const ext = getFileExtension(file.name);
+  
+  if (ext && extensionColors[ext]) {
+    return extensionColors[ext];
+  }
+  
+  // Fallback to type-based colors
+  return fileTypeColors[file.type] || fileTypeColors.file;
+}
 
 interface FileCardProps {
   file: FileItem;
@@ -37,9 +152,12 @@ interface FileCardProps {
   onDelete: () => void;
   onStar: () => void;
   onRename: (name: string) => void;
+  onPreview?: () => void;
+  onDetails?: () => void;
   isInTrash?: boolean;
   onRestore?: () => void;
   onPermanentDelete?: () => void;
+  viewMode?: "grid" | "list";
 }
 
 const fileTypeIcons: Record<FileItem["type"], typeof File> = {
@@ -55,17 +173,57 @@ const fileTypeIcons: Record<FileItem["type"], typeof File> = {
   file: File,
 };
 
-const fileTypeColors: Record<FileItem["type"], string> = {
-  folder: "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
-  document: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
-  spreadsheet: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
-  presentation: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
-  pdf: "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400",
-  image: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400",
-  video: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400",
-  audio: "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400",
-  archive: "bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400",
-  file: "bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400",
+const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradient: string }> = {
+  folder: {
+    bg: "bg-amber-50 dark:bg-amber-950/30",
+    icon: "text-amber-500 dark:text-amber-400",
+    gradient: "from-amber-400 to-orange-500",
+  },
+  document: {
+    bg: "bg-blue-50 dark:bg-blue-950/30",
+    icon: "text-blue-500 dark:text-blue-400",
+    gradient: "from-blue-400 to-blue-600",
+  },
+  spreadsheet: {
+    bg: "bg-emerald-50 dark:bg-emerald-950/30",
+    icon: "text-emerald-500 dark:text-emerald-400",
+    gradient: "from-emerald-400 to-emerald-600",
+  },
+  presentation: {
+    bg: "bg-orange-50 dark:bg-orange-950/30",
+    icon: "text-orange-500 dark:text-orange-400",
+    gradient: "from-orange-400 to-red-500",
+  },
+  pdf: {
+    bg: "bg-red-50 dark:bg-red-950/30",
+    icon: "text-red-500 dark:text-red-400",
+    gradient: "from-red-400 to-rose-600",
+  },
+  image: {
+    bg: "bg-purple-50 dark:bg-purple-950/30",
+    icon: "text-purple-500 dark:text-purple-400",
+    gradient: "from-purple-400 to-pink-500",
+  },
+  video: {
+    bg: "bg-pink-50 dark:bg-pink-950/30",
+    icon: "text-pink-500 dark:text-pink-400",
+    gradient: "from-pink-400 to-rose-500",
+  },
+  audio: {
+    bg: "bg-cyan-50 dark:bg-cyan-950/30",
+    icon: "text-cyan-500 dark:text-cyan-400",
+    gradient: "from-cyan-400 to-teal-500",
+  },
+  archive: {
+    bg: "bg-slate-50 dark:bg-slate-950/30",
+    icon: "text-slate-500 dark:text-slate-400",
+    gradient: "from-slate-400 to-slate-600",
+  },
+  file: {
+    bg: "bg-surface-50 dark:bg-surface-900/30",
+    icon: "text-surface-500 dark:text-surface-400",
+    gradient: "from-surface-400 to-surface-600",
+  },
 };
 
 export function FileCard({
@@ -76,53 +234,74 @@ export function FileCard({
   onDelete,
   onStar,
   onRename,
+  onPreview,
+  onDetails,
   isInTrash = false,
   onRestore,
   onPermanentDelete,
+  viewMode = "grid",
 }: FileCardProps) {
   const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState<'top' | 'bottom'>('bottom');
-  const [menuCoords, setMenuCoords] = useState<{ top: number; right: number; position: 'top' | 'bottom' } | null>(null);
+  const [menuCoords, setMenuCoords] = useState<{ top: number; right: number } | null>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(file.name);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const justOpenedRef = useRef(false);
   const Icon = fileTypeIcons[file.type];
+  const colors = getFileColors(file);
 
-  // Calculate menu position and absolute coordinates based on available space
-  const calculateMenuPosition = () => {
+  const calculateMenuPosition = useCallback(() => {
     if (menuButtonRef.current) {
       const rect = menuButtonRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      const menuHeight = 280; // Approximate menu height
-      const position: 'top' | 'bottom' = spaceBelow < menuHeight ? 'top' : 'bottom';
-
-      // Compute top coordinate explicitly so we don't rely on CSS transforms
-      const top = position === 'bottom' ? rect.bottom + 4 : Math.max(rect.top - menuHeight - 4, 8);
+      const spaceAbove = rect.top;
+      const menuHeight = 380; // Increased to account for all menu items
+      
+      let top: number;
+      
+      // Check if menu fits below
+      if (spaceBelow >= menuHeight) {
+        top = rect.bottom + 4;
+      } 
+      // Check if menu fits above
+      else if (spaceAbove >= menuHeight) {
+        top = rect.top - menuHeight - 4;
+      }
+      // If neither fits, position to maximize visible area and ensure it doesn't go off-screen
+      else {
+        // Place where there's more space, but ensure minimum 8px from edges
+        if (spaceBelow > spaceAbove) {
+          top = Math.min(rect.bottom + 4, window.innerHeight - menuHeight - 8);
+        } else {
+          top = Math.max(8, rect.top - menuHeight - 4);
+        }
+      }
+      
+      // Ensure top is never negative
+      top = Math.max(8, top);
+      
       const right = Math.max(window.innerWidth - rect.right, 8);
 
-      setMenuPosition(position);
-      setMenuCoords({ top, right, position });
-      return { top, right, position };
+      setMenuCoords({ top, right });
+      return { top, right };
     }
-
     return null;
-  };
+  }, []);
 
   useEffect(() => {
     if (!showMenu) return;
 
     function handleClickOutside(event: MouseEvent) {
-      // Ignore the click that just opened the menu
       if (justOpenedRef.current) {
         justOpenedRef.current = false;
         return;
       }
 
       const target = event.target as Node;
-      // If click is inside menu or menu button, do nothing
       if (
         (menuRef.current && menuRef.current.contains(target)) ||
         (menuButtonRef.current && menuButtonRef.current.contains(target))
@@ -139,20 +318,23 @@ export function FileCard({
   useEffect(() => {
     if (isRenaming && inputRef.current) {
       inputRef.current.focus();
-      inputRef.current.select();
+      const lastDot = file.name.lastIndexOf(".");
+      const selectEnd = lastDot > 0 ? lastDot : file.name.length;
+      inputRef.current.setSelectionRange(0, selectEnd);
     }
-  }, [isRenaming]);
+  }, [isRenaming, file.name]);
 
   const handleRename = () => {
     if (newName.trim() && newName !== file.name) {
       onRename(newName.trim());
-      toast.success("File renamed successfully");
+      toast.success("Renamed successfully");
     }
     setIsRenaming(false);
+    setNewName(file.name);
   };
 
   const handleDownload = async () => {
-    if (file.type === 'folder') {
+    if (file.type === "folder") {
       toast.error("Cannot download folders");
       setShowMenu(false);
       return;
@@ -160,44 +342,51 @@ export function FileCard({
 
     try {
       setShowMenu(false);
-      toast.loading("Preparing download...", { id: `download-${file.id}` });
+      const toastId = `download-${file.id}`;
+      toast.loading("Preparing download...", { id: toastId });
 
       const token = localStorage.getItem("token");
       const headers: Record<string, string> = {};
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
+      if (token) headers.Authorization = `Bearer ${token}`;
 
-      const response = await fetch(`/api/files/${file.id}/download`, {
+      // Use direct download to get proper filename
+      const response = await fetch(`/api/files/${file.id}/download?direct=true`, {
         method: "GET",
         headers,
         credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get download URL");
+      if (!response.ok) throw new Error("Failed to download file");
+
+      // Get filename from Content-Disposition header or use file.name
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = file.name;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+?)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
       }
 
-      const { downloadUrl } = await response.json();
-      
-      // Create a temporary link and trigger download
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = file.name;
-      link.target = '_blank';
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
-      toast.success("Download started", { id: `download-${file.id}` });
+      toast.success("Download started", { id: toastId });
     } catch (error) {
-      toast.error("Failed to download file", { id: `download-${file.id}` });
+      toast.error("Failed to download file");
     }
   };
 
-  const handleShare = () => {
-    toast.success("Share link copied to clipboard");
+  const handleShare = async () => {
     setShowMenu(false);
+    setIsShareModalOpen(true);
   };
 
   const handleDelete = () => {
@@ -206,247 +395,577 @@ export function FileCard({
     setShowMenu(false);
   };
 
-  return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      className={cn(
-        "group relative bg-white dark:bg-[#161b22] rounded-2xl",
-        "border-2 transition-all duration-200 cursor-pointer",
-        "shadow-sm hover:shadow-md dark:shadow-none",
-        isSelected
-          ? "border-primary-500 ring-2 ring-primary-500/20"
-          : "border-surface-200/60 dark:border-surface-700/50 hover:border-surface-300 dark:hover:border-surface-600"
-      )}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
-    >
-      {/* Thumbnail / Icon Area */}
-      <div className="relative aspect-[4/3] sm:aspect-[4/3] rounded-t-[14px] overflow-hidden bg-surface-50 dark:bg-surface-900/50">
-        {file.thumbnail ? (
-          <NextImage
-            src={file.thumbnail}
-            alt={file.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div
-              className={cn(
-                "w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center",
-                fileTypeColors[file.type]
-              )}
-            >
-              <Icon className="w-6 h-6 sm:w-8 sm:h-8" />
-            </div>
-          </div>
+  const handleMenuToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const coords = calculateMenuPosition();
+    justOpenedRef.current = true;
+    setShowMenu((prev) => !prev);
+    if (coords) setMenuCoords(coords);
+  };
+
+  // Quick action bar items
+  const quickActions = isInTrash
+    ? [
+        { icon: RotateCcw, label: "Restore", onClick: () => { onRestore?.(); }, color: "text-emerald-500" },
+        { icon: Trash2, label: "Delete", onClick: () => { onPermanentDelete?.(); }, color: "text-danger-500" },
+      ]
+    : [
+        { icon: Star, label: file.starred ? "Unstar" : "Star", onClick: onStar, active: file.starred },
+        { icon: Download, label: "Download", onClick: handleDownload, disabled: file.type === "folder" },
+        { icon: Share2, label: "Share", onClick: handleShare },
+        { icon: MoreHorizontal, label: "More", onClick: handleMenuToggle, isMenuButton: true },
+      ];
+
+  // Grid View
+  if (viewMode === "grid") {
+    return (
+      <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        whileHover={{ y: -4 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className={cn(
+          "file-card group relative cursor-pointer",
+          "rounded-2xl overflow-hidden",
+          "transition-all duration-300 ease-out",
+          isSelected && "ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-surface-900"
         )}
-
-        {/* Star Badge */}
-        {file.starred && (
-          <div className="absolute top-2 left-2">
-            <div className="w-7 h-7 rounded-full bg-amber-400 flex items-center justify-center shadow-md">
-              <Star className="w-4 h-4 text-white fill-white" />
-            </div>
-          </div>
-        )}
-
-        {/* Shared Badge */}
-        {file.shared && (
-          <div className="absolute top-2 right-2">
-            <div className="w-7 h-7 rounded-full bg-primary-500 flex items-center justify-center shadow-md">
-              <Users className="w-4 h-4 text-white" />
-            </div>
-          </div>
-        )}
-
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-      </div>
-
-      {/* File Info */}
-      <div className="p-2.5 sm:p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            {isRenaming ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                onBlur={handleRename}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleRename();
-                  if (e.key === "Escape") {
-                    setNewName(file.name);
-                    setIsRenaming(false);
-                  }
-                }}
-                className="w-full px-2 py-1 text-sm font-medium bg-surface-100 dark:bg-surface-800 rounded-lg border-2 border-primary-500 focus:outline-none"
-                onClick={(e) => e.stopPropagation()}
+        onClick={onClick}
+        onDoubleClick={onDoubleClick}
+      >
+        {/* Thumbnail / Icon Area */}
+        <div className={cn(
+          "relative aspect-[4/3] overflow-hidden",
+          colors.bg
+        )}>
+          {file.thumbnail ? (
+            <>
+              <NextImage
+                src={file.thumbnail}
+                alt={file.name}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <motion.div
+                animate={isHovered ? { scale: 1.1, rotate: [0, -5, 5, 0] } : { scale: 1, rotate: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className={cn(
+                  "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center",
+                  "bg-gradient-to-br shadow-lg",
+                  colors.gradient
+                )}
+              >
+                <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+              </motion.div>
+            </div>
+          )}
+
+          {/* Badges */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <AnimatePresence>
+              {file.starred && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="w-7 h-7 rounded-full bg-amber-400 shadow-lg flex items-center justify-center"
+                >
+                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+            {file.shared && (
+              <div className="w-7 h-7 rounded-full bg-primary-500 shadow-lg flex items-center justify-center">
+                <Users className="w-3.5 h-3.5 text-white" />
+              </div>
+            )}
+          </div>
+
+          {/* Quick Action Bar - appears on hover */}
+          <AnimatePresence>
+            {isHovered && !isRenaming && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="absolute bottom-2 left-2 right-2"
+              >
+                <div className="flex items-center justify-center gap-1 p-1.5 rounded-xl bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm shadow-xl border border-surface-200/50 dark:border-surface-700/50">
+                  {quickActions.map((action, idx) => {
+                    const ActionIcon = action.icon;
+                    const isMenuBtn = (action as any).isMenuButton;
+                    return (
+                      <Tooltip key={idx} content={action.label} side="top">
+                        <button
+                          ref={isMenuBtn ? menuButtonRef : undefined}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            action.onClick(e);
+                          }}
+                          disabled={(action as any).disabled}
+                          className={cn(
+                            "p-2 rounded-lg transition-all duration-150",
+                            "hover:bg-surface-100 dark:hover:bg-surface-700",
+                            "disabled:opacity-40 disabled:cursor-not-allowed",
+                            (action as any).color,
+                            (action as any).active && "text-amber-500"
+                          )}
+                        >
+                          <ActionIcon
+                            className={cn(
+                              "w-4 h-4",
+                              (action as any).active && "fill-amber-500"
+                            )}
+                          />
+                        </button>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* File Info */}
+        <div className="p-3 sm:p-4 bg-white dark:bg-surface-800/50">
+          <div className="space-y-1.5">
+            {isRenaming ? (
+              <div className="flex items-center gap-1.5">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  onBlur={handleRename}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleRename();
+                    if (e.key === "Escape") {
+                      setNewName(file.name);
+                      setIsRenaming(false);
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className={cn(
+                    "flex-1 px-2 py-1 text-sm font-medium rounded-lg",
+                    "bg-surface-100 dark:bg-surface-700",
+                    "border-2 border-primary-500",
+                    "focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  )}
+                />
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleRename(); }}
+                  className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setNewName(file.name); setIsRenaming(false); }}
+                  className="p-1.5 rounded-lg bg-surface-200 dark:bg-surface-600 hover:bg-surface-300 dark:hover:bg-surface-500 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
             ) : (
-              <h3 className="text-xs sm:text-sm font-medium text-surface-900 dark:text-surface-100 truncate">
+              <h3 className="text-sm font-medium text-surface-900 dark:text-white truncate leading-tight">
                 {file.name}
               </h3>
             )}
-            <div className="flex items-center gap-1 sm:gap-2 mt-1">
-              <span className="text-[10px] sm:text-xs text-surface-500 dark:text-surface-400">
-                {formatDate(file.modified)}
-              </span>
+            
+            <div className="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-400">
+              <span>{formatDate(file.modified)}</span>
               {file.size > 0 && (
                 <>
-                  <span className="text-surface-300 dark:text-surface-600 hidden sm:inline">•</span>
-                  <span className="text-[10px] sm:text-xs text-surface-500 dark:text-surface-400 hidden sm:inline">
-                    {formatFileSize(file.size)}
-                  </span>
+                  <span className="text-surface-300 dark:text-surface-600">•</span>
+                  <span>{formatFileSize(file.size)}</span>
                 </>
               )}
             </div>
           </div>
-
-          {/* Menu Button */}
-          <div className="relative">
-            <button
-              ref={menuButtonRef}
-              onMouseDown={(e) => {
-                try { e.nativeEvent && (e.nativeEvent as any).stopImmediatePropagation(); } catch {}
-                e.stopPropagation();
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                const coords = calculateMenuPosition();
-                // Set flag to indicate we just opened the menu
-                justOpenedRef.current = true;
-                // toggle menu visibility
-                setShowMenu((prev) => !prev);
-                if (coords) setMenuCoords(coords);
-              }}
-              className={cn(
-                "p-1.5 rounded-lg transition-all duration-200",
-                "text-surface-400 hover:text-surface-600 dark:hover:text-surface-300",
-                "hover:bg-surface-100 dark:hover:bg-surface-700",
-                "opacity-0 group-hover:opacity-100 focus:opacity-100",
-                showMenu && "opacity-100 bg-surface-100 dark:bg-surface-700"
-              )}
-              aria-label="File options"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
-          </div>
         </div>
+
+        {/* Selection indicator */}
+        <AnimatePresence>
+          {isSelected && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              className="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center shadow-lg z-10"
+            >
+              <Check className="w-3.5 h-3.5 text-white" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Context Menu */}
+        {showMenu && menuCoords && typeof window !== "undefined" && createPortal(
+          <ContextMenu
+            menuRef={menuRef}
+            menuCoords={menuCoords}
+            file={file}
+            isInTrash={isInTrash}
+            onClose={() => setShowMenu(false)}
+            onStar={onStar}
+            onRename={() => { setIsRenaming(true); setShowMenu(false); }}
+            onShare={handleShare}
+            onDownload={handleDownload}
+            onDelete={handleDelete}
+            onRestore={onRestore}
+            onPermanentDelete={onPermanentDelete}
+            onPreview={onPreview}
+            onDetails={onDetails}
+          />,
+          document.body
+        )}
+
+        {/* Share Modal */}
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          file={file}
+        />
+      </motion.div>
+    );
+  }
+
+  // List View
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      transition={{ duration: 0.2 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className={cn(
+        "file-card group relative cursor-pointer",
+        "flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl",
+        "transition-all duration-200",
+        isSelected && "ring-2 ring-primary-500 bg-primary-50/50 dark:bg-primary-950/20"
+      )}
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
+    >
+      {/* Icon */}
+      <div className={cn(
+        "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0",
+        "bg-gradient-to-br shadow-sm",
+        colors.gradient
+      )}>
+        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
       </div>
 
-      {/* Context Menu - Rendered via Portal */}
-      {showMenu && menuCoords && typeof window !== 'undefined' && createPortal(
-        <motion.div
-          ref={menuRef}
-          key="context-menu"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.15, ease: "easeOut" }}
-          style={{
-            position: 'fixed',
-            top: menuCoords.top,
-            right: menuCoords.right,
-          }}
-          className="w-52 bg-white dark:bg-[#1c2128] rounded-xl shadow-xl border border-surface-200/80 dark:border-surface-700/60 py-1.5 z-[100] max-h-[60vh] overflow-y-auto"
-          onMouseDown={(e) => {
-            try { e.nativeEvent && (e.nativeEvent as any).stopImmediatePropagation(); } catch {}
-            e.stopPropagation();
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-                {isInTrash ? (
-                  <>
-                    <button
-                      onClick={() => {
-                        onRestore?.();
-                        setShowMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <RotateCcw className="w-4 h-4 text-emerald-500" />
-                      Restore
-                    </button>
-                    <div className="h-px bg-surface-200 dark:bg-surface-700/60 my-1.5 mx-2" />
-                    <button
-                      onClick={() => {
-                        onPermanentDelete?.();
-                        setShowMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete forever
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        onStar();
-                        setShowMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <Star
-                        className={cn(
-                          "w-4 h-4",
-                          file.starred ? "text-amber-500 fill-amber-500" : "text-surface-400"
-                        )}
-                      />
-                      {file.starred ? "Remove star" : "Add to starred"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsRenaming(true);
-                        setShowMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <Edit3 className="w-4 h-4 text-surface-400" />
-                      Rename
-                    </button>
-                    <button
-                      onClick={handleShare}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <Share2 className="w-4 h-4 text-surface-400" />
-                      Share
-                    </button>
-                    <button
-                      onClick={handleDownload}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <Download className="w-4 h-4 text-surface-400" />
-                      Download
-                    </button>
-                    <button
-                      onClick={() => {
-                        toast.success("Link copied to clipboard");
-                        setShowMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
-                    >
-                      <Copy className="w-4 h-4 text-surface-400" />
-                      Copy link
-                    </button>
-                    <div className="h-px bg-surface-200 dark:bg-surface-700/60 my-1.5 mx-2" />
-                    <button
-                      onClick={handleDelete}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Move to trash
-                    </button>
-                  </>
+      {/* File Info */}
+      <div className="flex-1 min-w-0">
+        {isRenaming ? (
+          <div className="flex items-center gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onBlur={handleRename}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleRename();
+                if (e.key === "Escape") {
+                  setNewName(file.name);
+                  setIsRenaming(false);
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 px-2 py-1 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg border-2 border-primary-500 focus:outline-none"
+            />
+            <button
+              onClick={(e) => { e.stopPropagation(); handleRename(); }}
+              className="p-1.5 rounded-lg bg-primary-500 text-white"
+            >
+              <Check className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <>
+            <h3 className="text-sm font-medium text-surface-900 dark:text-white truncate">
+              {file.name}
+            </h3>
+            <div className="flex items-center gap-2 sm:gap-3 text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+              <span>{formatDate(file.modified)}</span>
+              {file.size > 0 && <span className="hidden sm:inline">{formatFileSize(file.size)}</span>}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Badges */}
+      <div className="flex items-center gap-2">
+        {file.starred && (
+          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+        )}
+        {file.shared && (
+          <Users className="w-4 h-4 text-primary-500" />
+        )}
+      </div>
+
+      {/* Actions */}
+      <div className={cn(
+        "flex items-center gap-1 transition-opacity duration-200",
+        isHovered ? "opacity-100" : "opacity-0"
+      )}>
+        {quickActions.slice(0, -1).map((action, idx) => {
+          const ActionIcon = action.icon;
+          return (
+            <Tooltip key={idx} content={action.label} side="top">
+              <button
+                onClick={(e) => { e.stopPropagation(); action.onClick(e); }}
+                disabled={(action as any).disabled}
+                className={cn(
+                  "p-2 rounded-lg transition-colors",
+                  "hover:bg-surface-100 dark:hover:bg-surface-700",
+                  "disabled:opacity-40 disabled:cursor-not-allowed"
                 )}
-        </motion.div>,
+              >
+                <ActionIcon
+                  className={cn(
+                    "w-4 h-4 text-surface-500",
+                    (action as any).active && "text-amber-500 fill-amber-500"
+                  )}
+                />
+              </button>
+            </Tooltip>
+          );
+        })}
+        <button
+          ref={menuButtonRef}
+          onClick={handleMenuToggle}
+          className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700"
+        >
+          <MoreHorizontal className="w-4 h-4 text-surface-500" />
+        </button>
+      </div>
+
+      {/* Context Menu */}
+      {showMenu && menuCoords && typeof window !== "undefined" && createPortal(
+        <ContextMenu
+          menuRef={menuRef}
+          menuCoords={menuCoords}
+          file={file}
+          isInTrash={isInTrash}
+          onClose={() => setShowMenu(false)}
+          onStar={onStar}
+          onRename={() => { setIsRenaming(true); setShowMenu(false); }}
+          onShare={handleShare}
+          onDownload={handleDownload}
+          onDelete={handleDelete}
+          onRestore={onRestore}
+          onPermanentDelete={onPermanentDelete}
+          onPreview={onPreview}
+          onDetails={onDetails}
+        />,
         document.body
       )}
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        file={file}
+      />
     </motion.div>
+  );
+}
+
+// Context Menu Component
+interface ContextMenuProps {
+  menuRef: React.RefObject<HTMLDivElement>;
+  menuCoords: { top: number; right: number };
+  file: FileItem;
+  isInTrash: boolean;
+  onClose: () => void;
+  onStar: () => void;
+  onRename: () => void;
+  onShare: () => void;
+  onDownload: () => void;
+  onDelete: () => void;
+  onRestore?: () => void;
+  onPermanentDelete?: () => void;
+  onPreview?: () => void;
+  onDetails?: () => void;
+}
+
+function ContextMenu({
+  menuRef,
+  menuCoords,
+  file,
+  isInTrash,
+  onClose,
+  onStar,
+  onRename,
+  onShare,
+  onDownload,
+  onDelete,
+  onRestore,
+  onPermanentDelete,
+  onDetails,
+  onPreview,
+}: ContextMenuProps) {
+  return (
+    <motion.div
+      ref={menuRef}
+      initial={{ opacity: 0, scale: 0.95, y: -8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{
+        position: "fixed",
+        top: menuCoords.top,
+        right: menuCoords.right,
+        maxHeight: "calc(100vh - 16px)",
+      }}
+      className="w-56 dropdown-menu p-1.5 z-[100] overflow-y-auto"
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {isInTrash ? (
+        <>
+          <MenuItem
+            icon={RotateCcw}
+            label="Restore"
+            iconColor="text-emerald-500"
+            onClick={() => { onRestore?.(); onClose(); }}
+          />
+          <div className="dropdown-divider" />
+          <MenuItem
+            icon={Trash2}
+            label="Delete forever"
+            variant="danger"
+            onClick={() => { onPermanentDelete?.(); onClose(); }}
+          />
+        </>
+      ) : (
+        <>
+          {onPreview && file.type !== "folder" && (
+            <MenuItem
+              icon={ExternalLink}
+              label="Preview"
+              onClick={() => { onPreview(); onClose(); }}
+            />
+          )}
+          <MenuItem
+            icon={Star}
+            label={file.starred ? "Remove star" : "Add star"}
+            iconColor={file.starred ? "text-amber-500" : undefined}
+            iconFill={file.starred}
+            onClick={() => { onStar(); onClose(); }}
+          />
+          <MenuItem
+            icon={Edit3}
+            label="Rename"
+            shortcut="F2"
+            onClick={onRename}
+          />
+          <MenuItem
+            icon={Share2}
+            label="Share"
+            onClick={() => { onShare(); onClose(); }}
+          />
+          <MenuItem
+            icon={Download}
+            label="Download"
+            disabled={file.type === "folder"}
+            onClick={() => { onDownload(); }}
+          />
+          <MenuItem
+            icon={Copy}
+            label="Copy link"
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/share/${file.id}`);
+              toast.success("Link copied!");
+              onClose();
+            }}
+          />
+          <MenuItem
+            icon={Info}
+            label="Details"
+            onClick={() => {
+              onDetails?.();
+              onClose();
+            }}
+          />
+          <div className="dropdown-divider" />
+          <MenuItem
+            icon={Trash2}
+            label="Move to trash"
+            variant="danger"
+            shortcut="Del"
+            onClick={onDelete}
+          />
+        </>
+      )}
+    </motion.div>
+  );
+}
+
+// Menu Item Component
+interface MenuItemProps {
+  icon: typeof File;
+  label: string;
+  shortcut?: string;
+  iconColor?: string;
+  iconFill?: boolean;
+  variant?: "default" | "danger";
+  disabled?: boolean;
+  onClick: () => void;
+}
+
+function MenuItem({
+  icon: Icon,
+  label,
+  shortcut,
+  iconColor,
+  iconFill,
+  variant = "default",
+  disabled,
+  onClick,
+}: MenuItemProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        variant === "danger"
+          ? "dropdown-item-danger"
+          : "dropdown-item"
+      )}
+    >
+      <Icon
+        className={cn(
+          "w-4 h-4",
+          variant === "danger" ? "" : iconColor || "text-surface-400",
+          iconFill && "fill-current"
+        )}
+      />
+      <span className="flex-1 text-left">{label}</span>
+      {shortcut && (
+        <kbd className="kbd text-[10px]">{shortcut}</kbd>
+      )}
+    </button>
   );
 }

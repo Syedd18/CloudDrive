@@ -10,6 +10,7 @@ export interface FileItem {
   trashed: boolean;
   shared?: boolean;
   sharedWith?: string[];
+  folderId?: string | null;  // Parent folder ID
 }
 
 export type ViewMode = "grid" | "list";

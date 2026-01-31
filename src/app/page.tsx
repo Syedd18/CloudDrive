@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainContent } from "@/components/layout/MainContent";
@@ -10,28 +11,71 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { UploadModal } from "@/components/modals/UploadModal";
 import { PreviewModal } from "@/components/modals/PreviewModal";
 import { CreateFolderModal } from "@/components/modals/CreateFolderModal";
+import { FileDetailsPanel } from "@/components/files/FileDetailsPanel";
+import { UploadStatusPanel, UploadItem } from "@/components/ui/UploadStatusPanel";
 import { FileItem, ViewMode } from "@/types";
 import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  // UI State
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentFolder, setCurrentFolder] = useState("My Drive");
+  const [currentFolder, setCurrentFolder] = useState("My Files");
+  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null); // Current folder ID for navigation
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Modals
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [createFolderModalOpen, setCreateFolderModalOpen] = useState(false);
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
+  const [detailsFile, setDetailsFile] = useState<FileItem | null>(null);
+
+  // File State
+  const [files, setFiles] = useState<FileItem[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  // Check authentication and load files
-  const loadFiles = useCallback(async () => {
+  const [uploads, setUploads] = useState<UploadItem[]>([]);
+
+  // Breadcrumb path (for folder navigation)
+  const [breadcrumbPath, setBreadcrumbPath] = useState<{ id: string; name: string }[]>([
+    { id: "root", name: "My Files" },
+  ]);
+
+  // Load default view mode from settings on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("driveSettings");
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        if (settings.defaultView) {
+          setViewMode(settings.defaultView);
+        }
+      } catch {
+        // Use default grid view
+      }
+    }
+  }, []);
+
+  // Listen for view mode changes from settings modal
+  useEffect(() => {
+    const handleViewModeChange = (e: CustomEvent) => {
+      setViewMode(e.detail as ViewMode);
+    };
+    window.addEventListener("viewModeChange", handleViewModeChange as EventListener);
+    return () => {
+      window.removeEventListener("viewModeChange", handleViewModeChange as EventListener);
+    };
+  }, []);
+
+  // Load files from API
+  const loadFiles = useCallback(async (folderId?: string | null) => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      
+
       const headers: Record<string, string> = {};
       if (token) {
         headers.Authorization = `Bearer ${token}`;
@@ -43,13 +87,22 @@ export default function Home() {
         params.append("trashed", "true");
       } else if (currentFolder === "Starred") {
         params.append("starred", "true");
+      } else if (currentFolder === "My Files") {
+        // When in My Files, pass the folderId to get files in that folder
+        const folderToLoad = folderId !== undefined ? folderId : currentFolderId;
+        if (folderToLoad) {
+          params.append("folderId", folderToLoad);
+        } else {
+          // Root folder - get files with no parent
+          params.append("folderId", "null");
+        }
       }
 
       const url = `/api/files${params.toString() ? `?${params.toString()}` : ""}`;
 
       const response = await fetch(url, {
         headers,
-        credentials: "include", // Include cookies for NextAuth session
+        credentials: "include",
       });
 
       if (response.status === 401) {
@@ -70,15 +123,13 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [router, currentFolder]);
+  }, [router, currentFolder, currentFolderId]);
 
+  // Auth check and initial load
   useEffect(() => {
-    // Wait for session to load
     if (status === "loading") return;
 
     const token = localStorage.getItem("token");
-    
-    // User must have either JWT token OR NextAuth session
     if (!token && status === "unauthenticated") {
       router.push("/login");
       return;
@@ -87,36 +138,71 @@ export default function Home() {
     loadFiles();
   }, [status, loadFiles, router]);
 
+  // Filter files based on search and current folder
   const filteredFiles = files.filter(
     (file) =>
       file.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (currentFolder === "My Drive" ||
+      (currentFolder === "My Files" ||
         currentFolder === "Starred" ||
         currentFolder === "Trash" ||
-        (currentFolder === "Recent" && file.recent))
+        (currentFolder === "Recent" && file.recent) ||
+        (currentFolder === "Shared" && file.shared))
   );
 
+  // Handle file upload
   const handleUpload = async (newFiles: File[]) => {
     const token = localStorage.getItem("token");
 
-    for (const file of newFiles) {
+    // Create upload items for tracking
+    const uploadItems: UploadItem[] = newFiles.map((file) => ({
+      id: `upload-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: file.name,
+      size: file.size,
+      progress: 0,
+      status: "uploading" as const,
+    }));
+
+    setUploads((prev) => [...prev, ...uploadItems]);
+
+    for (let i = 0; i < newFiles.length; i++) {
+      const file = newFiles[i];
+      const uploadItem = uploadItems[i];
+
       try {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", file.name);
         formData.append("type", getFileType(file.type));
+        
+        // Add current folder ID to upload files to the correct folder
+        if (currentFolderId) {
+          formData.append("folderId", currentFolderId);
+        }
 
         const headers: Record<string, string> = {};
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
 
+        // Simulate progress (real implementation would use XMLHttpRequest with progress events)
+        const progressInterval = setInterval(() => {
+          setUploads((prev) =>
+            prev.map((u) =>
+              u.id === uploadItem.id && u.progress < 90
+                ? { ...u, progress: u.progress + 10 }
+                : u
+            )
+          );
+        }, 200);
+
         const response = await fetch("/api/files", {
           method: "POST",
           headers,
-          credentials: "include", // Include cookies for NextAuth session
+          credentials: "include",
           body: formData,
         });
+
+        clearInterval(progressInterval);
 
         if (response.status === 401) {
           localStorage.removeItem("token");
@@ -128,16 +214,30 @@ export default function Home() {
           throw new Error(`Failed to upload ${file.name}`);
         }
 
-        toast.success(`${file.name} uploaded successfully`);
+        // Update upload status to completed
+        setUploads((prev) =>
+          prev.map((u) =>
+            u.id === uploadItem.id
+              ? { ...u, progress: 100, status: "complete" as const }
+              : u
+          )
+        );
+
+        toast.success(`${file.name} uploaded`);
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : `Failed to upload ${file.name}`);
+        setUploads((prev) =>
+          prev.map((u) =>
+            u.id === uploadItem.id ? { ...u, status: "error" as const } : u
+          )
+        );
+        toast.error(`Failed to upload ${file.name}`);
       }
     }
 
-    // Reload files after upload
     loadFiles();
   };
 
+  // Handle folder creation
   const handleCreateFolder = async (name: string) => {
     const token = localStorage.getItem("token");
 
@@ -145,24 +245,25 @@ export default function Home() {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
-      
-      // Add JWT token if available (for email/password auth)
       if (token) {
         headers.Authorization = `Bearer ${token}`;
+      }
+
+      // Include parent folderId to create folder inside current folder
+      const requestBody: { name: string; folderId?: string } = { name };
+      if (currentFolderId) {
+        requestBody.folderId = currentFolderId;
       }
 
       const response = await fetch("/api/folders", {
         method: "POST",
         headers,
-        credentials: "include", // Include cookies for NextAuth session
-        body: JSON.stringify({ name }),
+        credentials: "include",
+        body: JSON.stringify(requestBody),
       });
 
       if (response.status === 401) {
-        // Only clear token and redirect if using JWT auth
-        if (token) {
-          localStorage.removeItem("token");
-        }
+        if (token) localStorage.removeItem("token");
         toast.error("Session expired. Please log in again.");
         router.push("/login");
         return;
@@ -172,7 +273,7 @@ export default function Home() {
         throw new Error("Failed to create folder");
       }
 
-      toast.success(`Folder "${name}" created successfully!`);
+      toast.success(`Folder "${name}" created!`);
       await loadFiles();
     } catch (error) {
       toast.error("Failed to create folder");
@@ -181,7 +282,22 @@ export default function Home() {
     }
   };
 
+  // Handle file deletion (move to trash)
   const handleDelete = async (fileId: string) => {
+    // Check if confirmation is required from settings
+    const savedSettings = localStorage.getItem("driveSettings");
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        if (settings.confirmBeforeDelete) {
+          const confirmed = window.confirm("Are you sure you want to move this file to trash?");
+          if (!confirmed) return;
+        }
+      } catch {
+        // Proceed without confirmation
+      }
+    }
+
     const token = localStorage.getItem("token");
 
     try {
@@ -195,7 +311,7 @@ export default function Home() {
       const response = await fetch(`/api/files/${fileId}`, {
         method: "PATCH",
         headers,
-        credentials: "include", // Include cookies for NextAuth session
+        credentials: "include",
         body: JSON.stringify({ trashed: true }),
       });
 
@@ -209,13 +325,13 @@ export default function Home() {
         throw new Error("Failed to move file to trash");
       }
 
-      toast.success("File moved to trash");
       loadFiles();
     } catch (error) {
       toast.error("Failed to move file to trash");
     }
   };
 
+  // Handle file restore
   const handleRestore = async (fileId: string) => {
     const token = localStorage.getItem("token");
 
@@ -251,6 +367,7 @@ export default function Home() {
     }
   };
 
+  // Handle permanent deletion
   const handlePermanentDelete = async (fileId: string) => {
     const token = localStorage.getItem("token");
 
@@ -283,10 +400,15 @@ export default function Home() {
     }
   };
 
+  // Handle empty trash
   const handleEmptyTrash = async () => {
     const token = localStorage.getItem("token");
 
-    if (!confirm("Are you sure you want to permanently delete all items in trash? This cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to permanently delete all items in trash? This cannot be undone."
+      )
+    ) {
       return;
     }
 
@@ -319,9 +441,9 @@ export default function Home() {
     }
   };
 
+  // Handle star toggle
   const handleStar = async (fileId: string) => {
     const token = localStorage.getItem("token");
-
     const file = files.find((f) => f.id === fileId);
     if (!file) return;
 
@@ -336,7 +458,7 @@ export default function Home() {
       const response = await fetch(`/api/files/${fileId}`, {
         method: "PATCH",
         headers,
-        credentials: "include", // Include cookies for NextAuth session
+        credentials: "include",
         body: JSON.stringify({ starred: !file.starred }),
       });
 
@@ -356,6 +478,7 @@ export default function Home() {
     }
   };
 
+  // Handle file rename
   const handleRename = async (fileId: string, newName: string) => {
     const token = localStorage.getItem("token");
 
@@ -370,7 +493,7 @@ export default function Home() {
       const response = await fetch(`/api/files/${fileId}`, {
         method: "PATCH",
         headers,
-        credentials: "include", // Include cookies for NextAuth session
+        credentials: "include",
         body: JSON.stringify({ name: newName }),
       });
 
@@ -384,17 +507,76 @@ export default function Home() {
         throw new Error("Failed to rename file");
       }
 
-      toast.success("File renamed");
       loadFiles();
     } catch (error) {
       toast.error("Failed to rename file");
     }
   };
 
+  // Handle sidebar folder change (My Files, Starred, Trash, etc.)
+  const handleFolderChange = (folder: string) => {
+    setCurrentFolder(folder);
+    setCurrentFolderId(null); // Reset to root
+    setSelectedFiles([]);
+    setBreadcrumbPath([{ id: "root", name: folder }]);
+    loadFiles(null);
+  };
+
+  // Handle clicking on a file or folder in the file list
+  const handleFileOrFolderClick = (file: FileItem) => {
+    if (file.type === "folder") {
+      // Navigate into the folder
+      setCurrentFolderId(file.id);
+      setBreadcrumbPath((prev) => [...prev, { id: file.id, name: file.name }]);
+      loadFiles(file.id);
+    } else {
+      // Open preview for files
+      setPreviewFile(file);
+    }
+  };
+
+  // Handle breadcrumb navigation
+  const handleBreadcrumbNavigate = (folderId: string) => {
+    // Navigate to folder in breadcrumb
+    const index = breadcrumbPath.findIndex((p) => p.id === folderId);
+    if (index >= 0) {
+      const newPath = breadcrumbPath.slice(0, index + 1);
+      setBreadcrumbPath(newPath);
+      const newFolderId = folderId === "root" ? null : folderId;
+      setCurrentFolderId(newFolderId);
+      loadFiles(newFolderId);
+    }
+  };
+
+  // Upload panel handlers
+  const handlePauseUpload = (id: string) => {
+    setUploads((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, status: "paused" as const } : u))
+    );
+  };
+
+  const handleResumeUpload = (id: string) => {
+    setUploads((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, status: "uploading" as const } : u))
+    );
+  };
+
+  const handleCancelUpload = (id: string) => {
+    setUploads((prev) => prev.filter((u) => u.id !== id));
+  };
+
+  const handleClearCompleted = () => {
+    setUploads((prev) => prev.filter((u) => u.status !== "complete"));
+  };
+
+  // Get file type from MIME type
   const getFileType = (mimeType: string): FileItem["type"] => {
     if (mimeType.startsWith("image/")) return "image";
     if (mimeType.startsWith("video/")) return "video";
+    if (mimeType.startsWith("audio/")) return "audio";
     if (mimeType === "application/pdf") return "pdf";
+    if (mimeType.includes("zip") || mimeType.includes("rar") || mimeType.includes("7z"))
+      return "archive";
     if (
       mimeType.includes("document") ||
       mimeType.includes("word") ||
@@ -409,7 +591,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-100 dark:bg-surface-950">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex flex-col">
+      {/* Navbar */}
       <Navbar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -417,21 +600,24 @@ export default function Home() {
         onMenuClick={() => setSidebarOpen(!sidebarOpen)}
       />
 
-      <div className="flex h-[calc(100vh-64px)]">
+      {/* Main Layout */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
         <Sidebar
           isOpen={sidebarOpen}
           currentFolder={currentFolder}
-          onFolderChange={setCurrentFolder}
+          onFolderChange={handleFolderChange}
           onClose={() => setSidebarOpen(false)}
           onUploadClick={() => setUploadModalOpen(true)}
           onFolderClick={() => setCreateFolderModalOpen(true)}
         />
 
+        {/* Main Content */}
         <MainContent
           files={filteredFiles}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
-          onFileClick={setPreviewFile}
+          onFileClick={handleFileOrFolderClick}
           onFileDelete={handleDelete}
           onFileRestore={handleRestore}
           onFilePermanentDelete={handlePermanentDelete}
@@ -440,20 +626,38 @@ export default function Home() {
           onUpload={handleUpload}
           onUploadClick={() => setUploadModalOpen(true)}
           onEmptyTrash={handleEmptyTrash}
+          onFileDetails={setDetailsFile}
           selectedFiles={selectedFiles}
           onSelectionChange={setSelectedFiles}
           currentFolder={currentFolder}
           isLoading={isLoading}
+          breadcrumbPath={breadcrumbPath}
+          onBreadcrumbNavigate={handleBreadcrumbNavigate}
         />
       </div>
 
+      {/* Mobile Navigation */}
       <MobileNav
         currentFolder={currentFolder}
-        onFolderChange={setCurrentFolder}
+        onFolderChange={handleFolderChange}
         onUploadClick={() => setUploadModalOpen(true)}
-        onFolderClick={() => setCreateFolderModalOpen(true)}
+        onNewFolderClick={() => setCreateFolderModalOpen(true)}
       />
 
+      {/* Upload Status Panel */}
+      <AnimatePresence>
+        {uploads.length > 0 && (
+          <UploadStatusPanel
+            uploads={uploads}
+            onPause={handlePauseUpload}
+            onResume={handleResumeUpload}
+            onCancel={handleCancelUpload}
+            onClearCompleted={handleClearCompleted}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Modals */}
       <UploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
@@ -466,9 +670,23 @@ export default function Home() {
         onCreateFolder={handleCreateFolder}
       />
 
-      {previewFile && (
-        <PreviewModal file={previewFile} onClose={() => setPreviewFile(null)} />
-      )}
+      <AnimatePresence>
+        {previewFile && (
+          <PreviewModal file={previewFile} onClose={() => setPreviewFile(null)} />
+        )}
+      </AnimatePresence>
+
+      {/* File Details Panel */}
+      <FileDetailsPanel
+        file={detailsFile}
+        isOpen={detailsFile !== null}
+        onClose={() => setDetailsFile(null)}
+        onStar={handleStar}
+        onDelete={(fileId) => {
+          handleDelete(fileId);
+          setDetailsFile(null);
+        }}
+      />
     </div>
   );
 }

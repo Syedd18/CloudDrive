@@ -16,7 +16,6 @@ import {
   Grid3X3,
   List,
   ChevronRight,
-  Keyboard,
   MessageCircle,
   Book,
   ExternalLink,
@@ -28,7 +27,7 @@ interface HelpModalProps {
   onClose: () => void;
 }
 
-type HelpSection = "getting-started" | "features" | "shortcuts" | "faq";
+type HelpSection = "getting-started" | "features" | "faq";
 
 interface FAQItem {
   question: string;
@@ -58,16 +57,7 @@ const faqs: FAQItem[] = [
   },
 ];
 
-const shortcuts = [
-  { keys: ["Ctrl", "U"], action: "Upload files" },
-  { keys: ["Ctrl", "N"], action: "New folder" },
-  { keys: ["Ctrl", "F"], action: "Search files" },
-  { keys: ["Delete"], action: "Move to trash" },
-  { keys: ["Ctrl", "D"], action: "Download file" },
-  { keys: ["Space"], action: "Preview file" },
-  { keys: ["Ctrl", "A"], action: "Select all" },
-  { keys: ["Esc"], action: "Close modal / Deselect" },
-];
+
 
 const features = [
   {
@@ -119,7 +109,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   const sections = [
     { id: "getting-started", label: "Getting Started", icon: Book },
     { id: "features", label: "Features", icon: Grid3X3 },
-    { id: "shortcuts", label: "Keyboard Shortcuts", icon: Keyboard },
     { id: "faq", label: "FAQ", icon: MessageCircle },
   ] as const;
 
@@ -200,7 +189,9 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                     Contact our support team
                   </p>
                   <a
-                    href="mailto:support@clouddrive.com"
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=clouddrivecontact@gmail.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     className="flex items-center gap-2 text-xs font-medium text-primary-600 dark:text-primary-400 hover:underline"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -325,47 +316,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                               <p className="text-xs text-surface-500 leading-relaxed">
                                 {feature.description}
                               </p>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeSection === "shortcuts" && (
-                    <motion.div
-                      key="shortcuts"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                    >
-                      <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-                        Keyboard Shortcuts
-                      </h3>
-                      <p className="text-sm text-surface-500 mb-4">
-                        Use these shortcuts to work faster with Cloud Drive
-                      </p>
-                      <div className="space-y-2">
-                        {shortcuts.map((shortcut, index) => (
-                          <motion.div
-                            key={shortcut.action}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.03 }}
-                            className="flex items-center justify-between p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50"
-                          >
-                            <span className="text-sm text-surface-700 dark:text-surface-300">{shortcut.action}</span>
-                            <div className="flex gap-1">
-                              {shortcut.keys.map((key, keyIndex) => (
-                                <span key={keyIndex}>
-                                  <kbd className="px-2 py-1 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg text-xs font-mono text-surface-700 dark:text-surface-300 shadow-sm">
-                                    {key}
-                                  </kbd>
-                                  {keyIndex < shortcut.keys.length - 1 && (
-                                    <span className="mx-1 text-surface-400">+</span>
-                                  )}
-                                </span>
-                              ))}
                             </div>
                           </motion.div>
                         ))}

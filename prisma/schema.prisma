@@ -44,6 +44,9 @@ model File {
   trashed      Boolean  @default(false)
   trashedAt    DateTime?
   folderId     String?
+  // Public link sharing
+  isPublic        Boolean  @default(false)  // Anyone with link can access
+  publicLinkCanEdit Boolean @default(false) // Public link permission
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent       File?    @relation("FileHierarchy", fields: [folderId], references: [id], onDelete: Cascade)
@@ -57,6 +60,7 @@ model File {
   @@index([trashed])
   @@index([starred])
   @@index([s3Key])
+  @@index([isPublic])
   @@map("files")
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { formatFileSize, formatDate, cn } from "@/lib/utils";
+import { ShareModal } from "@/components/modals/ShareModal";
 import toast from "react-hot-toast";
 
 interface PreviewModalProps {
@@ -26,6 +28,7 @@ interface PreviewModalProps {
 }
 
 export function PreviewModal({ file, onClose }: PreviewModalProps) {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const canPreview = ["image", "video", "pdf"].includes(file.type);
 
   const handleDownload = async () => {
@@ -38,25 +41,36 @@ export function PreviewModal({ file, onClose }: PreviewModalProps) {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const response = await fetch(`/api/files/${file.id}/download`, {
+      // Use direct download to get proper filename
+      const response = await fetch(`/api/files/${file.id}/download?direct=true`, {
         method: "GET",
         headers,
         credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get download URL");
+        throw new Error("Failed to download file");
       }
 
-      const { downloadUrl } = await response.json();
-      
+      // Get filename from Content-Disposition header or use file.name
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = file.name;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+?)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = file.name;
-      link.target = '_blank';
+      link.href = url;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
       toast.success("Download started", { id: `download-${file.id}` });
     } catch (error) {
@@ -65,7 +79,7 @@ export function PreviewModal({ file, onClose }: PreviewModalProps) {
   };
 
   const handleShare = () => {
-    toast.success("Share link copied to clipboard");
+    setIsShareModalOpen(true);
   };
 
   const renderPreview = () => {
@@ -277,6 +291,13 @@ export function PreviewModal({ file, onClose }: PreviewModalProps) {
           </div>
         </div>
       </motion.div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        file={file}
+      />
     </AnimatePresence>
   );
 }
