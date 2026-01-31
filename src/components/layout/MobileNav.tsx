@@ -10,7 +10,6 @@ import {
   Users,
   Upload,
   FolderPlus,
-  Camera,
   FileUp,
   X,
   Plus,
@@ -36,7 +35,6 @@ const navItems = [
 const fabActions = [
   { id: "upload", icon: FileUp, label: "Upload file", color: "bg-primary-500" },
   { id: "folder", icon: FolderPlus, label: "New folder", color: "bg-emerald-500" },
-  { id: "camera", icon: Camera, label: "Take photo", color: "bg-purple-500" },
 ];
 
 export function MobileNav({
@@ -55,9 +53,6 @@ export function MobileNav({
         break;
       case "folder":
         onNewFolderClick?.();
-        break;
-      case "camera":
-        // TODO: Implement camera capture
         break;
     }
   };

@@ -79,16 +79,24 @@ export function AvatarUploadModal({
     setShowCamera(false);
   }, [cameraStream]);
 
+  // Connect camera stream to video element when both are available
+  useEffect(() => {
+    if (cameraStream && videoRef.current && showCamera) {
+      videoRef.current.srcObject = cameraStream;
+      // Ensure video plays
+      videoRef.current.play().catch(err => {
+        console.error("Error playing video:", err);
+      });
+    }
+  }, [cameraStream, showCamera]);
+
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: 640, height: 480 },
+        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } },
       });
       setCameraStream(stream);
       setShowCamera(true);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
     } catch (error) {
       console.error("Camera access denied:", error);
       toast.error("Camera access denied. Please allow camera permissions.");
