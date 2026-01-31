@@ -264,6 +264,8 @@ export function FileCard({
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
       const menuHeight = 380; // Increased to account for all menu items
+      // w-52 on mobile (208px), w-56 on desktop (224px)
+      const menuWidth = window.innerWidth < 640 ? 208 : 224;
       
       let top: number;
       
@@ -288,7 +290,16 @@ export function FileCard({
       // Ensure top is never negative
       top = Math.max(8, top);
       
-      const right = Math.max(window.innerWidth - rect.right, 8);
+      // For mobile, center the menu or position from left if needed
+      let right = window.innerWidth - rect.right;
+      
+      // If menu would go off the left edge, adjust position
+      if (window.innerWidth - right < menuWidth + 8) {
+        // Position from left instead
+        right = Math.max(8, window.innerWidth - menuWidth - 8);
+      }
+      
+      right = Math.max(8, right);
 
       setMenuCoords({ top, right });
       return { top, right };
@@ -586,12 +597,12 @@ export function FileCard({
             </AnimatePresence>
           </div>
 
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+          <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 flex items-center gap-1.5 z-10">
             {/* Mobile-only more button - always visible */}
             <button
               ref={menuButtonRef}
               onClick={handleMenuToggle}
-              className="lg:hidden w-7 h-7 rounded-full bg-white/90 dark:bg-surface-800/90 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-surface-700 transition-colors"
+              className="lg:hidden w-8 h-8 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-surface-800/95 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-surface-700 transition-colors border border-surface-200/50 dark:border-surface-700/50"
             >
               <MoreHorizontal className="w-4 h-4 text-surface-600 dark:text-surface-300" />
             </button>
@@ -943,8 +954,9 @@ function ContextMenu({
         top: menuCoords.top,
         right: menuCoords.right,
         maxHeight: "calc(100vh - 16px)",
+        maxWidth: "calc(100vw - 16px)",
       }}
-      className="w-56 dropdown-menu p-1.5 z-[100] overflow-y-auto"
+      className="w-52 sm:w-56 dropdown-menu p-1.5 z-[100] overflow-y-auto"
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >

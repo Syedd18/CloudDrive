@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -112,7 +113,8 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
     { id: "faq", label: "FAQ", icon: MessageCircle },
   ] as const;
 
-  return (
+  // Use portal to render modal at document root level
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -122,11 +124,11 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
           />
 
           {/* Modal Container */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -385,4 +387,9 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
       )}
     </AnimatePresence>
   );
+
+  // Only render portal on client side
+  if (typeof window === 'undefined') return null;
+  
+  return createPortal(modalContent, document.body);
 }

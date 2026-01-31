@@ -74,6 +74,7 @@ export function FileListItem({
 }: FileListItemProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState<'top' | 'bottom'>('bottom');
+  const [menuRightPos, setMenuRightPos] = useState<number>(0);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(file.name);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -92,9 +93,28 @@ export function FileListItem({
     if (menuButtonRef.current) {
       const rect = menuButtonRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      const menuHeight = 180; // Approximate menu height
-      setMenuPosition(spaceBelow < menuHeight ? 'top' : 'bottom');
+      const menuHeight = 300; // Increased to account for all menu items
+      const menuWidth = 208; // w-52 = 13rem = 208px
+      
+      // Vertical positioning
+      const position = spaceBelow < menuHeight ? 'top' : 'bottom';
+      setMenuPosition(position);
+      
+      // Calculate horizontal position - ensure menu doesn't go off screen
+      let right = window.innerWidth - rect.right;
+      
+      // If menu would go off the left edge, adjust position
+      if (window.innerWidth - right < menuWidth + 8) {
+        right = Math.max(8, window.innerWidth - menuWidth - 8);
+      }
+      
+      // Ensure minimum margin from right edge
+      right = Math.max(8, right);
+      
+      setMenuRightPos(right);
+      return { right, position };
     }
+    return null;
   };
 
   useEffect(() => {
@@ -357,13 +377,14 @@ export function FileListItem({
               setShowMenu(!showMenu);
             }}
             className={cn(
-              "p-2 rounded-lg transition-all duration-200",
+              "p-2.5 sm:p-2 rounded-lg transition-all duration-200",
               "hover:bg-surface-100 dark:hover:bg-surface-700",
-              "opacity-0 group-hover:opacity-100",
-              showMenu && "opacity-100"
+              // Always visible on mobile, hover-visible on desktop
+              "opacity-100 sm:opacity-0 sm:group-hover:opacity-100",
+              showMenu && "opacity-100 bg-surface-100 dark:bg-surface-700"
             )}
           >
-            <MoreVertical className="w-4 h-4 text-surface-400" />
+            <MoreVertical className="w-5 h-5 sm:w-4 sm:h-4 text-surface-500" />
           </button>
 
           {showMenu && (
@@ -375,9 +396,7 @@ export function FileListItem({
                     ? menuButtonRef.current.getBoundingClientRect().bottom + 4
                     : menuButtonRef.current.getBoundingClientRect().top - 4) 
                   : 0,
-                right: menuButtonRef.current 
-                  ? window.innerWidth - menuButtonRef.current.getBoundingClientRect().right 
-                  : 0,
+                right: menuRightPos,
                 transform: menuPosition === 'top' ? 'translateY(-100%)' : 'none',
               }}
               className="w-52 bg-white dark:bg-[#1c2128] rounded-xl shadow-xl border border-surface-200/80 dark:border-surface-700/60 py-1.5 z-[100] max-h-[60vh] overflow-y-auto"

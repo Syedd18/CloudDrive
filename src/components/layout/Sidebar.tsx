@@ -275,15 +275,29 @@ export function Sidebar({
           {/* Quick Links */}
           <div className="mt-3 flex gap-1">
             <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSettingsOpen(true);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                setIsSettingsOpen(true);
+              }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700 touch-manipulation"
             >
               <Settings className="w-4 h-4" />
               <span>Settings</span>
             </button>
             <button
-              onClick={() => setIsHelpOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsHelpOpen(true);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                setIsHelpOpen(true);
+              }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95 active:bg-surface-200 dark:active:bg-surface-700 touch-manipulation"
             >
               <HelpCircle className="w-4 h-4" />
               <span>Help</span>
