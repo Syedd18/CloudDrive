@@ -10,6 +10,12 @@ const nextConfig = {
       'lh3.googleusercontent.com', // Google user avatars
     ],
   },
+  // Increase body size limit for file uploads (default is 4MB)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
+  },
 };
 
 module.exports = nextConfig;

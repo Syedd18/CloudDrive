@@ -6,6 +6,9 @@ import { fileQuerySchema } from '@/lib/validation';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+// Maximum file size: 50MB
+export const maxDuration = 60; // seconds
+
 const fileService = new FileService();
 
 // Upload file
