@@ -31,7 +31,7 @@ export interface UpdateFileInput {
   trashed?: boolean;
 }
 
-function getFileType(mimeType: string): string {
+export function getFileType(mimeType: string): string {
   if (mimeType.startsWith('image/')) return 'image';
   if (mimeType.startsWith('video/')) return 'video';
   if (mimeType.startsWith('audio/')) return 'audio';

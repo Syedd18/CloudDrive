@@ -149,7 +149,7 @@ export default function Home() {
         (currentFolder === "Shared" && file.shared))
   );
 
-  // Handle file upload
+  // Handle file upload - uses direct Supabase upload for large files (bypasses Vercel 4.5MB limit)
   const handleUpload = async (newFiles: File[]) => {
     const token = localStorage.getItem("token");
 
@@ -170,72 +170,82 @@ export default function Home() {
       let progressInterval: NodeJS.Timeout | null = null;
 
       try {
-        // Check file size before upload (warn for large files on mobile)
+        // Check file size before upload
         const maxSizeMB = 50;
         if (file.size > maxSizeMB * 1024 * 1024) {
           throw new Error(`File too large. Maximum size is ${maxSizeMB}MB`);
         }
 
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("name", file.name);
-        formData.append("type", getFileType(file.type));
-        
-        // Add current folder ID to upload files to the correct folder
-        if (currentFolderId) {
-          formData.append("folderId", currentFolderId);
-        }
-
-        const headers: Record<string, string> = {};
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
 
-        // Simulate progress (real implementation would use XMLHttpRequest with progress events)
+        // Use direct upload to Supabase (bypasses Vercel's 4.5MB limit)
+        // Step 1: Get presigned upload URL
+        const presignResponse = await fetch("/api/files/presign", {
+          method: "POST",
+          headers,
+          credentials: "include",
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+            folderId: currentFolderId || null,
+          }),
+        });
+
+        if (!presignResponse.ok) {
+          const errorData = await presignResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || "Failed to prepare upload");
+        }
+
+        const { uploadUrl, token: uploadToken, filePath, folderId } = await presignResponse.json();
+
+        // Step 2: Upload directly to Supabase
         progressInterval = setInterval(() => {
           setUploads((prev) =>
             prev.map((u) =>
               u.id === uploadItem.id && u.progress < 90
-                ? { ...u, progress: u.progress + 10 }
+                ? { ...u, progress: u.progress + 5 }
                 : u
             )
           );
-        }, 200);
+        }, 300);
 
-        // Use AbortController for timeout (60 seconds for mobile)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000);
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type,
+          },
+          body: file,
+        });
 
-        const response = await fetch("/api/files", {
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload to storage");
+        }
+
+        // Step 3: Confirm upload and create database record
+        const confirmResponse = await fetch("/api/files/confirm", {
           method: "POST",
           headers,
           credentials: "include",
-          body: formData,
-          signal: controller.signal,
+          body: JSON.stringify({
+            filePath,
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+            folderId,
+          }),
         });
 
-        clearTimeout(timeoutId);
         if (progressInterval) clearInterval(progressInterval);
 
-        if (response.status === 401) {
-          localStorage.removeItem("token");
-          router.push("/login");
-          return;
-        }
-
-        if (!response.ok) {
-          // Try to get error message from response
-          let errorMessage = `Failed to upload ${file.name}`;
-          try {
-            const errorData = await response.json();
-            if (errorData.error) {
-              errorMessage = errorData.error;
-            }
-          } catch {
-            // If we can't parse JSON, use status text
-            errorMessage = `Upload failed: ${response.status} ${response.statusText}`;
-          }
-          throw new Error(errorMessage);
+        if (!confirmResponse.ok) {
+          const errorData = await confirmResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || "Failed to confirm upload");
         }
 
         // Update upload status to completed
@@ -258,11 +268,7 @@ export default function Home() {
         
         // Show more detailed error message
         const errorMsg = error instanceof Error ? error.message : "Upload failed";
-        if (error instanceof Error && error.name === 'AbortError') {
-          toast.error(`Upload timed out for ${file.name}. Try a smaller file or better connection.`);
-        } else {
-          toast.error(errorMsg);
-        }
+        toast.error(errorMsg);
         console.error('Upload error:', error);
       }
     }
