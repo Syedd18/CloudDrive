@@ -22,6 +22,7 @@ import {
   RotateCcw,
   Info,
   MoreHorizontal,
+  ExternalLink,
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
@@ -37,6 +38,7 @@ interface FileListItemProps {
   onDelete: () => void;
   onStar: () => void;
   onRename: (name: string) => void;
+  onPreview?: () => void;
   onDetails?: () => void;
   isInTrash?: boolean;
   onRestore?: () => void;
@@ -64,6 +66,7 @@ export function FileListItem({
   onDelete,
   onStar,
   onRename,
+  onPreview,
   onDetails,
   isInTrash = false,
   onRestore,
@@ -75,6 +78,7 @@ export function FileListItem({
   const [newName, setNewName] = useState(file.name);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
+  const longPressTriggered = useRef(false); // Use ref for immediate sync check
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -123,8 +127,10 @@ export function FileListItem({
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     setIsLongPressing(false);
+    longPressTriggered.current = false; // Reset the ref
     
     longPressTimer.current = setTimeout(() => {
+      longPressTriggered.current = true; // Set ref immediately (sync)
       setIsLongPressing(true);
       // Vibrate for haptic feedback if available
       if (navigator.vibrate) {
@@ -156,12 +162,11 @@ export function FileListItem({
       longPressTimer.current = null;
     }
     
-    // If it wasn't a long press, treat as a tap (open preview/folder) - mobile/tablet only
-    if (!isLongPressing) {
-      onDoubleClick();
-    }
+    // Mobile: Long press toggles selection, tap does nothing (use 3-dot menu for preview)
+    // This prevents accidental taps while scrolling
     
     setIsLongPressing(false);
+    longPressTriggered.current = false;
     touchStartPos.current = null;
   };
 
@@ -404,6 +409,18 @@ export function FileListItem({
                 </>
               ) : (
                 <>
+                  {onPreview && file.type !== "folder" && (
+                    <button
+                      onClick={() => {
+                        onPreview();
+                        setShowMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4 text-surface-400" />
+                      Preview
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setIsRenaming(true);

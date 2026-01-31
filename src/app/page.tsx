@@ -767,6 +767,7 @@ export default function Home() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           onFileClick={handleFileOrFolderClick}
+          onFilePreview={(file) => file.type !== "folder" && setPreviewFile(file)}
           onFileDelete={handleDelete}
           onFileRestore={handleRestore}
           onFilePermanentDelete={handlePermanentDelete}

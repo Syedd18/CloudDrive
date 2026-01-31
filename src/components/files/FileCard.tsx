@@ -248,6 +248,7 @@ export function FileCard({
   const [isHovered, setIsHovered] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
+  const longPressTriggered = useRef(false); // Use ref for immediate sync check
   const menuRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
@@ -412,8 +413,10 @@ export function FileCard({
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     setIsLongPressing(false);
+    longPressTriggered.current = false; // Reset the ref
     
     longPressTimer.current = setTimeout(() => {
+      longPressTriggered.current = true; // Set ref immediately (sync)
       setIsLongPressing(true);
       // Vibrate for haptic feedback if available
       if (navigator.vibrate) {
@@ -446,13 +449,11 @@ export function FileCard({
       longPressTimer.current = null;
     }
     
-    // If it wasn't a long press, treat as a tap (open preview/folder) - only on touch devices
-    if (!isLongPressing) {
-      // Open folder or preview file on single tap (mobile/tablet only)
-      onDoubleClick();
-    }
+    // Mobile: Long press toggles selection, tap does nothing (use 3-dot menu for preview)
+    // This prevents accidental taps while scrolling
     
     setIsLongPressing(false);
+    longPressTriggered.current = false;
     touchStartPos.current = null;
   };
 

@@ -42,6 +42,7 @@ interface MainContentProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   onFileClick: (file: FileItem) => void;
+  onFilePreview?: (file: FileItem) => void;
   onFileDelete: (fileId: string) => void;
   onFileRestore?: (fileId: string) => void;
   onFilePermanentDelete?: (fileId: string) => void;
@@ -86,6 +87,7 @@ export function MainContent({
   viewMode,
   onViewModeChange,
   onFileClick,
+  onFilePreview,
   onFileDelete,
   onFileRestore,
   onFilePermanentDelete,
@@ -242,12 +244,14 @@ export function MainContent({
   const handleFileSelect = useCallback(
     (fileId: string, event: React.MouseEvent) => {
       if (event.ctrlKey || event.metaKey) {
+        // Ctrl/Cmd + click: add to or remove from selection
         if (selectedFiles.includes(fileId)) {
           onSelectionChange(selectedFiles.filter((id) => id !== fileId));
         } else {
           onSelectionChange([...selectedFiles, fileId]);
         }
       } else if (event.shiftKey && selectedFiles.length > 0) {
+        // Shift + click: range selection
         const lastSelected = selectedFiles[selectedFiles.length - 1];
         const lastIndex = sortedFiles.findIndex((f) => f.id === lastSelected);
         const currentIndex = sortedFiles.findIndex((f) => f.id === fileId);
@@ -256,7 +260,12 @@ export function MainContent({
         const rangeIds = sortedFiles.slice(start, end + 1).map((f) => f.id);
         onSelectionChange(Array.from(new Set([...selectedFiles, ...rangeIds])));
       } else {
-        onSelectionChange([fileId]);
+        // Normal click: toggle selection (select if not selected, deselect if selected)
+        if (selectedFiles.includes(fileId)) {
+          onSelectionChange(selectedFiles.filter((id) => id !== fileId));
+        } else {
+          onSelectionChange([fileId]);
+        }
       }
     },
     [selectedFiles, sortedFiles, onSelectionChange]
@@ -612,6 +621,7 @@ export function MainContent({
                     onDelete={() => onFileDelete(file.id)}
                     onStar={() => onFileStar(file.id)}
                     onRename={(name) => onFileRename(file.id, name)}
+                    onPreview={() => onFilePreview?.(file)}
                     onDetails={() => onFileDetails?.(file)}
                     isInTrash={currentFolder === "Trash"}
                     onRestore={() => onFileRestore?.(file.id)}
@@ -684,6 +694,7 @@ export function MainContent({
                     onDelete={() => onFileDelete(file.id)}
                     onStar={() => onFileStar(file.id)}
                     onRename={(name) => onFileRename(file.id, name)}
+                    onPreview={() => onFilePreview?.(file)}
                     onDetails={() => onFileDetails?.(file)}
                     isInTrash={currentFolder === "Trash"}
                     onRestore={() => onFileRestore?.(file.id)}
