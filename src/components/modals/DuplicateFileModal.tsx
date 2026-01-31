@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, X, Copy, RefreshCw } from "lucide-react";
+import { AlertTriangle, X, Copy, RefreshCw, SkipForward } from "lucide-react";
 import { cn, formatFileSize } from "@/lib/utils";
 
 interface DuplicateFile {
@@ -27,72 +29,103 @@ export function DuplicateFileModal({
   onRename,
   onSkip,
 }: DuplicateFileModalProps) {
-  if (!isOpen || duplicates.length === 0) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !isOpen || duplicates.length === 0) return null;
 
   const isSingle = duplicates.length === 1;
   const firstFile = duplicates[0];
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - Full screen with high z-index */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]"
+            style={{ touchAction: 'none' }}
           />
 
-          {/* Modal */}
+          {/* Modal Container - Centered on all devices */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto max-w-md z-[101]"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className={cn(
+              "fixed z-[10000]",
+              // Mobile: bottom sheet style
+              "inset-x-0 bottom-0",
+              // Desktop: centered modal
+              "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2",
+              "sm:w-full sm:max-w-md"
+            )}
           >
-            <div className="bg-white dark:bg-surface-900 rounded-2xl shadow-2xl overflow-hidden">
+            <div className={cn(
+              "bg-white dark:bg-surface-900 shadow-2xl overflow-hidden",
+              // Mobile: rounded top corners only
+              "rounded-t-3xl sm:rounded-2xl",
+              // Safe area padding for iOS
+              "pb-safe"
+            )}>
+              {/* Drag handle for mobile */}
+              <div className="sm:hidden flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-surface-300 dark:bg-surface-600" />
+              </div>
+
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700">
+              <div className="flex items-center justify-between p-4 sm:p-5 border-b border-surface-200 dark:border-surface-700">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-warning-100 dark:bg-warning-500/20 flex items-center justify-center">
-                    <AlertTriangle className="w-5 h-5 text-warning-600 dark:text-warning-400" />
+                  <div className={cn(
+                    "w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center",
+                    "bg-gradient-to-br from-warning-100 to-warning-200",
+                    "dark:from-warning-500/30 dark:to-warning-600/20"
+                  )}>
+                    <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-warning-600 dark:text-warning-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-surface-900 dark:text-white">
-                      {isSingle ? "File Already Exists" : `${duplicates.length} Files Already Exist`}
+                    <h3 className="font-bold text-base sm:text-lg text-surface-900 dark:text-white">
+                      {isSingle ? "File Exists" : `${duplicates.length} Files Exist`}
                     </h3>
-                    <p className="text-xs text-surface-500">
-                      Choose how to handle {isSingle ? "this file" : "these files"}
+                    <p className="text-xs sm:text-sm text-surface-500 dark:text-surface-400">
+                      Choose an action
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+                  className="p-2 sm:p-2.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95"
                 >
                   <X className="w-5 h-5 text-surface-500" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-4">
+              <div className="p-4 sm:p-5">
+                {/* File info */}
                 {isSingle ? (
-                  <div className="p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50 mb-4">
-                    <p className="text-sm font-medium text-surface-900 dark:text-white truncate">
+                  <div className="p-3 sm:p-4 rounded-xl bg-surface-50 dark:bg-surface-800/50 border border-surface-200 dark:border-surface-700 mb-4">
+                    <p className="text-sm sm:text-base font-medium text-surface-900 dark:text-white truncate">
                       {firstFile.file.name}
                     </p>
-                    <p className="text-xs text-surface-500 mt-1">
+                    <p className="text-xs sm:text-sm text-surface-500 mt-1">
                       {formatFileSize(firstFile.file.size)}
                     </p>
                   </div>
                 ) : (
-                  <div className="max-h-40 overflow-y-auto space-y-2 mb-4">
+                  <div className="max-h-32 sm:max-h-40 overflow-y-auto space-y-2 mb-4 scrollbar-thin">
                     {duplicates.map((dup, index) => (
                       <div
                         key={index}
-                        className="p-2 rounded-lg bg-surface-50 dark:bg-surface-800/50"
+                        className="p-2.5 sm:p-3 rounded-lg bg-surface-50 dark:bg-surface-800/50 border border-surface-200/50 dark:border-surface-700/50"
                       >
                         <p className="text-sm text-surface-900 dark:text-white truncate">
                           {dup.file.name}
@@ -105,48 +138,61 @@ export function DuplicateFileModal({
                   </div>
                 )}
 
-                <p className="text-sm text-surface-600 dark:text-surface-400 mb-4">
+                <p className="text-xs sm:text-sm text-surface-600 dark:text-surface-400 mb-5 sm:mb-6 text-center">
                   {isSingle
-                    ? "A file with this name already exists in this folder."
-                    : "Files with these names already exist in this folder."}
+                    ? "A file with this name already exists."
+                    : "These files already exist in this folder."}
                 </p>
 
-                {/* Actions */}
-                <div className="space-y-2">
+                {/* Actions - Large touch targets for mobile */}
+                <div className="space-y-2.5 sm:space-y-3">
                   <button
                     onClick={() => onReplace(duplicates)}
                     className={cn(
-                      "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl",
-                      "bg-warning-500 hover:bg-warning-600 text-white",
-                      "font-medium text-sm transition-colors"
+                      "w-full flex items-center justify-center gap-2.5",
+                      "py-3.5 sm:py-4 px-4 rounded-xl sm:rounded-2xl",
+                      "bg-gradient-to-r from-warning-500 to-warning-600",
+                      "hover:from-warning-600 hover:to-warning-700",
+                      "text-white font-semibold text-sm sm:text-base",
+                      "shadow-lg shadow-warning-500/25",
+                      "transition-all duration-200 active:scale-[0.98]"
                     )}
                   >
-                    <RefreshCw className="w-4 h-4" />
-                    Replace {isSingle ? "Existing File" : "All Existing Files"}
+                    <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Replace {isSingle ? "Existing" : "All"}
                   </button>
 
                   <button
                     onClick={() => onRename(duplicates)}
                     className={cn(
-                      "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl",
-                      "bg-primary-500 hover:bg-primary-600 text-white",
-                      "font-medium text-sm transition-colors"
+                      "w-full flex items-center justify-center gap-2.5",
+                      "py-3.5 sm:py-4 px-4 rounded-xl sm:rounded-2xl",
+                      "bg-gradient-to-r from-primary-500 to-primary-600",
+                      "hover:from-primary-600 hover:to-primary-700",
+                      "text-white font-semibold text-sm sm:text-base",
+                      "shadow-lg shadow-primary-500/25",
+                      "transition-all duration-200 active:scale-[0.98]"
                     )}
                   >
-                    <Copy className="w-4 h-4" />
-                    Keep Both (Rename New {isSingle ? "File" : "Files"})
+                    <Copy className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Keep Both
                   </button>
 
                   <button
                     onClick={onSkip}
                     className={cn(
-                      "w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl",
-                      "bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700",
+                      "w-full flex items-center justify-center gap-2.5",
+                      "py-3.5 sm:py-4 px-4 rounded-xl sm:rounded-2xl",
+                      "bg-surface-100 dark:bg-surface-800",
+                      "hover:bg-surface-200 dark:hover:bg-surface-700",
                       "text-surface-700 dark:text-surface-300",
-                      "font-medium text-sm transition-colors"
+                      "font-semibold text-sm sm:text-base",
+                      "border border-surface-200 dark:border-surface-700",
+                      "transition-all duration-200 active:scale-[0.98]"
                     )}
                   >
-                    Skip {isSingle ? "This File" : "These Files"}
+                    <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Skip
                   </button>
                 </div>
               </div>
@@ -156,4 +202,7 @@ export function DuplicateFileModal({
       )}
     </AnimatePresence>
   );
+
+  // Use portal to render at document body level
+  return createPortal(modalContent, document.body);
 }
