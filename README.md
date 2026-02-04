@@ -1,101 +1,90 @@
-☁️ CloudDrive - Production-Ready Cloud Storage (Supabase Edition)
-A world-class, enterprise-grade cloud storage application built with Next.js 14, featuring a scalable backend architecture with Supabase Storage integration, PostgreSQL (via Supabase), and Supabase Auth.
-Next.js TypeScript Tailwind CSS Prisma Supabase
-✨ Features
-🎨 Frontend (UI/UX)
- * 🌓 Dark/Light Mode with smooth theme transitions
- * 📱 Responsive Design (Desktop, Tablet, Mobile)
- * 🎬 Smooth Animations with Framer Motion
- * 🖼️ Grid/List View for file browsing
- * 🔍 Advanced Search and filtering
- * ⭐ Star Files for quick access
- * 🗑️ Trash Bin with restore functionality
- * 📤 Drag & Drop Upload with progress tracking
- * 👁️ File Preview for images, videos, PDFs
- * 📊 Storage Visualization with usage charts
- * 🔔 Notifications system
- * 🎯 Context Menus for quick actions
-🔧 Backend (Architecture)
- * 🏗️ Layered MVC Architecture (Repository → Service → Controller)
- * ☁️ Supabase Storage for scalable object storage
- * 🗄️ PostgreSQL Database with Prisma ORM (hosted on Supabase)
- * 🔐 Supabase Auth (Social & Email/Password login)
- * ✅ Request Validation with Zod schemas
- * 📝 Audit Logging for security tracking
- * 🛡️ Error Handling with custom error classes
- * ⚡ Rate Limiting via Supabase API Gateway
- * 📊 Winston Logging for monitoring
- * 🚀 Horizontally Scalable architecture
- * 🔒 Storage Signed URLs for secure file access
-🛠️ Tech Stack
+# ☁️ CloudDrive - Production-Ready Cloud Storage
+
+A world-class, enterprise-grade cloud storage application built with **Next.js 14**, featuring a scalable backend architecture with **Supabase Storage** integration, **PostgreSQL** database, and **Supabase Auth**.
+
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E)
+
+---
+
+## ✨ Features
+
+### 🎨 Frontend (UI/UX)
+* 🌓 **Dark/Light Mode** with smooth theme transitions
+* 📱 **Responsive Design** (Desktop, Tablet, Mobile)
+* 🎬 **Smooth Animations** with Framer Motion
+* 🖼️ **Grid/List View** for file browsing
+* 🔍 **Advanced Search** and filtering
+* ⭐ **Star Files** for quick access
+* 🗑️ **Trash Bin** with restore functionality
+* 📤 **Drag & Drop Upload** with progress tracking
+* 👁️ **File Preview** for images, videos, PDFs
+* 📊 **Storage Visualization** with usage charts
+* 🔔 **Notifications system**
+* 🎯 **Context Menus** for quick actions
+
+### 🔧 Backend (Architecture)
+* 🏗️ **Layered MVC Architecture** (Repository → Service → Controller)
+* ☁️ **Supabase Storage Integration** for scalable object storage
+* 🗄️ **PostgreSQL Database** via Supabase with Prisma ORM
+* 🔐 **Supabase Auth** for secure authentication and session management
+* ✅ **Request Validation** with Zod schemas
+* 📝 **Audit Logging** for security tracking
+* 🛡️ **Error Handling** with custom error classes
+* ⚡ **Rate Limiting** to prevent abuse
+* 📊 **Winston Logging** for monitoring
+* 🔗 **RESTful API design**
+* 🚀 **Horizontally Scalable** architecture
+* 🔒 **Supabase Signed URLs** for secure file access
+
+---
+
+## 🛠️ Tech Stack
+
 | Layer | Technology |
-|---|---|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript 5.0 |
-| Styling | Tailwind CSS 3.4 |
-| Database | PostgreSQL with Prisma ORM |
-| Cloud Storage | Supabase Storage |
-| Authentication | Supabase Auth (GoTrue) |
-| Validation | Zod |
-| Logging | Winston |
-📁 Project Structure
+| :--- | :--- |
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript 5.0 |
+| **Styling** | Tailwind CSS 3.4 |
+| **Database** | PostgreSQL (Supabase) with Prisma ORM |
+| **Cloud Storage** | Supabase Storage |
+| **Authentication** | Supabase Auth |
+| **Validation** | Zod |
+| **Logging** | Winston |
+| **Animations** | Framer Motion |
+| **Icons** | Lucide React |
+
+---
+
+## 📁 Project Structure
+
+```text
 cloud-drive/
 ├── prisma/
 │   └── schema.prisma              # Database schema (PostgreSQL)
+├── public/                        # Static assets
 ├── src/
 │   ├── app/                       # Next.js App Router
-│   │   ├── api/                   # API Routes
-│   │   ├── auth/                  # Supabase Auth callback routes
-│   │   └── (dashboard)/           # Protected file management UI
+│   │   ├── api/                   # API Routes (Controllers)
+│   │   ├── layout.tsx             # Root layout
+│   │   └── globals.css            # Global styles
+│   ├── components/                # React components
+│   │   ├── layout/                # Layout (Navbar, Sidebar)
+│   │   ├── files/                 # File UI (Card, List)
+│   │   └── providers/             # Context providers (Theme, Supabase)
 │   ├── lib/                       # Utilities & Infrastructure
 │   │   ├── prisma.ts              # Database client
-│   │   ├── supabase.ts            # Supabase Client (Browser/Server)
+│   │   ├── supabase.ts            # Supabase client configuration
+│   │   ├── validation.ts          # Zod schemas
 │   │   └── logger.ts              # Winston logger
 │   ├── repositories/              # Data Access Layer
+│   │   ├── user.repository.ts     # User DB operations
+│   │   └── file.repository.ts     # File DB operations
 │   ├── services/                  # Business Logic Layer
-│   │   ├── auth.service.ts        # Supabase Auth wrappers
-│   │   └── file.service.ts        # Supabase Storage logic
-
-🚀 Getting Started
-1. Clone & Install
-git clone <repository-url>
-cd cloud-drive
-npm install
-
-2. Configure Environment Variables
-Create a .env file:
-# Database Configuration (Supabase Connection String)
-# Use Transaction mode for Prisma Client, Session mode for Migrations
-DATABASE_URL="postgresql://postgres.[ID]:[PASS]@aws-0-region.pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[ID]:[PASS]@aws-0-region.pooler.supabase.com:5432/postgres"
-
-# Supabase Project Configuration
-NEXT_PUBLIC_SUPABASE_URL="https://your-project-id.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
-SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-
-# Storage Configuration
-SUPABASE_BUCKET_NAME="clouddrive-storage"
-
-3. Set Up Database & Storage
- * Run Prisma Migrations:
-   npx prisma generate
-npx prisma db push
-
- * Supabase Storage Setup:
-   * Go to Storage in Supabase Dashboard.
-   * Create a bucket named clouddrive-storage.
-   * Set bucket to Private.
-   * Add Policies (RLS) to allow authenticated users to manage their own folders.
-🏗️ Architecture
-Data Flow (File Upload)
- * Frontend: User drops file → UI calls Supabase SDK storage.upload().
- * Auth: Supabase verifies user session via JWT.
- * Storage: File is stored in Supabase's S3-backed infrastructure.
- * Metadata: API route receives success callback → Prisma saves file metadata (S3 URL, size, name) to PostgreSQL.
- * Security: Future access is granted via Signed URLs generated by the file.service.ts.
-🔒 Security Features
- * Supabase Auth: Managed user sessions with built-in protection against common attacks.
- * Row Level Security (RLS): Database-level protection ensuring users only see their own files.
- * Signed URLs: Files are never public; they are accessed via time-limited tokens (e.g., 60 minutes).
- * Server-Side Validation: Zod ensures file types and sizes are restricted before metadata is saved.
+│   │   ├── auth.service.ts        # Auth logic
+│   │   └── file.service.ts        # File management & Storage logic
+│   └── types/                     # TypeScript types
+└── .env                           # Environment variables
