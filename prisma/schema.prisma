@@ -11,18 +11,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            String         @id @default(uuid())
+  email         String         @unique
   name          String?
   password      String?
   avatar        String?
-  role          String    @default("user") // user, admin
-  isActive      Boolean   @default(true)
+  role          String         @default("user") // user, admin
+  isActive      Boolean        @default(true)
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   files         File[]
+  fileDropLinks FileDropLink[] @relation("UserFileDropLinks")
   accounts      Account[]
   sessions      Session[]
 
@@ -31,29 +32,36 @@ model User {
 }
 
 model File {
-  id           String   @id @default(uuid())
-  name         String
-  originalName String
-  type         String   // folder, document, spreadsheet, etc.
-  size         BigInt
-  mimeType     String
-  s3Key        String   @unique // AWS S3 object key
-  s3Url        String   // Full S3 URL
-  thumbnail    String?  // S3 URL for thumbnail
-  starred      Boolean  @default(false)
-  trashed      Boolean  @default(false)
-  trashedAt    DateTime?
-  folderId     String?
+  id                String    @id @default(uuid())
+  name              String
+  originalName      String
+  type              String // folder, document, spreadsheet, etc.
+  size              BigInt
+  mimeType          String
+  s3Key             String    @unique // AWS S3 object key
+  s3Url             String // Full S3 URL
+  thumbnail         String? // S3 URL for thumbnail
+  starred           Boolean   @default(false)
+  trashed           Boolean   @default(false)
+  trashedAt         DateTime?
+  folderId          String?
   // Public link sharing
-  isPublic        Boolean  @default(false)  // Anyone with link can access
-  publicLinkCanEdit Boolean @default(false) // Public link permission
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent       File?    @relation("FileHierarchy", fields: [folderId], references: [id], onDelete: Cascade)
-  children     File[]   @relation("FileHierarchy")
-  sharedWith   Share[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isPublic          Boolean   @default(false) // Anyone with link can access
+  publicLinkCanEdit Boolean   @default(false) // Public link permission
+
+  // AI & Smart Features
+  summary       String? // AI Summary
+  extractedText String? // OCR/Text content for semantic search
+  tags          String[] // AI generated tags
+
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent     File?          @relation("FileHierarchy", fields: [folderId], references: [id], onDelete: Cascade)
+  children   File[]         @relation("FileHierarchy")
+  sharedWith Share[]
+  dropLinks  FileDropLink[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 
   @@index([userId])
   @@index([folderId])
@@ -82,8 +90,8 @@ model Share {
 model AuditLog {
   id        String   @id @default(uuid())
   userId    String
-  action    String   // upload, download, delete, share, etc.
-  resource  String   // file ID or resource identifier
+  action    String // upload, download, delete, share, etc.
+  resource  String // file ID or resource identifier
   details   String?
   ipAddress String?
   userAgent String?
@@ -132,4 +140,24 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model FileDropLink {
+  id          String    @id @default(uuid())
+  folderId    String // Target folder where dropped files go
+  folder      File      @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  userId      String // User who created the drop link
+  user        User      @relation("UserFileDropLinks", fields: [userId], references: [id], onDelete: Cascade)
+  token       String    @unique
+  name        String // Display name like "Trip Photos Drop"
+  description String?
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+  downloads   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([folderId])
+  @@map("file_drop_links")
 }

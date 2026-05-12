@@ -7,6 +7,7 @@ import {
   X,
   Download,
   Share2,
+  Edit3,
   Trash2,
   Star,
   Maximize2,
@@ -18,16 +19,17 @@ import {
   File,
 } from "lucide-react";
 import { FileItem } from "@/types";
-import { formatFileSize, formatDate, cn } from "@/lib/utils";
+import { formatFileSize, formatDate, cn, isEditableFile } from "@/lib/utils";
 import { ShareModal } from "@/components/modals/ShareModal";
 import toast from "react-hot-toast";
 
 interface PreviewModalProps {
   file: FileItem;
   onClose: () => void;
+  onEdit?: (file: FileItem) => void;
 }
 
-export function PreviewModal({ file, onClose }: PreviewModalProps) {
+export function PreviewModal({ file, onClose, onEdit }: PreviewModalProps) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const canPreview = ["image", "video", "pdf"].includes(file.type);
 
@@ -214,6 +216,14 @@ export function PreviewModal({ file, onClose }: PreviewModalProps) {
           </div>
 
           <div className="flex items-center gap-0.5 sm:gap-2">
+            {file.type !== "folder" && isEditableFile(file.name, file.mimeType) && (
+              <button
+                onClick={() => onEdit?.(file)}
+                className="p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+              >
+                <Edit3 className="w-5 h-5 text-blue-500" />
+              </button>
+            )}
             <button
               onClick={() => {
                 toast.success(file.starred ? "Removed from starred" : "Added to starred");

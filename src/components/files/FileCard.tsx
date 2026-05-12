@@ -25,6 +25,7 @@ import {
   Users,
   RotateCcw,
   ExternalLink,
+  Sparkles,
   Info,
   Check,
   X,
@@ -33,6 +34,8 @@ import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ShareModal } from "@/components/modals/ShareModal";
+import { SummaryModal } from "@/components/modals/SummaryModal";
+import { isEditableFile } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 // Extension-based color configuration
@@ -147,11 +150,13 @@ export function getFileColors(file: FileItem): { bg: string; icon: string; gradi
 interface FileCardProps {
   file: FileItem;
   isSelected: boolean;
+  onSelect: (id: string, event?: any) => void;
   onClick: (e: React.MouseEvent) => void;
   onDoubleClick: () => void;
   onDelete: () => void;
   onStar: () => void;
   onRename: (name: string) => void;
+  onEdit?: () => void;
   onPreview?: () => void;
   onDetails?: () => void;
   isInTrash?: boolean;
@@ -226,27 +231,32 @@ const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradi
   },
 };
 
-export function FileCard({
+import React from "react";
+
+export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
   file,
   isSelected,
+  onSelect,
   onClick,
   onDoubleClick,
   onDelete,
   onStar,
   onRename,
+  onEdit,
   onPreview,
   onDetails,
   isInTrash = false,
   onRestore,
   onPermanentDelete,
   viewMode = "grid",
-}: FileCardProps) {
+}, ref) => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuCoords, setMenuCoords] = useState<{ top: number; right: number } | null>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(file.name);
   const [isHovered, setIsHovered] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
   const longPressTriggered = useRef(false); // Use ref for immediate sync check
   const menuRef = useRef<HTMLDivElement>(null);
@@ -404,6 +414,11 @@ export function FileCard({
     setIsShareModalOpen(true);
   };
 
+  const handleSummary = async () => {
+    setShowMenu(false);
+    setIsSummaryModalOpen(true);
+  };
+
   const handleDelete = () => {
     onDelete();
     toast.success("Moved to trash");
@@ -516,9 +531,11 @@ export function FileCard({
         { icon: Trash2, label: "Delete", onClick: () => { onPermanentDelete?.(); }, color: "text-danger-500" },
       ]
     : [
+        { icon: FileText, label: "View Summary", onClick: () => onDetails?.(), color: "text-purple-500", hidden: true, mobileHidden: true },
+        { icon: Edit3, label: "Edit", onClick: () => onEdit?.(), color: "text-blue-500", disabled: !isEditableFile(file.name, file.mimeType) },
         { icon: Star, label: file.starred ? "Unstar" : "Star", onClick: onStar, active: file.starred },
-        { icon: Download, label: "Download", onClick: handleDownload, disabled: file.type === "folder" },
-        { icon: Share2, label: "Share", onClick: handleShare },
+        { icon: Download, label: "Download", onClick: handleDownload, disabled: file.type === "folder", mobileHidden: true },
+        { icon: Share2, label: "Share", onClick: handleShare, hidden: true, mobileHidden: true },
         { icon: MoreHorizontal, label: "More", onClick: handleMenuToggle, isMenuButton: true },
       ];
 
@@ -526,6 +543,7 @@ export function FileCard({
   if (viewMode === "grid") {
     return (
       <motion.div
+        ref={ref}
         layout
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -548,6 +566,24 @@ export function FileCard({
         onTouchEnd={handleTouchEnd}
         onTouchCancel={handleTouchCancel}
       >
+        {/* Selection Checkbox */}
+        <div
+          className={cn(
+            "absolute top-3 left-3 z-20 pointer-events-auto transition-opacity duration-200",
+            (isSelected || isHovered) ? "opacity-100" : "opacity-0"
+          )}
+          title="Select this file"
+        >
+          <input 
+            type="checkbox"
+            checked={isSelected}
+            disabled={isInTrash}
+            className="w-5 h-5 rounded cursor-pointer accent-primary-500 shadow-sm"
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) => onSelect && onSelect(file.id, e.nativeEvent as any)}
+          />
+        </div>
+
         {/* Thumbnail / Icon Area */}
         <div className={cn(
           "relative aspect-[4/3] overflow-hidden",
@@ -623,35 +659,40 @@ export function FileCard({
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-2 left-2 right-2"
               >
-                <div className="flex items-center justify-center gap-1 p-1.5 rounded-xl bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm shadow-xl border border-surface-200/50 dark:border-surface-700/50">
+                <div className="flex items-center justify-center gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm shadow-xl border border-surface-200/50 dark:border-surface-700/50">
                   {quickActions.map((action, idx) => {
                     const ActionIcon = action.icon;
                     const isMenuBtn = (action as any).isMenuButton;
                     return (
-                      <Tooltip key={idx} content={action.label} side="top">
-                        <button
-                          ref={isMenuBtn ? menuButtonRef : undefined}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            action.onClick(e);
-                          }}
-                          disabled={(action as any).disabled}
-                          className={cn(
-                            "p-2 rounded-lg transition-all duration-150",
-                            "hover:bg-surface-100 dark:hover:bg-surface-700",
-                            "disabled:opacity-40 disabled:cursor-not-allowed",
-                            (action as any).color,
-                            (action as any).active && "text-amber-500"
-                          )}
-                        >
-                          <ActionIcon
+                      !(action as any).hidden && (
+                      <div key={idx} className={cn((action as any).mobileHidden && "hidden sm:block")}>
+                        <Tooltip content={action.label} side="top">
+                          <button
+                            ref={isMenuBtn ? menuButtonRef : undefined}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              action.onClick(e);
+                            }}
+                            disabled={(action as any).disabled}
                             className={cn(
-                              "w-4 h-4",
-                              (action as any).active && "fill-amber-500"
+                              "w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl transition-all duration-150",
+                              "hover:bg-surface-100 dark:hover:bg-surface-700",
+                              "disabled:opacity-40 disabled:cursor-not-allowed",
+                              (action as any).color,
+                              (action as any).active ? "text-amber-500 hover:text-amber-600" : "text-surface-600 hover:text-surface-900"
                             )}
-                          />
-                        </button>
-                      </Tooltip>
+                          >
+                            <ActionIcon
+                              className={cn(
+                                "w-4 h-4",
+                                (action as any).active && "fill-amber-500",
+                                (action as any).color
+                              )}
+                            />
+                          </button>
+                        </Tooltip>
+                      </div>
+                      )
                     );
                   })}
                 </div>
@@ -705,7 +746,23 @@ export function FileCard({
               </h3>
             )}
             
-            <div className="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-400">
+            {/* AI Tags display in Grid View */}
+            {file.tags && file.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-1">
+                {file.tags.slice(0, 2).map((tag, i) => (
+                  <span key={i} className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 truncate max-w-[60px]">
+                    {tag}
+                  </span>
+                ))}
+                {file.tags.length > 2 && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400">
+                    +{file.tags.length - 2}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-400 mt-1">
               <span>{formatDate(file.modified)}</span>
               {file.size > 0 && (
                 <>
@@ -741,7 +798,9 @@ export function FileCard({
             onClose={() => setShowMenu(false)}
             onStar={onStar}
             onRename={() => { setIsRenaming(true); setShowMenu(false); }}
+            onEditContent={onEdit}
             onShare={handleShare}
+            onSummary={handleSummary}
             onDownload={handleDownload}
             onDelete={handleDelete}
             onRestore={onRestore}
@@ -756,6 +815,13 @@ export function FileCard({
         <ShareModal
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
+          file={file}
+        />
+
+        {/* Summary Modal */}
+        <SummaryModal
+          isOpen={isSummaryModalOpen}
+          onClose={() => setIsSummaryModalOpen(false)}
           file={file}
         />
       </motion.div>
@@ -842,7 +908,7 @@ export function FileCard({
 
       {/* Actions */}
       <div className={cn(
-        "flex items-center gap-1 transition-opacity duration-200",
+        "flex items-center gap-1.5 transition-opacity duration-200",
         isHovered ? "opacity-100" : "opacity-0"
       )}>
         {quickActions.slice(0, -1).map((action, idx) => {
@@ -853,7 +919,7 @@ export function FileCard({
                 onClick={(e) => { e.stopPropagation(); action.onClick(e); }}
                 disabled={(action as any).disabled}
                 className={cn(
-                  "p-2 rounded-lg transition-colors",
+                  "w-9 h-9 flex items-center justify-center rounded-xl transition-colors",
                   "hover:bg-surface-100 dark:hover:bg-surface-700",
                   "disabled:opacity-40 disabled:cursor-not-allowed"
                 )}
@@ -871,7 +937,7 @@ export function FileCard({
         <button
           ref={menuButtonRef}
           onClick={handleMenuToggle}
-          className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700"
+          className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-100 dark:hover:bg-surface-700"
         >
           <MoreHorizontal className="w-4 h-4 text-surface-500" />
         </button>
@@ -888,6 +954,7 @@ export function FileCard({
           onStar={onStar}
           onRename={() => { setIsRenaming(true); setShowMenu(false); }}
           onShare={handleShare}
+          onSummary={handleSummary}
           onDownload={handleDownload}
           onDelete={handleDelete}
           onRestore={onRestore}
@@ -904,9 +971,18 @@ export function FileCard({
         onClose={() => setIsShareModalOpen(false)}
         file={file}
       />
+
+      {/* Summary Modal */}
+      <SummaryModal
+        isOpen={isSummaryModalOpen}
+        onClose={() => setIsSummaryModalOpen(false)}
+        file={file}
+      />
     </motion.div>
   );
-}
+});
+
+FileCard.displayName = "FileCard";
 
 // Context Menu Component
 interface ContextMenuProps {
@@ -917,7 +993,9 @@ interface ContextMenuProps {
   onClose: () => void;
   onStar: () => void;
   onRename: () => void;
+  onEditContent?: () => void;
   onShare: () => void;
+  onSummary: () => void;
   onDownload: () => void;
   onDelete: () => void;
   onRestore?: () => void;
@@ -934,7 +1012,9 @@ function ContextMenu({
   onClose,
   onStar,
   onRename,
+  onEditContent,
   onShare,
+  onSummary,
   onDownload,
   onDelete,
   onRestore,
@@ -997,6 +1077,19 @@ function ContextMenu({
             label="Rename"
             shortcut="F2"
             onClick={onRename}
+          />
+          <MenuItem
+            icon={Edit3}
+            label="Edit content"
+              disabled={!isEditableFile(file.name, file.mimeType)}
+            onClick={() => { onEditContent?.(); onClose(); }}
+          />
+          <MenuItem
+            icon={Sparkles}
+            label="AI Summary"
+            iconColor="text-purple-500"
+            disabled={file.type === "folder"}
+            onClick={() => { onSummary(); onClose(); }}
           />
           <MenuItem
             icon={Share2}

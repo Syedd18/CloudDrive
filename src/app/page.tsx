@@ -10,11 +10,15 @@ import { MainContent } from "@/components/layout/MainContent";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { UploadModal } from "@/components/modals/UploadModal";
 import { PreviewModal } from "@/components/modals/PreviewModal";
+import { EditorModal } from "@/components/modals/EditorModal";
 import { CreateFolderModal } from "@/components/modals/CreateFolderModal";
+import { CreateFileModal } from "@/components/modals/CreateFileModal";
+import { ZipDownloadButton } from "@/components/files/ZipDownloadButton";
 import { DuplicateFileModal } from "@/components/modals/DuplicateFileModal";
 import { FileDetailsPanel } from "@/components/files/FileDetailsPanel";
 import { UploadStatusPanel, UploadItem } from "@/components/ui/UploadStatusPanel";
 import { FileItem, ViewMode } from "@/types";
+import { getSupportedEditorExtensionsLabel, isEditableFile } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 // Type for duplicate file handling
@@ -39,7 +43,9 @@ export default function Home() {
   // Modals
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [createFolderModalOpen, setCreateFolderModalOpen] = useState(false);
+  const [createFileModalOpen, setCreateFileModalOpen] = useState(false);
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
+  const [editFile, setEditFile] = useState<FileItem | null>(null);
   const [detailsFile, setDetailsFile] = useState<FileItem | null>(null);
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
   const [duplicateFiles, setDuplicateFiles] = useState<DuplicateFile[]>([]);
@@ -151,13 +157,23 @@ export default function Home() {
 
   // Filter files based on search and current folder
   const filteredFiles = files.filter(
-    (file) =>
-      file.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (currentFolder === "My Files" ||
-        currentFolder === "Starred" ||
-        currentFolder === "Trash" ||
-        (currentFolder === "Recent" && file.recent) ||
-        (currentFolder === "Shared" && file.shared))
+    (file) => {
+      const searchTerms = searchQuery.toLowerCase().split(' ').filter(Boolean);
+      const fileText = [
+        file.name.toLowerCase(),
+        file.summary?.toLowerCase() || "",
+        ...(file.tags || []).map(t => t.toLowerCase())
+      ].join(" ");
+      
+      const matchesSearch = searchTerms.length === 0 || searchTerms.every(term => fileText.includes(term));
+
+      return matchesSearch &&
+        (currentFolder === "My Files" ||
+          currentFolder === "Starred" ||
+          currentFolder === "Trash" ||
+          (currentFolder === "Recent" && file.recent) ||
+          (currentFolder === "Shared" && file.shared));
+    }
   );
 
   // Check for duplicate files before upload
@@ -833,6 +849,113 @@ export default function Home() {
     loadFiles(null);
   };
 
+  const handleSidebarEditorOpen = () => {
+    if (selectedFiles.length === 0) {
+      toast.error("Select a file first to open in editor");
+      return;
+    }
+
+    const selectedFile = files.find((file) => file.id === selectedFiles[0]);
+    if (!selectedFile) {
+      toast.error("Selected file is not available in current view");
+      return;
+    }
+
+    if (selectedFile.type === "folder") {
+      toast.error("Folders cannot be opened in editor");
+      return;
+    }
+
+    if (!isEditableFile(selectedFile.name, selectedFile.mimeType)) {
+      toast.error(
+        `Unsupported file type for editor. Supported: ${getSupportedEditorExtensionsLabel()}`,
+        { duration: 7000 }
+      );
+      return;
+    }
+
+    setEditFile(selectedFile);
+    setSidebarOpen(false);
+  };
+
+  const handleCreateFile = async (input: {
+    name: string;
+    extension: "py" | "txt" | "md" | "json";
+    content: string;
+  }) => {
+    const token = localStorage.getItem("token");
+    const fileName = `${input.name}.${input.extension}`;
+
+    const duplicateInCurrentFolder = files.some(
+      (file) => !file.trashed && file.type !== "folder" && file.name.toLowerCase() === fileName.toLowerCase()
+    );
+
+    if (duplicateInCurrentFolder) {
+      toast.error(`A file named ${fileName} already exists in this folder`);
+      return;
+    }
+
+    const mimeType =
+      input.extension === "py"
+        ? "text/x-python"
+        : input.extension === "md"
+          ? "text/markdown"
+          : input.extension === "json"
+            ? "application/json"
+            : "text/plain";
+
+    const blob = new Blob([input.content], { type: mimeType });
+    const file = new File([blob], fileName, { type: mimeType });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    if (currentFolder === "My Files" && currentFolderId) {
+      formData.append("folderId", currentFolderId);
+    }
+
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch("/api/files", {
+      method: "POST",
+      headers,
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || "Failed to create file");
+    }
+
+    const data = await response.json();
+    const createdFile = data.file;
+
+    const editorFile: FileItem = {
+      id: createdFile.id,
+      name: createdFile.name,
+      type: createdFile.type,
+      size: Number(createdFile.size || 0),
+      mimeType: createdFile.mimeType,
+      modified: new Date(createdFile.updatedAt || Date.now()).toISOString(),
+      starred: !!createdFile.starred,
+      recent: true,
+      trashed: !!createdFile.trashed,
+      folderId: currentFolder === "My Files" ? currentFolderId : null,
+      summary: null,
+      tags: [],
+    };
+
+    toast.success(`Created ${fileName}`);
+    await loadFiles(currentFolderId || undefined);
+    setSelectedFiles([editorFile.id]);
+    setEditFile(editorFile);
+    setSidebarOpen(false);
+  };
+
   // Handle clicking on a file or folder in the file list
   const handleFileOrFolderClick = (file: FileItem) => {
     if (file.type === "folder") {
@@ -841,8 +964,12 @@ export default function Home() {
       setBreadcrumbPath((prev) => [...prev, { id: file.id, name: file.name }]);
       loadFiles(file.id);
     } else {
-      // Open preview for files
-      setPreviewFile(file);
+      // Open editor or preview depending on extension
+      if (isEditableFile(file.name, file.mimeType)) {
+        setEditFile(file);
+      } else {
+        setPreviewFile(file);
+      }
     }
   };
 
@@ -921,6 +1048,8 @@ export default function Home() {
           onClose={() => setSidebarOpen(false)}
           onUploadClick={() => setUploadModalOpen(true)}
           onFolderClick={() => setCreateFolderModalOpen(true)}
+          onEditorClick={handleSidebarEditorOpen}
+          onCreateFileClick={() => setCreateFileModalOpen(true)}
         />
 
         {/* Main Content */}
@@ -929,7 +1058,12 @@ export default function Home() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           onFileClick={handleFileOrFolderClick}
-          onFilePreview={(file) => file.type !== "folder" && setPreviewFile(file)}
+          onFilePreview={(file) => {
+            if (file.type === "folder") return;
+            if (isEditableFile(file.name, file.mimeType)) setEditFile(file);
+            else setPreviewFile(file);
+          }}
+          onFileEdit={(file) => setEditFile(file)}
           onFileDelete={handleDelete}
           onFileRestore={handleRestore}
           onFilePermanentDelete={handlePermanentDelete}
@@ -979,6 +1113,11 @@ export default function Home() {
         onUpload={handleUploadRequest}
       />
 
+      <ZipDownloadButton 
+        selectedFiles={files.filter(f => selectedFiles.includes(f.id))}
+        onClearSelection={() => setSelectedFiles([])}
+      />
+
       <DuplicateFileModal
         isOpen={duplicateModalOpen}
         duplicates={duplicateFiles}
@@ -994,9 +1133,34 @@ export default function Home() {
         onCreateFolder={handleCreateFolder}
       />
 
+      <CreateFileModal
+        isOpen={createFileModalOpen}
+        onClose={() => setCreateFileModalOpen(false)}
+        existingFileNames={files.filter((file) => !file.trashed && file.type !== "folder").map((file) => file.name)}
+        onCreateFile={handleCreateFile}
+      />
+
+      {editFile && (
+        <EditorModal
+          file={editFile}
+          onClose={() => setEditFile(null)}
+          onUpdated={() => {
+            loadFiles(currentFolderId || undefined);
+            setEditFile(null);
+          }}
+        />
+      )}
+
       <AnimatePresence>
         {previewFile && (
-          <PreviewModal file={previewFile} onClose={() => setPreviewFile(null)} />
+          <PreviewModal
+            file={previewFile}
+            onClose={() => setPreviewFile(null)}
+            onEdit={(file) => {
+              setPreviewFile(null);
+              setEditFile(file);
+            }}
+          />
         )}
       </AnimatePresence>
 
@@ -1006,6 +1170,7 @@ export default function Home() {
         isOpen={detailsFile !== null}
         onClose={() => setDetailsFile(null)}
         onStar={handleStar}
+        onEdit={(file) => setEditFile(file)}
         onDelete={(fileId) => {
           handleDelete(fileId);
           setDetailsFile(null);

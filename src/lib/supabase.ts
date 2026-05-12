@@ -83,6 +83,36 @@ export async function uploadFileToSupabase(
 }
 
 /**
+ * Update file in Supabase Storage
+ */
+export async function updateFileInSupabase(
+  filePath: string,
+  fileBuffer: Buffer,
+  contentType: string
+): Promise<string> {
+  if (!supabaseAdmin) throw new Error('Supabase not configured: missing NEXT_PUBLIC_SUPABASE_URL');
+  
+  const { data, error } = await supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .upload(filePath, fileBuffer, {
+      contentType,
+      upsert: true, // Key difference: upsert is true
+    });
+
+  if (error) {
+    console.error('Supabase update error:', error);
+    throw new Error(`Failed to update in Supabase Storage: ${error.message} (Bucket: ${STORAGE_BUCKET})`);
+  }
+
+  // Get public URL
+  const { data: urlData } = supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .getPublicUrl(filePath);
+
+  return urlData.publicUrl;
+}
+
+/**
  * Get signed URL for file download
  */
 export async function getSignedUrlFromSupabase(

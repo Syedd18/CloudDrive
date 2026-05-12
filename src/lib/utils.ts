@@ -37,3 +37,53 @@ export function formatDate(dateString: string): string {
 export function getFileExtension(filename: string): string {
   return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
 }
+
+export const EDITABLE_TEXT_EXTENSIONS = [
+  "txt",
+  "md",
+  "json",
+  "log",
+];
+
+export const CODE_EDITABLE_EXTENSIONS = [
+  "py",
+];
+
+export function isCodeFile(filename: string, mimeType?: string): boolean {
+  const extension = getFileExtension(filename).toLowerCase();
+
+  if (CODE_EDITABLE_EXTENSIONS.includes(extension)) {
+    return true;
+  }
+
+  return !!mimeType && (
+    mimeType.includes("python") ||
+    mimeType.includes("x-python")
+  );
+}
+
+export function isEditableTextFile(filename: string, mimeType?: string): boolean {
+  const extension = getFileExtension(filename).toLowerCase();
+
+  if (EDITABLE_TEXT_EXTENSIONS.includes(extension)) {
+    return true;
+  }
+
+  return !!mimeType && (
+    mimeType === "text/plain" ||
+    mimeType === "text/markdown" ||
+    mimeType === "application/json"
+  );
+}
+
+export function isEditableFile(filename: string, mimeType?: string): boolean {
+  return isEditableTextFile(filename, mimeType) || isCodeFile(filename, mimeType);
+}
+
+export const SUPPORTED_EDITOR_EXTENSIONS = Array.from(
+  new Set([...EDITABLE_TEXT_EXTENSIONS, ...CODE_EDITABLE_EXTENSIONS])
+).sort();
+
+export function getSupportedEditorExtensionsLabel(): string {
+  return SUPPORTED_EDITOR_EXTENSIONS.map((ext) => `.${ext}`).join(", ");
+}

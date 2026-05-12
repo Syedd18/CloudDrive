@@ -3,6 +3,7 @@ export interface FileItem {
   name: string;
   type: "folder" | "document" | "spreadsheet" | "presentation" | "pdf" | "image" | "video" | "audio" | "archive" | "file";
   size: number;
+  mimeType?: string; // Mime type of the file
   modified: string;
   thumbnail?: string;
   starred: boolean;
@@ -11,6 +12,8 @@ export interface FileItem {
   shared?: boolean;
   sharedWith?: string[];
   folderId?: string | null;  // Parent folder ID
+  summary?: string | null;    // AI Summary
+  tags?: string[];            // AI Tags
 }
 
 export type ViewMode = "grid" | "list";

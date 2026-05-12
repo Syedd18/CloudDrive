@@ -7,6 +7,8 @@ import {
   Star,
   Clock,
   Trash2,
+  Edit3,
+  FilePlus,
   Users,
   Plus,
   ChevronLeft,
@@ -15,10 +17,12 @@ import {
   Cloud,
   HelpCircle,
   Settings,
+  Sparkles,
 } from "lucide-react";
 import { cn, formatFileSize } from "@/lib/utils";
 import { SettingsModal } from "@/components/modals/SettingsModal";
 import { HelpModal } from "@/components/modals/HelpModal";
+import { QuickSummarizerModal } from "@/components/modals/QuickSummarizerModal";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -27,6 +31,8 @@ interface SidebarProps {
   onClose: () => void;
   onUploadClick?: () => void;
   onFolderClick?: () => void;
+  onEditorClick?: () => void;
+  onCreateFileClick?: () => void;
 }
 
 interface StorageInfo {
@@ -49,11 +55,14 @@ export function Sidebar({
   onClose,
   onUploadClick,
   onFolderClick,
+  onEditorClick,
+  onCreateFileClick,
 }: SidebarProps) {
   const [storage, setStorage] = useState<StorageInfo>({ used: 0, total: 15 * 1024 * 1024 * 1024 });
   const [isLoading, setIsLoading] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isQuickSummarizerOpen, setIsQuickSummarizerOpen] = useState(false);
 
   useEffect(() => {
     loadStorageInfo();
@@ -210,6 +219,52 @@ export function Sidebar({
                 </li>
               );
             })}
+            <li>
+              <motion.button
+                onClick={() => setIsQuickSummarizerOpen(true)}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
+                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60"
+                )}
+              >
+                <Sparkles className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                <span className="truncate">Summarize</span>
+              </motion.button>
+            </li>
+            <li>
+              <motion.button
+                onClick={onEditorClick}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
+                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60",
+                  !onEditorClick && "opacity-50 cursor-not-allowed"
+                )}
+                disabled={!onEditorClick}
+              >
+                <Edit3 className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="truncate">Editor</span>
+              </motion.button>
+            </li>
+            <li>
+              <motion.button
+                onClick={onCreateFileClick}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
+                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60",
+                  !onCreateFileClick && "opacity-50 cursor-not-allowed"
+                )}
+                disabled={!onCreateFileClick}
+              >
+                <FilePlus className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="truncate">New File</span>
+              </motion.button>
+            </li>
           </ul>
         </nav>
 
@@ -335,6 +390,10 @@ export function Sidebar({
       </aside>
 
       {/* Modals - Desktop only */}
+      <QuickSummarizerModal
+        isOpen={isQuickSummarizerOpen}
+        onClose={() => setIsQuickSummarizerOpen(false)}
+      />
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}

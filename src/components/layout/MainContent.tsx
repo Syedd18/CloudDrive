@@ -48,6 +48,7 @@ interface MainContentProps {
   onFilePermanentDelete?: (fileId: string) => void;
   onFileStar: (fileId: string) => void;
   onFileRename: (fileId: string, newName: string) => void;
+  onFileEdit?: (file: FileItem) => void;
   onUpload: (files: File[]) => void;
   onUploadClick?: () => void;
   onEmptyTrash?: () => void;
@@ -93,6 +94,7 @@ export function MainContent({
   onFilePermanentDelete,
   onFileStar,
   onFileRename,
+  onFileEdit,
   onUpload,
   onUploadClick,
   onEmptyTrash,
@@ -243,14 +245,8 @@ export function MainContent({
 
   const handleFileSelect = useCallback(
     (fileId: string, event: React.MouseEvent) => {
-      if (event.ctrlKey || event.metaKey) {
-        // Ctrl/Cmd + click: add to or remove from selection
-        if (selectedFiles.includes(fileId)) {
-          onSelectionChange(selectedFiles.filter((id) => id !== fileId));
-        } else {
-          onSelectionChange([...selectedFiles, fileId]);
-        }
-      } else if (event.shiftKey && selectedFiles.length > 0) {
+      // If clicking the file naturally, act as a toggle (additive) since we added checkboxes
+      if (event.shiftKey && selectedFiles.length > 0) {
         // Shift + click: range selection
         const lastSelected = selectedFiles[selectedFiles.length - 1];
         const lastIndex = sortedFiles.findIndex((f) => f.id === lastSelected);
@@ -260,11 +256,11 @@ export function MainContent({
         const rangeIds = sortedFiles.slice(start, end + 1).map((f) => f.id);
         onSelectionChange(Array.from(new Set([...selectedFiles, ...rangeIds])));
       } else {
-        // Normal click: toggle selection (select if not selected, deselect if selected)
+        // Normal click acts as additive (toggle) because we have dedicated checkboxes now
         if (selectedFiles.includes(fileId)) {
           onSelectionChange(selectedFiles.filter((id) => id !== fileId));
         } else {
-          onSelectionChange([fileId]);
+          onSelectionChange([...selectedFiles, fileId]);
         }
       }
     },
@@ -616,11 +612,13 @@ export function MainContent({
                     key={file.id}
                     file={file}
                     isSelected={selectedFiles.includes(file.id)}
+                    onSelect={(id, e) => handleFileSelect(id, e)}
                     onClick={(e) => handleFileSelect(file.id, e)}
                     onDoubleClick={() => onFileClick(file)}
                     onDelete={() => onFileDelete(file.id)}
                     onStar={() => onFileStar(file.id)}
                     onRename={(name) => onFileRename(file.id, name)}
+                    onEdit={() => onFileEdit?.(file)}
                     onPreview={() => onFilePreview?.(file)}
                     onDetails={() => onFileDetails?.(file)}
                     isInTrash={currentFolder === "Trash"}
@@ -689,11 +687,13 @@ export function MainContent({
                     key={file.id}
                     file={file}
                     isSelected={selectedFiles.includes(file.id)}
+                    onSelect={(id, e) => handleFileSelect(id, e)}
                     onClick={(e) => handleFileSelect(file.id, e)}
                     onDoubleClick={() => onFileClick(file)}
                     onDelete={() => onFileDelete(file.id)}
                     onStar={() => onFileStar(file.id)}
                     onRename={(name) => onFileRename(file.id, name)}
+                    onEdit={() => onFileEdit?.(file)}
                     onPreview={() => onFilePreview?.(file)}
                     onDetails={() => onFileDetails?.(file)}
                     isInTrash={currentFolder === "Trash"}

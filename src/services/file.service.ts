@@ -1,3 +1,5 @@
+import { summarizeText, extractTags } from '@/lib/groq';
+import * as mammoth from 'mammoth';
 import {
   fileRepository,
   FileQueryOptions,
@@ -93,6 +95,37 @@ export class FileService {
     // Upload to Supabase Storage
     const fileUrl = await uploadFileToSupabase(filePath, fileBuffer, mimeType);
 
+    let summary = null;
+    let tags = [];
+    let extractedText = null;
+
+    // Trigger AI Summarization & Tagging if it is text/code/md
+    const isTextFile = ['txt', 'md', 'js', 'ts', 'jsx', 'tsx', 'html', 'css', 'json', 'py', 'rtf', 'csv'].includes(fileExtension || '');
+    
+    if (isTextFile || fileExtension === 'pdf' || fileExtension === 'docx') {
+        try {
+            if (fileExtension === 'pdf') {
+              const pdfParse = require('pdf-parse/lib/pdf-parse.js');
+              const pdfData = await pdfParse(fileBuffer);
+              extractedText = pdfData.text;
+            } else if (fileExtension === 'docx') {
+              const result = await mammoth.extractRawText({ buffer: fileBuffer });
+              extractedText = result.value;
+            } else {
+              extractedText = fileBuffer.toString('utf-8');
+            }
+            
+              // Limit extracted text to roughly 3,000 characters to stay within Groq free tier
+              const textToAnalyze = extractedText.substring(0, 3000);
+
+            summary = await summarizeText(textToAnalyze);
+            tags = await extractTags(textToAnalyze, filename);
+            console.log("✅ AI Processed file:", { summary, tags });
+        } catch (e) {
+            console.error("AI Error:", e);
+        }
+    }
+
     // Create database record
     const file = await fileRepository.create({
       name: filename,
@@ -172,6 +205,8 @@ export class FileService {
         sharedWith: file.sharedWith.map((s) => s.email),
         modified: file.updatedAt.toISOString(),
         folderId: file.folderId, // Include parent folder ID
+        summary: file.summary,
+        tags: file.tags,
         recent:
           new Date(file.updatedAt).getTime() >
           Date.now() - 7 * 24 * 60 * 60 * 1000,
