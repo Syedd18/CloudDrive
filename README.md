@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="./public/logo.png" alt="CloudDrive Logo" width="140"/>
-
 # ☁️ CloudDrive
 
 ### AI-Powered Cloud Storage & Intelligent Workspace
@@ -15,103 +13,76 @@ Store • Organize • Search • Edit • Share • Collaborate
 <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
 <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" />
 <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
-<img src="https://img.shields.io/badge/NextAuth-000000?style=for-the-badge" />
+<img src="https://img.shields.io/badge/NextAuth-Authentication-black?style=for-the-badge" />
 <img src="https://img.shields.io/badge/Groq-AI-blue?style=for-the-badge" />
 <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
 
 </p>
 
 <p align="center">
-
-<a href="#-features">Features</a> •
-<a href="#-architecture">Architecture</a> •
-<a href="#-tech-stack">Tech Stack</a> •
-<a href="#-getting-started">Getting Started</a> •
-<a href="#-api-reference">API</a> •
-<a href="#-deployment">Deployment</a>
-
+<a href="#overview">Overview</a> •
+<a href="#features">Features</a> •
+<a href="#architecture">Architecture</a> •
+<a href="#tech-stack">Tech Stack</a> •
+<a href="#getting-started">Getting Started</a> •
+<a href="#api-reference">API Reference</a> •
+<a href="#deployment">Deployment</a>
 </p>
 
 </div>
 
 ---
 
-# 🚀 Overview
+# Overview
 
-CloudDrive is a modern, AI-powered cloud storage platform built for developers, students, teams, and businesses who need more than traditional file storage.
+CloudDrive is a modern cloud file management platform built with **Next.js 14**, **TypeScript**, **Prisma**, **NextAuth**, and **Supabase Storage**.
 
-Unlike conventional cloud drives, CloudDrive combines secure storage, intelligent search, AI-generated summaries, browser-based editing, public sharing, and collaborative workflows into a single unified workspace.
+It combines secure file storage, folder organization, AI-assisted discovery, inline editing, public sharing, browser-based Python execution, and responsive dashboards into a single intelligent workspace.
 
-Whether you're managing documents, code files, reports, research papers, or client assets, CloudDrive helps you organize and discover information faster using AI-powered metadata extraction and semantic search.
-
----
-
-# ✨ Why CloudDrive?
-
-Traditional storage solutions focus on storing files.
-
-CloudDrive focuses on helping users **understand, organize, discover, and collaborate with their files intelligently.**
-
-| Traditional Storage | CloudDrive |
-|--------------------|------------|
-| File Storage | ✅ |
-| Folder Organization | ✅ |
-| AI Search | ✅ |
-| AI Summaries | ✅ |
-| Metadata Extraction | ✅ |
-| Browser Code Editing | ✅ |
-| Python Execution | ✅ |
-| Public Upload Portals | ✅ |
-| Semantic Discovery | ✅ |
-| Modern SaaS Experience | ✅ |
+CloudDrive is designed for developers, students, teams, and organizations that need more than traditional cloud storage.
 
 ---
 
-# 📸 Screenshots
+# Why CloudDrive?
 
-> Add your screenshots here.
+Unlike conventional storage platforms, CloudDrive adds intelligence directly into the file management workflow.
 
-## Dashboard
+### Key Advantages
 
-![Dashboard](./docs/screenshots/dashboard.png)
-
-## AI Search
-
-![AI Search](./docs/screenshots/ai-search.png)
-
-## File Editor
-
-![Editor](./docs/screenshots/editor.png)
-
-## Public Sharing
-
-![Sharing](./docs/screenshots/sharing.png)
+- 🤖 AI-powered file discovery
+- 📝 Built-in file editor
+- ☁️ Secure cloud storage
+- 🔎 Semantic search
+- 📂 Hierarchical folder organization
+- 🔗 Public file sharing
+- 📥 File-drop upload portals
+- 🐍 Browser-side Python execution
+- 📱 Fully responsive dashboard
 
 ---
 
-# ⚡ Features
+# Features
 
-## 🔐 Authentication & Security
+## 🔐 Authentication & User Management
 
-Secure user authentication powered by NextAuth and JWT-based authorization.
+Secure account management powered by NextAuth.
 
-### Features
+### Includes
 
 - User Registration
-- Login & Logout
+- User Login
 - Session Management
+- JWT Authorization
 - Protected Routes
-- JWT Verification
-- Password Hashing
-- Avatar Uploads
 - Password Reset Flow
-- Secure API Authorization
+- Avatar Upload Support
+- Profile Management
 
 ---
 
 ## ☁️ File Management
 
-Complete cloud file lifecycle management.
+Manage the complete lifecycle of files from a unified dashboard.
 
 ### Capabilities
 
@@ -120,55 +91,53 @@ Complete cloud file lifecycle management.
 - Rename Files
 - Delete Files
 - Trash & Restore
-- Favorite Files
+- Star Files
 - Duplicate Detection
-- Multi-Select Operations
+- Multi-Selection Support
 - ZIP Downloads
-- Metadata Management
+- File Metadata Management
 
 ---
 
 ## 📂 Folder Organization
 
-Manage files using a hierarchical folder structure.
+Organize files using hierarchical folder structures.
 
 ### Features
 
 - Nested Folders
 - Breadcrumb Navigation
-- Folder-Aware Search
-- Tree-Based Data Model
-- Organized Workspace Experience
+- Folder-Aware Browsing
+- Tree-Based Storage Model
+- Structured File Organization
 
 ---
 
-## 🤖 AI-Powered Intelligence
+## 🤖 AI Features
 
-CloudDrive integrates AI directly into the storage workflow.
+CloudDrive integrates AI directly into the storage experience.
 
-### AI Features
+### Smart Summaries
 
-#### Smart Summaries
-
-Generate concise summaries from:
+Generate summaries from:
 
 - PDF Files
 - DOCX Documents
-- Markdown Files
 - Text Files
+- Markdown Files
 
-#### AI Metadata Extraction
+### AI Metadata Extraction
 
 Automatically extracts:
 
 - Keywords
 - Tags
-- Search Metadata
+- Searchable Metadata
 - Content Insights
 
-#### Semantic Search
+### AI Search
 
-Search using:
+Search across:
 
 - File Names
 - Tags
@@ -177,36 +146,9 @@ Search using:
 
 ---
 
-## 🔗 Sharing & Collaboration
+## 📝 Inline Editing
 
-Share content securely with anyone.
-
-### Sharing Features
-
-#### Private Sharing
-
-Share files with selected users.
-
-#### Public Share Links
-
-Generate secure public URLs.
-
-#### File Drop Links
-
-Allow external users to upload files directly into a target folder.
-
-Perfect for:
-
-- Client Deliverables
-- Assignment Collection
-- Recruitment Documents
-- Public Submissions
-
----
-
-## 📝 Built-In Editor
-
-Edit files directly from the browser.
+Edit files directly inside the browser.
 
 ### Supported Formats
 
@@ -219,28 +161,54 @@ Edit files directly from the browser.
 
 - Monaco Editor
 - Syntax Highlighting
-- Instant Updates
-- Code Editing Experience
-- Save Directly to Storage
+- Live Editing
+- Direct Save to Storage
 
 ---
 
-## 🐍 Browser Python Execution
+## 🐍 Browser Python Runtime
 
-Run Python directly in the browser using Pyodide.
+Run Python scripts directly in the browser using Pyodide.
 
 ### Benefits
 
-- No Server Required
-- Instant Execution
-- Learning & Experimentation
-- Script Testing
+- No Backend Execution Required
+- Instant Testing
+- Educational Workflows
+- Lightweight Automation
+
+---
+
+## 🔗 Sharing & Public Access
+
+Share files securely with internal users or external audiences.
+
+### Sharing Features
+
+#### Private Sharing
+
+Grant access to selected users.
+
+#### Public Links
+
+Generate public shareable URLs.
+
+#### File Drop Links
+
+Allow external users to upload files into specific folders.
+
+### Ideal For
+
+- Client Deliverables
+- Assignment Collection
+- Recruitment Portals
+- Public Submissions
 
 ---
 
 ## 📱 Modern User Experience
 
-Designed for productivity and usability.
+Built with productivity and responsiveness in mind.
 
 ### UI Features
 
@@ -249,16 +217,15 @@ Designed for productivity and usability.
 - Mobile Navigation
 - Grid View
 - List View
-- Breadcrumb Navigation
 - Skeleton Loaders
 - Toast Notifications
 - Theme Support
 - Framer Motion Animations
-- Reusable Components
+- Reusable UI Components
 
 ---
 
-# 🏗 Architecture
+# Architecture
 
 ```text
                          ┌────────────────────┐
@@ -269,7 +236,7 @@ Designed for productivity and usability.
                                    ▼
                          ┌────────────────────┐
                          │     API Layer      │
-                         │ Route Handlers     │
+                         │  Route Handlers    │
                          └─────────┬──────────┘
                                    │
                 ┌──────────────────┼──────────────────┐
@@ -282,18 +249,18 @@ Designed for productivity and usability.
                     │
                     ▼
           ┌──────────────────────┐
-          │      Groq AI         │
+          │       Groq AI        │
           │ Summaries & Search   │
           └──────────────────────┘
 ```
 
 ---
 
-# 🛠 Tech Stack
+# Tech Stack
 
 ## Frontend
 
-<p align="left">
+<p>
 <img src="https://skillicons.dev/icons?i=nextjs,react,typescript,tailwind" />
 </p>
 
@@ -308,22 +275,18 @@ Designed for productivity and usability.
 
 ## Backend
 
-<p align="left">
+<p>
 <img src="https://skillicons.dev/icons?i=nodejs,postgres,prisma" />
 </p>
 
 - PostgreSQL
 - Prisma ORM
-- Route Handlers
+- Next.js Route Handlers
 - Winston Logging
 
 ---
 
 ## Authentication
-
-<p align="left">
-<img src="https://skillicons.dev/icons?i=nodejs" />
-</p>
 
 - NextAuth
 - JWT Authorization
@@ -333,7 +296,7 @@ Designed for productivity and usability.
 
 ## Storage
 
-<p align="left">
+<p>
 <img src="https://skillicons.dev/icons?i=supabase" />
 </p>
 
@@ -347,8 +310,8 @@ Designed for productivity and usability.
 - Groq SDK
 - pdf-parse
 - Mammoth
-- Metadata Extraction
-- AI Search Engine
+- AI Metadata Extraction
+- Semantic Search
 
 ---
 
@@ -361,11 +324,12 @@ Designed for productivity and usability.
 
 ---
 
-# 📊 Platform Capabilities
+# Platform Capabilities
 
 | Capability | Supported |
 |------------|------------|
 | Cloud Storage | ✅ |
+| Folder Management | ✅ |
 | AI Search | ✅ |
 | AI Summaries | ✅ |
 | Metadata Extraction | ✅ |
@@ -373,14 +337,13 @@ Designed for productivity and usability.
 | File Drop Links | ✅ |
 | Browser Editing | ✅ |
 | Python Runtime | ✅ |
-| Mobile Responsive | ✅ |
-| Folder Hierarchy | ✅ |
 | ZIP Downloads | ✅ |
+| Mobile Responsive | ✅ |
 | Authentication | ✅ |
 
 ---
 
-# 📁 Project Structure
+# Project Structure
 
 ```bash
 cloud-drive/
@@ -397,13 +360,12 @@ cloud-drive/
 ├── next.config.js
 ├── tailwind.config.ts
 ├── package.json
-│
 └── README.md
 ```
 
 ---
 
-# 🚀 Getting Started
+# Getting Started
 
 ## Clone Repository
 
@@ -423,15 +385,9 @@ npm install
 
 ---
 
-## Configure Environment Variables
+## Environment Variables
 
-Create:
-
-```bash
-.env
-```
-
-Add:
+Create a `.env` file in the project root.
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE"
@@ -457,6 +413,12 @@ SMTP_PASS=""
 SMTP_FROM=""
 ```
 
+### Notes
+
+- `GROQ_API_KEY` is required for AI search and summaries.
+- `SMTP_*` variables are required only for password reset emails.
+- `MAX_FILE_SIZE` controls upload validation limits.
+
 ---
 
 ## Database Setup
@@ -467,7 +429,7 @@ Generate Prisma Client:
 npm run db:generate
 ```
 
-Push Schema:
+Push Database Schema:
 
 ```bash
 npm run db:push
@@ -481,7 +443,7 @@ npm run db:push
 npm run dev
 ```
 
-Visit:
+Open:
 
 ```text
 http://localhost:3000
@@ -489,104 +451,104 @@ http://localhost:3000
 
 ---
 
-# 📜 Available Scripts
+# Available Scripts
 
 | Command | Description |
 |----------|------------|
-| npm run dev | Development Server |
-| npm run build | Production Build |
-| npm run start | Production Server |
-| npm run lint | Lint Project |
+| npm run dev | Start Development Server |
+| npm run build | Create Production Build |
+| npm run start | Start Production Server |
+| npm run lint | Run ESLint |
 | npm run db:generate | Generate Prisma Client |
 | npm run db:push | Push Database Schema |
 | npm run db:studio | Open Prisma Studio |
-| npm run check-env | Validate Environment |
-| npm run vercel-build | Vercel Build Process |
+| npm run check-env | Validate Environment Variables |
+| npm run vercel-build | Vercel Build Script |
 
 ---
 
-# 🔌 API Reference
+# API Reference
 
 ## Authentication
 
-| Endpoint | Method |
-|-----------|---------|
-| /api/auth/register | POST |
-| /api/auth/login | POST |
-| /api/auth/me | GET, PATCH |
-| /api/auth/[...nextauth] | NextAuth |
+| Endpoint | Method(s) | Description |
+|-----------|-----------|-------------|
+| `/api/auth/register` | POST | Register a User |
+| `/api/auth/login` | POST | User Login |
+| `/api/auth/me` | GET, PATCH | User Profile |
+| `/api/auth/[...nextauth]` | NextAuth | Authentication Handler |
 
 ---
 
 ## Files
 
-| Endpoint | Method |
-|-----------|---------|
-| /api/files | GET, POST |
-| /api/files/[id] | GET, PATCH, DELETE |
-| /api/files/[id]/content | GET, PUT |
-| /api/files/[id]/download | GET |
-| /api/files/[id]/share | POST |
-| /api/files/[id]/share/link | POST |
-| /api/files/presign | POST |
-| /api/files/confirm | POST |
-| /api/files/trash | POST |
+| Endpoint | Method(s) | Description |
+|-----------|-----------|-------------|
+| `/api/files` | GET, POST | List & Upload Files |
+| `/api/files/[id]` | GET, PATCH, DELETE | File Operations |
+| `/api/files/[id]/content` | GET, PUT | File Content |
+| `/api/files/[id]/download` | GET | Download File |
+| `/api/files/[id]/share` | POST | Share File |
+| `/api/files/[id]/share/link` | POST | Generate Public Link |
+| `/api/files/presign` | POST | Generate Upload URL |
+| `/api/files/confirm` | POST | Confirm Upload |
+| `/api/files/trash` | POST | Trash Operations |
 
 ---
 
 ## AI Services
 
-| Endpoint | Method |
-|-----------|---------|
-| /api/summarize | POST |
-| /api/files/[id]/summarize | POST |
-| /api/ai/search | POST |
+| Endpoint | Method(s) | Description |
+|-----------|-----------|-------------|
+| `/api/summarize` | POST | Summarize Local File |
+| `/api/files/[id]/summarize` | POST | Summarize Stored File |
+| `/api/ai/search` | POST | AI-Powered Search |
 
 ---
 
 ## Sharing & Storage
 
-| Endpoint | Method |
-|-----------|---------|
-| /api/storage | GET |
-| /api/share/[id] | GET, POST |
-| /api/drop-links | GET, POST |
-| /api/drop-links/[token] | GET, POST |
+| Endpoint | Method(s) | Description |
+|-----------|-----------|-------------|
+| `/api/storage` | GET | Storage Statistics |
+| `/api/share/[id]` | GET, POST | Public File Access |
+| `/api/drop-links` | GET, POST | Drop Link Management |
+| `/api/drop-links/[token]` | GET, POST | Public Upload Portal |
 
 ---
 
-# 🔒 Security
+# Security
 
 CloudDrive follows modern security best practices.
 
 ### Security Features
 
-- JWT Verification
-- Session Management
+- JWT Validation
+- Protected API Routes
+- Secure Sessions
 - Password Hashing
-- Secure Upload URLs
-- Protected APIs
-- Role-Based Access Validation
+- Access Control Enforcement
+- Presigned Upload URLs
 - Share Token Validation
-- Storage Access Controls
+- Storage Access Restrictions
 
 ---
 
-# 🚢 Deployment
+# Deployment
 
 ## Deployment Checklist
 
-- Configure PostgreSQL
+- Configure PostgreSQL Database
 - Configure Supabase Storage
-- Configure Environment Variables
+- Set Environment Variables
 - Generate Prisma Client
-- Set NEXTAUTH_URL
+- Configure NextAuth URL
 - Configure Groq API Key
-- Verify Storage Bucket Access
+- Verify Storage Permissions
 
 ---
 
-## Build Application
+## Production Build
 
 ```bash
 npm run build
@@ -602,9 +564,9 @@ npm run start
 
 ---
 
-# 🗺 Roadmap
+# Roadmap
 
-### Upcoming Features
+### Planned Improvements
 
 - Real-Time Collaboration
 - File Version History
@@ -613,13 +575,13 @@ npm run start
 - Activity Timeline
 - File Comments
 - Advanced Permissions
-- AI Auto Classification
+- AI File Classification
 - Desktop Application
 - WebDAV Support
 
 ---
 
-# 🤝 Contributing
+# Contributing
 
 Contributions are welcome.
 
@@ -631,9 +593,9 @@ Contributions are welcome.
 
 ---
 
-# 📄 License
+# License
 
-Licensed under the MIT License.
+This project is licensed under the MIT License.
 
 ---
 
@@ -643,10 +605,10 @@ Licensed under the MIT License.
 
 ### Intelligent Cloud Storage for Modern Workflows
 
-<p align="center">
+<p>
 <img src="https://skillicons.dev/icons?i=nextjs,typescript,react,postgres,prisma,supabase" />
 </p>
 
-Built with ❤️ using Next.js, TypeScript, Prisma, Supabase, PostgreSQL, and AI.
+Built with Next.js, TypeScript, Prisma, PostgreSQL, Supabase, and AI.
 
 </div>
