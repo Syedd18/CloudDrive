@@ -93,7 +93,7 @@ export default function LandingPage() {
             </Link>
             <Link 
               href="/login" 
-              className="flex items-center justify-center px-4 h-9.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-650/10 hover:shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-150"
+              className="flex items-center justify-center px-4 h-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-650/10 hover:shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-150"
             >
               Get Started Free
             </Link>
@@ -180,7 +180,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-slate-900 dark:text-white max-w-5xl mx-auto font-sans"
+            className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-slate-900 dark:text-white max-w-5xl mx-auto font-sans"
           >
             Your Workspace. <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-650 via-indigo-500 to-purple-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
@@ -207,14 +207,14 @@ export default function LandingPage() {
           >
             <Link 
               href="/login" 
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 h-11.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/20 hover:-translate-y-0.5 transition-all duration-150"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/20 hover:-translate-y-0.5 transition-all duration-150"
             >
               <span>Get Started For Free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a 
               href="#demo" 
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 h-11.5 border border-slate-250 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-350 hover:-translate-y-0.5 transition-all duration-150 shadow-sm"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 h-12 border border-slate-250 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-350 hover:-translate-y-0.5 transition-all duration-150 shadow-sm"
             >
               <span>Explore Interactive Demo</span>
             </a>
@@ -284,38 +284,36 @@ export default function LandingPage() {
                     <span className="w-5 h-5 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-500">⌘</span>
                     <span className="w-5 h-5 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-500">K</span>
                   </div>
-                </div>
-
-                {/* Mock Content list */}
+                </div>                {/* Mock Content list */}
                 <div className="flex-1 p-4 overflow-y-auto space-y-3">
-                  <div className="p-3 border border-slate-200/80 dark:border-slate-800/85 rounded-xl bg-white/50 dark:bg-slate-900/30 flex items-center justify-between hover:border-slate-350 dark:hover:border-slate-700 transition-colors">
+                  <div className="p-3 border border-slate-200/80 dark:border-slate-800/85 rounded-xl bg-white/50 dark:bg-slate-900/30 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between hover:border-slate-350 dark:hover:border-slate-700 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center text-emerald-600">
-                        <FileText className="w-4.5 h-4.5" />
+                        <FileText className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="block text-xs font-bold text-slate-900 dark:text-white">marketing_strategy.md</span>
                         <span className="block text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Updated 2h ago • 14.5 KB</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap sm:shrink-0">
                       <span className="text-[9px] bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100/50 dark:border-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full font-bold">#growth</span>
                       <span className="text-[9px] bg-purple-50 dark:bg-purple-950/50 border border-purple-100/50 dark:border-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded-full font-bold">#strategy</span>
                     </div>
                   </div>
 
-                  <div className="p-3 border border-indigo-500/30 dark:border-indigo-500/40 rounded-xl bg-indigo-50/10 dark:bg-indigo-950/10 flex items-center justify-between relative overflow-hidden">
+                  <div className="p-3 border border-indigo-500/30 dark:border-indigo-500/40 rounded-xl bg-indigo-50/10 dark:bg-indigo-950/10 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between relative overflow-hidden">
                     <div className="absolute top-0 right-0 h-full w-1 bg-indigo-500" />
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/35 flex items-center justify-center text-indigo-600">
-                        <FileText className="w-4.5 h-4.5" />
+                        <FileText className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="block text-xs font-bold text-slate-900 dark:text-white">q2_financials.xlsx</span>
                         <span className="block text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Updated 5h ago • 120.2 KB</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 sm:shrink-0">
                       <span className="text-[9px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
                         <Sparkles className="w-2.5 h-2.5" />
                         AI Summary
@@ -323,17 +321,17 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <div className="p-3 border border-slate-200/80 dark:border-slate-800/85 rounded-xl bg-white/50 dark:bg-slate-900/30 flex items-center justify-between">
+                  <div className="p-3 border border-slate-200/80 dark:border-slate-800/85 rounded-xl bg-white/50 dark:bg-slate-900/30 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center text-amber-600">
-                        <FileText className="w-4.5 h-4.5" />
+                        <FileText className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="block text-xs font-bold text-slate-900 dark:text-white">user_onboarding.py</span>
                         <span className="block text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Updated 1d ago • 2.8 KB</span>
                       </div>
                     </div>
-                    <span className="text-[10px] text-slate-400 font-medium">108 lines</span>
+                    <span className="text-[10px] text-slate-400 font-medium sm:shrink-0">108 lines</span>
                   </div>
                 </div>
               </div>
@@ -574,7 +572,7 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Card 1 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <BrainCircuit className="w-5 h-5 text-indigo-650 dark:text-indigo-400" />
             </div>
@@ -585,7 +583,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 2 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <Code className="w-5 h-5 text-indigo-605 dark:text-indigo-400" />
             </div>
@@ -596,7 +594,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 3 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <Share2 className="w-5 h-5 text-indigo-650 dark:text-indigo-400" />
             </div>
@@ -607,7 +605,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 4 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <Shield className="w-5 h-5 text-indigo-650 dark:text-indigo-400" />
             </div>
@@ -618,7 +616,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 5 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <Database className="w-5 h-5 text-indigo-655 dark:text-indigo-400" />
             </div>
@@ -629,7 +627,7 @@ export default function LandingPage() {
           </div>
 
           {/* Card 6 */}
-          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6.5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
+          <div className="bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-900/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-800 hover:-translate-y-1 transition-all duration-200">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/20 flex items-center justify-center mb-5">
               <Sparkles className="w-5 h-5 text-indigo-650 dark:text-indigo-400" />
             </div>
@@ -686,7 +684,7 @@ export default function LandingPage() {
               </div>
               <Link 
                 href="/login" 
-                className="mt-8 w-full flex items-center justify-center h-10 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-905 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-all shadow-sm"
+                className="mt-8 w-full flex items-center justify-center h-10 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-all shadow-sm"
               >
                 Sign Up Free
               </Link>
@@ -770,7 +768,7 @@ export default function LandingPage() {
               </div>
               <Link 
                 href="/login" 
-                className="mt-8 w-full flex items-center justify-center h-10 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-905 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-all shadow-sm"
+                className="mt-8 w-full flex items-center justify-center h-10 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 transition-all shadow-sm"
               >
                 Contact Sales
               </Link>

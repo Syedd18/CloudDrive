@@ -153,17 +153,21 @@ export default function LoginPage() {
       </div>
 
       {/* Right Column: Form Panel */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 xl:px-24 relative z-10 bg-white/40 dark:bg-slate-950/20 backdrop-blur-3xl">
+      <div className="flex-1 flex flex-col justify-center px-6 py-10 md:px-12 lg:px-16 xl:px-24 relative z-10 bg-white/40 dark:bg-slate-950/20 backdrop-blur-3xl min-h-screen">
         
-        {/* Mobile Header (Back home link) */}
-        <div className="absolute top-6 left-6 lg:hidden">
-          <Link href="/landing" className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors">
-            <Cloud className="w-4.5 h-4.5 text-indigo-650" />
-            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">CloudDrive</span>
-          </Link>
-        </div>
-
         <div className="w-full max-w-sm lg:mr-auto lg:ml-0 mx-auto z-10">
+          {/* Logo inside layout flow for mobile/tablet to avoid absolute overlaps */}
+          <div className="lg:hidden mb-8">
+            <Link href="/landing" className="inline-flex items-center gap-2.5 hover:opacity-90 transition-opacity group">
+              <div className="w-9 h-9 rounded-xl bg-indigo-650 flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-transform">
+                <Cloud className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                Cloud<span className="text-indigo-600 dark:text-indigo-400">Drive</span>
+              </span>
+            </Link>
+          </div>
+
           {/* Header */}
           <div className="text-left mb-8">
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -180,7 +184,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-3 px-4 h-10 border border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-350 text-xs font-bold rounded-xl transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-3 px-4 h-11 border border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-350 text-xs font-bold rounded-xl transition-all shadow-sm"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -234,7 +238,7 @@ export default function LoginPage() {
                     required={!isLogin}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
+                    className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
                     placeholder="John Doe"
                   />
                 </motion.div>
@@ -246,14 +250,14 @@ export default function LoginPage() {
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 dark:text-slate-550" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-550" />
                 <input
                   id="email"
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full h-10 pl-10.5 pr-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-550 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
+                  className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-550 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
                   placeholder="you@example.com"
                 />
               </div>
@@ -271,21 +275,21 @@ export default function LoginPage() {
                 )}
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 dark:text-slate-550" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-550" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full h-10 pl-10.5 pr-10.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-550 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
+                  className="w-full h-11 pl-11 pr-11 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-550 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
                   placeholder={isLogin ? "••••••••" : "Password123"}
                   minLength={isLogin ? 1 : 8}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-350"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-350"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -295,7 +299,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-10.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-650/10 hover:shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-150 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-6"
+              className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-650/10 hover:shadow-indigo-650/20 hover:-translate-y-0.5 transition-all duration-150 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-6"
             >
               {isLoading ? (
                 <>
