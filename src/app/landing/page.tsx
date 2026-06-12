@@ -235,9 +235,9 @@ export default function LandingPage() {
             </div>
 
             {/* Dashboard Container Mock */}
-            <div className="rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950/80 border border-slate-200/60 dark:border-slate-800/60 flex flex-col md:flex-row h-[420px] text-left">
+            <div className="rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950/80 border border-slate-200/60 dark:border-slate-800/60 flex flex-col sm:flex-row h-[340px] sm:h-[400px] md:h-[480px] lg:h-[540px] text-left">
               {/* Mock Sidebar */}
-              <div className="w-full md:w-52 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900/40 p-4 pt-10 flex flex-col gap-5 shrink-0 hidden sm:flex">
+              <div className="w-full sm:w-48 md:w-52 border-b sm:border-b-0 sm:border-r border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900/40 p-4 pt-10 flex flex-col gap-5 shrink-0 hidden sm:flex">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Storage</span>
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -653,7 +653,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-md md:max-w-2xl lg:max-w-none mx-auto items-stretch">
             {/* Free */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-8 flex flex-col justify-between shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div>

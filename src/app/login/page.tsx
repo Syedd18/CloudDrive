@@ -75,13 +75,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-350 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col lg:flex-row font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-350 relative overflow-hidden">
       
       {/* Background Grid Pattern (shared) */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
       {/* Left Column: Visual branding and IDE mockup showcase (visible on desktop) */}
-      <div className="hidden md:flex md:w-[45%] lg:w-[50%] bg-slate-900 dark:bg-slate-950 text-white flex-col justify-between p-12 relative overflow-hidden border-r border-slate-200/50 dark:border-slate-900/50">
+      <div className="hidden lg:flex lg:w-[50%] bg-slate-900 dark:bg-slate-950 text-white flex-col justify-between p-8 lg:p-12 relative overflow-hidden border-r border-slate-200/50 dark:border-slate-900/50">
         
         {/* Subtle decorative grid overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
@@ -98,7 +98,7 @@ export default function LoginPage() {
         </Link>
 
         {/* Interactive IDE Mockup */}
-        <div className="my-auto max-w-lg z-10 space-y-6">
+        <div className="my-auto max-w-md xl:max-w-lg w-full lg:ml-auto z-10 space-y-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700/50 text-indigo-400 text-xs font-bold shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Summarization & Analysis</span>
@@ -153,17 +153,17 @@ export default function LoginPage() {
       </div>
 
       {/* Right Column: Form Panel */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 md:px-16 lg:px-24 relative z-10 bg-white/40 dark:bg-slate-950/20 backdrop-blur-3xl">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 xl:px-24 relative z-10 bg-white/40 dark:bg-slate-950/20 backdrop-blur-3xl">
         
         {/* Mobile Header (Back home link) */}
-        <div className="absolute top-6 left-6 md:hidden">
+        <div className="absolute top-6 left-6 lg:hidden">
           <Link href="/landing" className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors">
-            <Cloud className="w-4.5 h-4.5 text-indigo-600" />
+            <Cloud className="w-4.5 h-4.5 text-indigo-650" />
             <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">CloudDrive</span>
           </Link>
         </div>
 
-        <div className="w-full max-w-sm mx-auto">
+        <div className="w-full max-w-sm lg:mr-auto lg:ml-0 mx-auto z-10">
           {/* Header */}
           <div className="text-left mb-8">
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
