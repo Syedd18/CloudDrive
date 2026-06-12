@@ -150,7 +150,7 @@ export function DuplicateFileModal({
 
                   <button
                     onClick={() => onRename(duplicates)}
-                    className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg bg-indigo-650 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-colors"
+                    className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-colors"
                   >
                     <Copy className="w-3.5 h-3.5" />
                     Keep Both (Rename)

@@ -45,10 +45,10 @@ const extensionColors: Record<string, { bg: string; icon: string; gradient: stri
   xls: { bg: "bg-emerald-50 dark:bg-emerald-950/20", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
   pdf: { bg: "bg-red-50 dark:bg-red-950/20", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-red-600" },
   pptx: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
-  ppt: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-455", gradient: "from-amber-500 to-amber-600" },
+  ppt: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-500", gradient: "from-amber-500 to-amber-600" },
   doc: { bg: "bg-blue-50 dark:bg-blue-950/20", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
   docx: { bg: "bg-blue-50 dark:bg-blue-950/20", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
-  txt: { bg: "bg-slate-50 dark:bg-slate-900/40", icon: "text-slate-655 text-slate-500 dark:text-slate-400", gradient: "from-slate-400 to-slate-500" },
+  txt: { bg: "bg-slate-50 dark:bg-slate-900/40", icon: "text-slate-600 text-slate-500 dark:text-slate-400", gradient: "from-slate-400 to-slate-500" },
   rtf: { bg: "bg-sky-50 dark:bg-sky-950/20", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-sky-600" },
   odt: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   jpg: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
@@ -59,36 +59,36 @@ const extensionColors: Record<string, { bg: string; icon: string; gradient: stri
   webp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   ico: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   bmp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
-  mp4: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  mov: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  avi: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  mkv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  webm: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  wmv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
-  flv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  mp4: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  mov: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  avi: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  mkv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  webm: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  wmv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
+  flv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-500", gradient: "from-rose-500 to-rose-600" },
   mp3: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
   wav: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
   ogg: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
   flac: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
   aac: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
   m4a: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
-  zip: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-655 text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  zip: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-600 text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   rar: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   "7z": { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   tar: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   gz: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
-  js: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  ts: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  jsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  tsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  py: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  java: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  js: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  ts: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  jsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  tsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  py: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  java: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   cpp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
   c: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
-  html: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  css: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  json: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
-  xml: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  html: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  css: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  json: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  xml: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   md: { bg: "bg-slate-50 dark:bg-slate-900/40", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-400 to-slate-500" },
   sql: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
   php: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
@@ -101,7 +101,7 @@ const extensionColors: Record<string, { bg: string; icon: string; gradient: stri
   msi: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   dmg: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
   iso: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
-  psd: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-650 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  psd: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
   ai: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
   sketch: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
   figma: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
@@ -174,7 +174,7 @@ const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradi
   },
   presentation: {
     bg: "bg-amber-50 dark:bg-amber-950/20",
-    icon: "text-amber-605 dark:text-amber-400",
+    icon: "text-amber-600 dark:text-amber-400",
     gradient: "from-amber-500 to-amber-650",
   },
   pdf: {
@@ -185,11 +185,11 @@ const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradi
   image: {
     bg: "bg-indigo-50 dark:bg-indigo-950/20",
     icon: "text-indigo-600 dark:text-indigo-400",
-    gradient: "from-indigo-500 to-indigo-650",
+    gradient: "from-indigo-500 to-indigo-600",
   },
   video: {
     bg: "bg-rose-50 dark:bg-rose-950/20",
-    icon: "text-rose-600 dark:text-rose-455",
+    icon: "text-rose-600 dark:text-rose-500",
     gradient: "from-rose-500 to-rose-650",
   },
   audio: {
@@ -199,7 +199,7 @@ const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradi
   },
   archive: {
     bg: "bg-slate-100 dark:bg-slate-800/50",
-    icon: "text-slate-655 text-slate-500 dark:text-slate-400",
+    icon: "text-slate-600 text-slate-500 dark:text-slate-400",
     gradient: "from-slate-500 to-slate-600",
   },
   file: {
@@ -581,12 +581,12 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
             <button
               ref={menuButtonRef}
               onClick={handleMenuToggle}
-              className="lg:hidden w-7 h-7 rounded-full bg-white/95 dark:bg-slate-800/95 shadow flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-750"
+              className="lg:hidden w-7 h-7 rounded-full bg-white/95 dark:bg-slate-800/95 shadow flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
             >
               <MoreHorizontal className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             </button>
             {file.shared && (
-              <div className="w-6 h-6 rounded-full bg-indigo-650 dark:bg-indigo-500 shadow flex items-center justify-center text-white">
+              <div className="w-6 h-6 rounded-full bg-indigo-600 dark:bg-indigo-500 shadow flex items-center justify-center text-white">
                 <Users className="w-3 h-3 text-white" />
               </div>
             )}
@@ -660,7 +660,7 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
                 />
                 <button
                   onClick={(e) => { e.stopPropagation(); handleRename(); }}
-                  className="p-1 rounded bg-indigo-650 hover:bg-indigo-700 text-white transition-colors"
+                  className="p-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
                 >
                   <Check className="w-3 h-3" />
                 </button>
@@ -784,7 +784,7 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
             />
             <button
               onClick={(e) => { e.stopPropagation(); handleRename(); }}
-              className="p-1 rounded bg-indigo-650 text-white"
+              className="p-1 rounded bg-indigo-600 text-white"
             >
               <Check className="w-3.5 h-3.5" />
             </button>
@@ -794,7 +794,7 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
             <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
               {file.name}
             </h3>
-            <div className="flex items-center gap-2 text-[10px] text-slate-450 dark:text-slate-400 mt-0.5">
+            <div className="flex items-center gap-2 text-[10px] text-slate-400 dark:text-slate-400 mt-0.5">
               <span>{formatDate(file.modified)}</span>
               {file.size > 0 && <span>• {formatFileSize(file.size)}</span>}
             </div>

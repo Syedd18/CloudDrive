@@ -324,17 +324,17 @@ export function CommandPalette({
                         )}
                       >
                         <div className={cn(
-                          "flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center border border-slate-200/50 dark:border-slate-850/50",
+                          "flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center border border-slate-200/50 dark:border-slate-800/50",
                           "bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400"
                         )}>
                           {item.icon}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-slate-955 text-slate-900 dark:text-white truncate">
+                          <div className="text-xs font-bold text-slate-950 text-slate-900 dark:text-white truncate">
                             {item.label}
                           </div>
                           {item.description && (
-                            <div className="text-[10px] font-medium text-slate-500 dark:text-slate-450 truncate mt-0.5">
+                            <div className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">
                               {item.description}
                             </div>
                           )}
@@ -354,18 +354,18 @@ export function CommandPalette({
 
               {allItems.length === 0 && (
                 <div className="px-4 py-12 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-slate-50 dark:bg-slate-950 flex items-center justify-center border border-slate-200 dark:border-slate-850">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-slate-50 dark:bg-slate-950 flex items-center justify-center border border-slate-200 dark:border-slate-800">
                     <Search className="w-5 h-5 text-slate-400" />
                   </div>
                   <p className="text-xs font-bold text-slate-800 dark:text-white">No results found</p>
-                  <p className="text-[10px] font-semibold text-slate-550 dark:text-slate-500 mt-1">Try a different search term</p>
+                  <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-500 mt-1">Try a different search term</p>
                 </div>
               )}
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
-              <div className="flex items-center gap-4 text-[10px] font-bold text-slate-450 text-slate-500">
+              <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 text-slate-500">
                 <span className="flex items-center gap-1">
                   <kbd className="kbd">↑</kbd>
                   <kbd className="kbd">↓</kbd>

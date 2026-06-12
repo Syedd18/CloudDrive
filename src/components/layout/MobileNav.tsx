@@ -122,7 +122,7 @@ export function MobileNav({
               transition={{ type: "spring", damping: 25, stiffness: 250 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 rounded-t-xl p-4 pb-8 lg:hidden shadow-2xl"
             >
-              <div className="w-12 h-1 bg-slate-350 dark:bg-slate-750 rounded-full mx-auto mb-4" />
+              <div className="w-12 h-1 bg-slate-350 dark:bg-slate-700 rounded-full mx-auto mb-4" />
               <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3 px-1">Create or Upload</p>
               <div className="space-y-2">
                 <button
@@ -130,14 +130,14 @@ export function MobileNav({
                     setFabOpen(false);
                     onUploadClick();
                   }}
-                  className="w-full flex items-center gap-3 p-3 text-sm font-semibold text-slate-700 dark:text-slate-250 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800"
+                  className="w-full flex items-center gap-3 p-3 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800"
                 >
                   <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                     <FileUp className="w-4 h-4" />
                   </div>
                   <div className="text-left">
-                    <span className="block text-slate-850 dark:text-slate-250 text-xs font-semibold">Upload File</span>
-                    <span className="block text-[10px] text-slate-450 dark:text-slate-500 font-medium">Add photos, videos, or documents</span>
+                    <span className="block text-slate-800 dark:text-slate-200 text-xs font-semibold">Upload File</span>
+                    <span className="block text-[10px] text-slate-400 dark:text-slate-500 font-medium">Add photos, videos, or documents</span>
                   </div>
                 </button>
 
@@ -146,14 +146,14 @@ export function MobileNav({
                     setFabOpen(false);
                     onNewFolderClick?.();
                   }}
-                  className="w-full flex items-center gap-3 p-3 text-sm font-semibold text-slate-700 dark:text-slate-250 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800"
+                  className="w-full flex items-center gap-3 p-3 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800"
                 >
                   <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950 flex items-center justify-center text-amber-600 dark:text-amber-400">
                     <FolderPlus className="w-4 h-4" />
                   </div>
                   <div className="text-left">
-                    <span className="block text-slate-850 dark:text-slate-250 text-xs font-semibold">New Folder</span>
-                    <span className="block text-[10px] text-slate-450 dark:text-slate-500 font-medium">Create a directory to organize files</span>
+                    <span className="block text-slate-800 dark:text-slate-200 text-xs font-semibold">New Folder</span>
+                    <span className="block text-[10px] text-slate-400 dark:text-slate-500 font-medium">Create a directory to organize files</span>
                   </div>
                 </button>
               </div>

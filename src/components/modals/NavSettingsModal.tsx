@@ -130,13 +130,13 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
-                  <Settings className="w-4 h-4 text-indigo-650" />
+                  <Settings className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                     Settings
                   </h2>
-                  <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
                     Customize your Cloud Drive experience
                   </p>
                 </div>
@@ -176,8 +176,8 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                       className={cn(
                         "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all text-left",
                         activeSection === section.id
-                          ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400"
-                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-855 dark:hover:bg-slate-850"
+                          ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:bg-slate-800"
                       )}
                     >
                       <section.icon className="w-4 h-4" />
@@ -197,7 +197,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                       className={cn(
                         "flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-bold transition-all whitespace-nowrap min-w-0",
                         activeSection === section.id
-                          ? "bg-white dark:bg-slate-700 text-indigo-650 dark:text-indigo-400 shadow-sm"
+                          ? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm"
                           : "text-slate-500"
                       )}
                     >
@@ -222,7 +222,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                     >
                       {/* Theme Selection */}
                       <div>
-                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                        <h3 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2.5">
                           Theme
                         </h3>
                         <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -237,7 +237,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                               className={cn(
                                 "flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border transition-all text-center",
                                 settings.theme === option.id
-                                  ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-650 dark:text-indigo-455"
+                                  ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-455"
                                   : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-900/50"
                               )}
                             >
@@ -255,7 +255,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
 
                       {/* Default View */}
                       <div>
-                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                        <h3 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2.5">
                           Default View Mode
                         </h3>
                         <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -269,7 +269,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                               className={cn(
                                 "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
                                 settings.defaultView === option.id
-                                  ? "border-indigo-505 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-455"
+                                  ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-455"
                                   : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-900/50"
                               )}
                             >
@@ -321,14 +321,14 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                           className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/10"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-8 h-8 rounded bg-white dark:bg-slate-850 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
+                            <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center flex-shrink-0">
                               <setting.icon className="w-4 h-4 text-slate-500" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs font-bold text-slate-850 dark:text-slate-200 leading-snug">
+                              <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">
                                 {setting.label}
                               </p>
-                              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-medium leading-none mt-0.5 truncate">
+                              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none mt-0.5 truncate">
                                 {setting.description}
                               </p>
                             </div>
@@ -344,7 +344,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                               "relative w-9 h-5 rounded-full transition-colors flex-shrink-0 focus:outline-none",
                               settings[setting.key as keyof SettingsState]
                                 ? "bg-indigo-606 bg-indigo-600"
-                                : "bg-slate-200 dark:bg-slate-750"
+                                : "bg-slate-200 dark:bg-slate-700"
                             )}
                           >
                             <motion.div
@@ -372,8 +372,8 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                       className="space-y-4"
                     >
                       <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-white dark:bg-slate-850 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
-                          <Shield className="w-4 h-4 text-indigo-650" />
+                        <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-4 h-4 text-indigo-600" />
                         </div>
                         <div>
                           <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
@@ -399,7 +399,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
                             setSaved(true);
                             setTimeout(() => setSaved(false), 2000);
                           }}
-                          className="px-3 py-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-655 text-slate-600 dark:text-slate-350 transition-colors shadow-sm"
+                          className="px-3 py-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-600 text-slate-600 dark:text-slate-350 transition-colors shadow-sm"
                         >
                           Reset settings cache
                         </button>

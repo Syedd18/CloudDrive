@@ -334,8 +334,8 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   onClick={() => setActiveTab("people")}
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold transition-colors relative ${
                     activeTab === "people"
-                      ? "text-indigo-650 dark:text-indigo-400"
-                      : "text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200"
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                   }`}
                 >
                   <Users className="w-3.5 h-3.5" />
@@ -343,7 +343,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   {activeTab === "people" && (
                     <motion.div
                       layoutId="shareTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-650 dark:bg-indigo-400"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400"
                     />
                   )}
                 </button>
@@ -351,8 +351,8 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   onClick={() => setActiveTab("link")}
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold transition-colors relative ${
                     activeTab === "link"
-                      ? "text-indigo-650 dark:text-indigo-400"
-                      : "text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200"
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                   }`}
                 >
                   <Link2 className="w-3.5 h-3.5" />
@@ -360,7 +360,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   {activeTab === "link" && (
                     <motion.div
                       layoutId="shareTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-650 dark:bg-indigo-400"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400"
                     />
                   )}
                 </button>
@@ -420,7 +420,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                         <div className="relative">
                           <button
                             onClick={() => setShowPermissionDropdown(!showPermissionDropdown)}
-                            className="flex items-center gap-1.5 h-8 px-3 bg-slate-100 dark:bg-slate-850 hover:bg-slate-200/80 dark:hover:bg-slate-755 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
+                            className="flex items-center gap-1.5 h-8 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
                           >
                             {permission === "view" ? (
                               <>
@@ -451,7 +451,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                     setShowPermissionDropdown(false);
                                   }}
                                   className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
-                                    permission === "view" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
+                                    permission === "view" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                   }`}
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -464,7 +464,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                     setShowPermissionDropdown(false);
                                   }}
                                   className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
-                                    permission === "edit" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
+                                    permission === "edit" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                   }`}
                                 >
                                   <Edit3 className="w-3.5 h-3.5" />
@@ -480,7 +480,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                       <button
                         onClick={handleShare}
                         disabled={emails.length === 0 || isLoading}
-                        className="w-full flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-550 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-center gap-1.5 h-9 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:cursor-not-allowed"
                       >
                         {isLoading ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -502,10 +502,10 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                             {sharedUsers.map((user) => (
                               <div
                                 key={user.email}
-                                className="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-950 border border-slate-200/50 dark:border-slate-850 rounded-lg"
+                                className="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-950 border border-slate-200/50 dark:border-slate-800 rounded-lg"
                               >
                                 <div className="flex items-center gap-2.5 min-w-0">
-                                  <div className="w-7 h-7 rounded-full bg-indigo-650 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                                     {user.email[0].toUpperCase()}
                                   </div>
                                   <div className="min-w-0">
@@ -560,18 +560,18 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               linkAccess === "restricted"
                                 ? "bg-indigo-100/50 dark:bg-indigo-950/30"
-                                : "bg-slate-100 dark:bg-slate-850"
+                                : "bg-slate-100 dark:bg-slate-800"
                             }`}>
                               <Lock className={`w-4 h-4 ${
                                 linkAccess === "restricted"
-                                  ? "text-indigo-650 dark:text-indigo-400"
+                                  ? "text-indigo-600 dark:text-indigo-400"
                                   : "text-slate-500"
                               }`} />
                             </div>
                             <div className="text-left min-w-0">
                               <p className={`text-xs font-bold ${
                                 linkAccess === "restricted"
-                                  ? "text-indigo-650 dark:text-indigo-300"
+                                  ? "text-indigo-600 dark:text-indigo-300"
                                   : "text-slate-800 dark:text-slate-200"
                               }`}>
                                 Restricted
@@ -596,18 +596,18 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               linkAccess === "anyone"
                                 ? "bg-indigo-100/50 dark:bg-indigo-950/30"
-                                : "bg-slate-100 dark:bg-slate-850"
+                                : "bg-slate-100 dark:bg-slate-800"
                             }`}>
                               <Globe className={`w-4 h-4 ${
                                 linkAccess === "anyone"
-                                  ? "text-indigo-650 dark:text-indigo-400"
+                                  ? "text-indigo-600 dark:text-indigo-400"
                                   : "text-slate-500"
                               }`} />
                             </div>
                             <div className="text-left min-w-0">
                               <p className={`text-xs font-bold ${
                                 linkAccess === "anyone"
-                                  ? "text-indigo-650 dark:text-indigo-300"
+                                  ? "text-indigo-600 dark:text-indigo-300"
                                   : "text-slate-800 dark:text-slate-200"
                               }`}>
                                 Anyone with the link
@@ -622,7 +622,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
 
                       {/* Link Permission (when anyone can access) */}
                       {linkAccess === "anyone" && (
-                        <div className="flex items-center justify-between py-1 border-t border-slate-200/50 dark:border-slate-850/50 pt-3">
+                        <div className="flex items-center justify-between py-1 border-t border-slate-200/50 dark:border-slate-800/50 pt-3">
                           <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                             Link permission
                           </span>
@@ -660,7 +660,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                       handleUpdateLinkAccess();
                                     }}
                                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
-                                      linkPermission === "view" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
+                                      linkPermission === "view" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                     }`}
                                   >
                                     <Eye className="w-3.5 h-3.5" />
@@ -673,7 +673,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                       handleUpdateLinkAccess();
                                     }}
                                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
-                                      linkPermission === "edit" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
+                                      linkPermission === "edit" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                     }`}
                                   >
                                     <Edit3 className="w-3.5 h-3.5" />
@@ -702,7 +702,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                           className={`flex items-center gap-1.5 px-4 h-9 rounded-lg font-bold text-xs transition-colors shadow-sm ${
                             copied
                               ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30"
-                              : "bg-indigo-650 hover:bg-indigo-700 text-white"
+                              : "bg-indigo-600 hover:bg-indigo-700 text-white"
                           }`}
                         >
                           {copied ? (

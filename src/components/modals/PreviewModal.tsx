@@ -120,7 +120,7 @@ export function PreviewModal({ file, onClose, onEdit }: PreviewModalProps) {
               </p>
               <button
                 onClick={handleDownload}
-                className="mt-4 flex items-center justify-center gap-1.5 h-8 px-3 mx-auto bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+                className="mt-4 flex items-center justify-center gap-1.5 h-8 px-3 mx-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download to view</span>
@@ -132,15 +132,15 @@ export function PreviewModal({ file, onClose, onEdit }: PreviewModalProps) {
         return (
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-3 rounded-lg bg-slate-50 dark:bg-slate-850 flex items-center justify-center border border-slate-200 dark:border-slate-750">
-                <File className="w-6 h-6 text-slate-405" />
+              <div className="w-14 h-14 mx-auto mb-3 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                <File className="w-6 h-6 text-slate-400" />
               </div>
               <p className="text-xs font-semibold text-slate-700 dark:text-slate-350">
                 Preview not available for this file type
               </p>
               <button
                 onClick={handleDownload}
-                className="mt-4 flex items-center justify-center gap-1.5 h-8 px-3 mx-auto bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+                className="mt-4 flex items-center justify-center gap-1.5 h-8 px-3 mx-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download File</span>
@@ -198,7 +198,7 @@ export function PreviewModal({ file, onClose, onEdit }: PreviewModalProps) {
               <h2 className="text-xs font-bold text-slate-900 dark:text-white truncate leading-snug">
                 {file.name}
               </h2>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-450 dark:text-slate-400 font-medium">
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-slate-400 font-medium">
                 <span>{formatDate(file.modified)}</span>
                 <span>•</span>
                 <span>{formatFileSize(file.size)}</span>

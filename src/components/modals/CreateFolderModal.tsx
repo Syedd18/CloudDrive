@@ -110,14 +110,14 @@ export function CreateFolderModal({
                     type="button"
                     onClick={handleClose}
                     disabled={isCreating}
-                    className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-305 transition-colors shadow-sm"
+                    className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating || !folderName.trim()}
-                    className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
+                    className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-100"
                   >
                     {isCreating ? (
                       <>

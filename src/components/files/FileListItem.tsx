@@ -306,7 +306,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
               {!isRenaming && file.tags && file.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-0.5">
                   {file.tags.slice(0, 3).map((tag, i) => (
-                    <span key={i} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-650 dark:bg-indigo-950/40 dark:text-indigo-400 max-w-[80px] truncate">
+                    <span key={i} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 max-w-[80px] truncate">
                       {tag}
                     </span>
                   ))}
@@ -409,7 +409,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
           }}
           className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100"
         >
-          <Download className="w-3.5 h-3.5 text-slate-450 dark:text-slate-400" />
+          <Download className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
         </button>
 
         {/* More Menu */}
@@ -480,7 +480,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                       }}
                       className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                     >
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-405 dark:text-slate-450" />
+                      <ExternalLink className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
                       <span>Preview</span>
                     </button>
                   )}
@@ -502,7 +502,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Edit3 className="w-3.5 h-3.5 text-slate-450" />
+                    <Edit3 className="w-3.5 h-3.5 text-slate-400" />
                     <span>Rename</span>
                   </button>
                   <button
@@ -512,7 +512,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Share2 className="w-3.5 h-3.5 text-slate-450" />
+                    <Share2 className="w-3.5 h-3.5 text-slate-400" />
                     <span>Share</span>
                   </button>
                   {file.type !== "folder" && (
@@ -534,7 +534,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Info className="w-3.5 h-3.5 text-slate-450" />
+                    <Info className="w-3.5 h-3.5 text-slate-400" />
                     <span>Details</span>
                   </button>
                   <div className="border-t border-slate-100 dark:border-slate-800 my-1" />

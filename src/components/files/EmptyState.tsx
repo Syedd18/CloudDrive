@@ -106,7 +106,7 @@ export function EmptyState({
 
         <button
           onClick={onClearFilter}
-          className="mt-4 flex items-center gap-1.5 h-8 px-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-lg text-xs font-bold shadow-sm transition-all"
+          className="mt-4 flex items-center gap-1.5 h-8 px-3 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold shadow-sm transition-all"
         >
           <Filter className="w-3.5 h-3.5" />
           <span>Clear Filters</span>
@@ -146,7 +146,7 @@ export function EmptyState({
         >
           <button
             onClick={onUploadClick}
-            className="flex items-center gap-1.5 h-9 px-4 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+            className="flex items-center gap-1.5 h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Upload Files</span>

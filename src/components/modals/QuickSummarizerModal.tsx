@@ -156,7 +156,7 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="h-4 w-4 text-indigo-650" />
+                  <Sparkles className="h-4 w-4 text-indigo-600" />
                 </div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   Quick Summarizer
@@ -180,8 +180,8 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
                       onClick={() => { setMode("upload"); setSelectedFile(null); setSummary(""); }}
                       className={`px-4 py-2.5 text-xs font-bold transition-colors relative flex items-center gap-1.5 ${
                         mode === "upload"
-                          ? "text-indigo-650 dark:text-indigo-400 border-b-2 border-indigo-650"
-                          : "text-slate-500 hover:text-slate-800 dark:text-slate-405 dark:hover:text-slate-205"
+                          ? "text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600"
+                          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                       }`}
                     >
                       <Upload className="w-3.5 h-3.5" />
@@ -192,8 +192,8 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
                         onClick={() => { setMode("select"); setSelectedFile(null); setSummary(""); }}
                         className={`px-4 py-2.5 text-xs font-bold transition-colors relative flex items-center gap-1.5 ${
                           mode === "select"
-                            ? "text-indigo-650 dark:text-indigo-400 border-b-2 border-indigo-650"
-                            : "text-slate-500 hover:text-slate-800 dark:text-slate-405 dark:hover:text-slate-205"
+                            ? "text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600"
+                            : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -220,7 +220,7 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
                         <p className="text-xs font-bold text-slate-700 dark:text-slate-200">
                           Drop your file here or click to browse
                         </p>
-                        <p className="text-[10px] font-medium text-slate-450 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                        <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
                           Supported formats: PDF, DOCX, TXT, MD, Python, JS, HTML, CSS, JSON, CSV (Max size 50MB)
                         </p>
                       </div>
@@ -273,7 +273,7 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
                   <button
                     onClick={handleSummarize}
                     disabled={!selectedFile || isLoading}
-                    className="w-full flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-550 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+                    className="w-full flex items-center justify-center gap-1.5 h-9 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
                   >
                     {isLoading ? (
                       <>
@@ -292,7 +292,7 @@ export function QuickSummarizerModal({ isOpen, onClose, files = [] }: QuickSumma
                 <>
                   {/* Summary Display */}
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-405">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                       File: <span className="font-bold text-slate-900 dark:text-white">{fileName}</span>
                     </p>
                     <div className="bg-slate-50 dark:bg-slate-950 rounded-lg p-4 border border-slate-200 dark:border-slate-800">

@@ -406,7 +406,7 @@ export function AvatarUploadModal({
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-205 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -423,7 +423,7 @@ export function AvatarUploadModal({
                           <img
                             src={currentAvatar}
                             alt="Current avatar"
-                            className="w-20 h-20 rounded-full object-cover ring-4 ring-slate-100 dark:ring-slate-850"
+                            className="w-20 h-20 rounded-full object-cover ring-4 ring-slate-100 dark:ring-slate-800"
                           />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 hover:opacity-100 transition-opacity">
                             <span className="text-white text-[10px] font-bold">Current</span>
@@ -441,13 +441,13 @@ export function AvatarUploadModal({
                     >
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center">
-                          <Upload className="w-6 h-6 text-indigo-650" />
+                          <Upload className="w-6 h-6 text-indigo-600" />
                         </div>
                         <div>
                           <p className="text-xs font-bold text-slate-700 dark:text-white">
                             Drag & drop or click to upload
                           </p>
-                          <p className="text-[10px] font-medium text-slate-450 dark:text-slate-500 mt-1">
+                          <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-1">
                             JPG, PNG or GIF (max 5MB)
                           </p>
                         </div>
@@ -515,7 +515,7 @@ export function AvatarUploadModal({
                       </button>
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
                       >
                         <Camera className="w-3.5 h-3.5" />
                         Capture
@@ -615,7 +615,7 @@ export function AvatarUploadModal({
                       </button>
                       <div className="w-32 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-indigo-650 transition-all"
+                          className="h-full bg-indigo-600 transition-all"
                           style={{ width: `${((zoom - 0.5) / 2.5) * 100}%` }}
                         />
                       </div>
@@ -650,7 +650,7 @@ export function AvatarUploadModal({
                       <button
                         onClick={handleSave}
                         disabled={isUploading}
-                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
+                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
                       >
                         {isUploading ? (
                           <>

@@ -225,14 +225,14 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 flex-shrink-0">
-              <Edit3 className="w-4 h-4 text-indigo-650" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 flex-shrink-0">
+              <Edit3 className="w-4 h-4 text-indigo-600" />
             </div>
             <div>
               <h3 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
                 {file.name}
               </h3>
-              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
                 {isLoading
                   ? "Loading content..."
                   : useCodeEditor
@@ -259,7 +259,7 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
             <button
               onClick={handleSave}
               disabled={isLoading || isSaving}
-              className="flex items-center gap-1.5 h-8 px-3.5 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+              className="flex items-center gap-1.5 h-8 px-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
             >
               {isSaving ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

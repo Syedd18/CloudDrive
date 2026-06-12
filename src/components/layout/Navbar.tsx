@@ -216,7 +216,7 @@ export function Navbar({
           <Tooltip content="Upload files" side="bottom">
             <button
               onClick={onUploadClick}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-505 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Upload</span>

@@ -143,7 +143,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
               className="w-full max-w-lg max-h-[85vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col"
             >
               {/* Header Cover */}
-              <div className="relative h-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-850 flex-shrink-0">
+              <div className="relative h-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
                 <button
                   onClick={onClose}
                   className="absolute top-3 right-3 p-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg shadow-sm transition-colors z-10"
@@ -157,7 +157,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                 {/* Avatar */}
                 <div className="relative -mt-10 px-6">
                   <div className="relative w-20 h-20 mx-auto">
-                    <div className="w-full h-full rounded-full bg-indigo-650 flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-md overflow-hidden">
+                    <div className="w-full h-full rounded-full bg-indigo-600 flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-md overflow-hidden">
                       {user.avatar ? (
                         <NextImage
                           src={user.avatar}
@@ -172,8 +172,8 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                         </span>
                       )}
                     </div>
-                    <button className="absolute bottom-0 right-0 w-7 h-7 bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-800 rounded-full shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                      <Camera className="w-3.5 h-3.5 text-slate-500 dark:text-slate-450" />
+                    <button className="absolute bottom-0 right-0 w-7 h-7 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-full shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <Camera className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                     </button>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                       />
                       <button
                         onClick={handleSaveName}
-                        className="w-8 h-8 flex items-center justify-center bg-indigo-650 text-white rounded-lg hover:bg-indigo-700 transition-colors flex-shrink-0"
+                        className="w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex-shrink-0"
                       >
                         <Check className="w-3.5 h-3.5" />
                       </button>
@@ -209,7 +209,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                       </button>
                     </div>
                   )}
-                  <p className="text-[11px] font-semibold text-slate-450 dark:text-slate-500 mt-1 flex items-center justify-center gap-1.5">
+                  <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-1 flex items-center justify-center gap-1.5">
                     <Mail className="w-3.5 h-3.5" />
                     <span className="truncate max-w-[200px] sm:max-w-none">{user.email}</span>
                   </p>
@@ -224,7 +224,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                           .map((_, i) => (
                             <div
                               key={i}
-                              className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850"
+                              className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"
                             >
                               <div className="h-7 w-7 bg-slate-200 dark:bg-slate-800 rounded mb-2 animate-pulse" />
                               <div className="h-4 w-10 bg-slate-200 dark:bg-slate-800 rounded mb-1 animate-pulse" />
@@ -246,7 +246,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                               key={stat.label}
                               initial={{ opacity: 0, y: 4 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 hover:border-slate-300 dark:hover:border-slate-750 transition-colors"
+                              className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                             >
                               <div
                                 className={cn(
@@ -268,7 +268,7 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
 
                 {/* Storage Usage */}
                 <div className="px-6 pb-2">
-                  <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850">
+                  <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1.5">
                         <HardDrive className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
@@ -277,24 +277,24 @@ export function ProfileModal({ isOpen, onClose, user }: ProfileModalProps) {
                         </span>
                       </div>
                       {stats && (
-                        <span className="text-xs font-bold text-indigo-650 dark:text-indigo-400">
+                        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
                           {stats.storage.percentage.toFixed(1)}%
                         </span>
                       )}
                     </div>
                     {isLoading ? (
-                      <div className="h-1.5 bg-slate-200 dark:bg-slate-850 rounded-full animate-pulse" />
+                      <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full animate-pulse" />
                     ) : (
                       <>
-                        <div className="h-2 bg-slate-200 dark:bg-slate-850 rounded-full overflow-hidden mb-2">
+                        <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${stats?.storage.percentage || 0}%` }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="h-full bg-indigo-650 rounded-full"
+                            className="h-full bg-indigo-600 rounded-full"
                           />
                         </div>
-                        <p className="text-[10px] font-semibold text-slate-450 dark:text-slate-500">
+                        <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
                           <span className="text-slate-700 dark:text-slate-300 font-bold">
                             {formatFileSize(stats?.storage.used || 0)}
                           </span>

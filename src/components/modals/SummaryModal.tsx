@@ -94,7 +94,7 @@ export function SummaryModal({ isOpen, onClose, file, onSummaryGenerated }: Summ
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="h-4 w-4 text-indigo-650" />
+                  <Sparkles className="h-4 w-4 text-indigo-600" />
                 </div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   AI Summary
@@ -125,7 +125,7 @@ export function SummaryModal({ isOpen, onClose, file, onSummaryGenerated }: Summ
               ) : (
                 <div className="text-center py-6">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 mb-3">
-                    <Sparkles className="h-5 w-5 text-indigo-650" />
+                    <Sparkles className="h-5 w-5 text-indigo-600" />
                   </div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
                     No Summary Yet
@@ -148,7 +148,7 @@ export function SummaryModal({ isOpen, onClose, file, onSummaryGenerated }: Summ
               <button
                 onClick={handleGenerateSummary}
                 disabled={isLoading}
-                className="flex items-center justify-center gap-1.5 px-4 h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-1.5 px-4 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>

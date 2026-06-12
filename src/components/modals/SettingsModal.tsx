@@ -123,13 +123,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
-                  <Settings className="w-4 h-4 text-indigo-650" />
+                  <Settings className="w-4 h-4 text-indigo-600" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                     Settings
                   </h2>
-                  <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
                     Customize your Cloud Drive experience
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all text-left",
                         activeSection === section.id
                           ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
-                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                       )}
                     >
                       <section.icon className="w-4 h-4" />
@@ -215,7 +215,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     >
                       {/* Theme Selection */}
                       <div>
-                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                        <h3 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2.5">
                           Theme
                         </h3>
                         <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -236,7 +236,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             >
                               <option.icon className={cn(
                                 "w-5 h-5",
-                                settings.theme === option.id ? "text-indigo-600 dark:text-indigo-400" : "text-slate-405 text-slate-400"
+                                settings.theme === option.id ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 text-slate-400"
                               )} />
                               <span className="text-xs font-bold mt-1">
                                 {option.label}
@@ -248,7 +248,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                       {/* Default View */}
                       <div>
-                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                        <h3 className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2.5">
                           Default View Mode
                         </h3>
                         <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -314,14 +314,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/10"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
+                            <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center flex-shrink-0">
                               <setting.icon className="w-4 h-4 text-slate-500" />
                             </div>
                             <div className="min-w-0">
                               <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">
                                 {setting.label}
                               </p>
-                              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-medium leading-none mt-0.5 truncate">
+                              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none mt-0.5 truncate">
                                 {setting.description}
                               </p>
                             </div>
@@ -337,7 +337,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               "relative w-9 h-5 rounded-full transition-colors flex-shrink-0 focus:outline-none",
                               settings[setting.key as keyof SettingsState]
                                 ? "bg-indigo-600"
-                                : "bg-slate-200 dark:bg-slate-750"
+                                : "bg-slate-200 dark:bg-slate-700"
                             )}
                           >
                             <motion.div
@@ -365,8 +365,8 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       className="space-y-4"
                     >
                       <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
-                          <Shield className="w-4 h-4 text-indigo-650" />
+                        <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-4 h-4 text-indigo-600" />
                         </div>
                         <div>
                           <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">

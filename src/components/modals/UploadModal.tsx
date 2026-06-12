@@ -112,14 +112,14 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
-                    <Upload className="w-4 h-4 text-indigo-650" />
+                    <Upload className="w-4 h-4 text-indigo-600" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                       Upload Files
                     </h2>
                     {uploadingFiles.length > 0 && (
-                      <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5">
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-0.5">
                         {completedCount} of {uploadingFiles.length} complete
                       </p>
                     )}
@@ -186,7 +186,7 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
                           key={index}
                           initial={{ opacity: 0, y: 4 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 dark:border-slate-850 bg-slate-50/50 dark:bg-slate-950/20"
+                          className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20"
                         >
                           <div
                             className={cn(
@@ -207,7 +207,7 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
                             <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                               {uploadingFile.file.name}
                             </p>
-                            <p className="text-[10px] text-slate-450 dark:text-slate-500 font-medium">
+                            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
                               {formatFileSize(uploadingFile.file.size)}
                             </p>
                             {uploadingFile.status === "uploading" && (
@@ -238,14 +238,14 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
               <div className="flex-shrink-0 px-5 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2 bg-slate-50/50 dark:bg-slate-900/10">
                 <button
                   onClick={handleClose}
-                  className="flex-1 sm:flex-initial flex items-center justify-center h-9 px-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-305 transition-colors shadow-sm"
+                  className="flex-1 sm:flex-initial flex items-center justify-center h-9 px-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
                 >
                   {uploadingFiles.length > 0 && completedCount === uploadingFiles.length ? "Done" : "Cancel"}
                 </button>
                 {uploadingFiles.length === 0 && (
                   <button
                     {...getRootProps()}
-                    className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 h-9 px-4 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Select Files</span>
