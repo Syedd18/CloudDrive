@@ -22,7 +22,6 @@ import {
   Image as ImageIcon,
   Film,
   Archive,
-  ArrowUpDown,
   X,
   Star,
   Download,
@@ -34,8 +33,7 @@ import { FileCardSkeleton, FileListSkeleton } from "@/components/files/FileSkele
 import { EmptyState } from "@/components/files/EmptyState";
 import { SimpleBreadcrumb } from "@/components/ui/Breadcrumb";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { cn } from "@/lib/utils";
-import toast from "react-hot-toast";
+import { cn, formatFileSize } from "@/lib/utils";
 
 interface MainContentProps {
   files: FileItem[];
@@ -245,9 +243,7 @@ export function MainContent({
 
   const handleFileSelect = useCallback(
     (fileId: string, event: React.MouseEvent) => {
-      // If clicking the file naturally, act as a toggle (additive) since we added checkboxes
       if (event.shiftKey && selectedFiles.length > 0) {
-        // Shift + click: range selection
         const lastSelected = selectedFiles[selectedFiles.length - 1];
         const lastIndex = sortedFiles.findIndex((f) => f.id === lastSelected);
         const currentIndex = sortedFiles.findIndex((f) => f.id === fileId);
@@ -256,7 +252,6 @@ export function MainContent({
         const rangeIds = sortedFiles.slice(start, end + 1).map((f) => f.id);
         onSelectionChange(Array.from(new Set([...selectedFiles, ...rangeIds])));
       } else {
-        // Normal click acts as additive (toggle) because we have dedicated checkboxes now
         if (selectedFiles.includes(fileId)) {
           onSelectionChange(selectedFiles.filter((id) => id !== fileId));
         } else {
@@ -280,14 +275,42 @@ export function MainContent({
   // Stats for header
   const folderCount = sortedFiles.filter((f) => f.type === "folder").length;
   const fileCount = sortedFiles.length - folderCount;
+  const aiReadyCount = sortedFiles.filter((f) => f.summary || (f.tags && f.tags.length > 0)).length;
+  const starredCount = sortedFiles.filter((f) => f.starred).length;
+  const sharedCount = sortedFiles.filter((f) => f.shared).length;
+  const totalSize = sortedFiles.reduce((sum, file) => sum + (file.type === "folder" ? 0 : file.size || 0), 0);
+
+  const insightCards = [
+    {
+      label: "AI indexed",
+      value: aiReadyCount,
+      detail: `${Math.round((aiReadyCount / Math.max(fileCount, 1)) * 100)}% searchable`,
+      icon: Sparkles,
+    },
+    {
+      label: "Priority",
+      value: starredCount,
+      detail: "starred files",
+      icon: Star,
+    },
+    {
+      label: "Shared",
+      value: sharedCount,
+      detail: "shared items",
+      icon: Download,
+    },
+    {
+      label: "Workspace Size",
+      value: formatFileSize(totalSize),
+      detail: `${folderCount + fileCount} items total`,
+      icon: HardDrive,
+    },
+  ];
 
   return (
     <main
       {...getRootProps()}
-      className={cn(
-        "flex-1 flex flex-col overflow-hidden relative",
-        "bg-surface-50 dark:bg-surface-950"
-      )}
+      className="flex-1 flex flex-col overflow-hidden relative bg-white dark:bg-slate-950 transition-colors duration-200"
     >
       <input {...getInputProps()} />
 
@@ -300,27 +323,23 @@ export function MainContent({
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-50 flex items-center justify-center"
           >
-            <div className="absolute inset-0 bg-primary-500/10 dark:bg-primary-500/20 backdrop-blur-md" />
+            <div className="absolute inset-0 bg-indigo-500/10 dark:bg-indigo-500/20 backdrop-blur-md" />
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative z-10 bg-white dark:bg-surface-800 rounded-3xl p-10 shadow-2xl border-2 border-dashed border-primary-500"
+              exit={{ scale: 0.97, opacity: 0 }}
+              className="relative z-10 bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border-2 border-dashed border-indigo-500 max-w-sm w-full mx-4 text-center"
             >
-              <div className="flex flex-col items-center gap-4">
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-glow"
-                >
-                  <Upload className="w-10 h-10 text-white" />
-                </motion.div>
-                <div className="text-center">
-                  <p className="text-xl font-semibold text-surface-900 dark:text-white">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center">
+                  <Upload className="w-6 h-6 text-indigo-600 dark:text-indigo-400 animate-bounce" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                     Drop files to upload
                   </p>
-                  <p className="text-sm text-surface-500 mt-1">
-                    Upload to <span className="font-medium">{currentFolder}</span>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Upload to <span className="font-semibold">{currentFolder}</span>
                   </p>
                 </div>
               </div>
@@ -330,21 +349,21 @@ export function MainContent({
       </AnimatePresence>
 
       {/* Header */}
-      <header className="flex-shrink-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-surface-200/60 dark:border-surface-800/60 bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl">
+      <header className="flex-shrink-0 px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
         {/* Breadcrumb */}
         <SimpleBreadcrumb
           items={breadcrumbPath || [{ id: "home", name: currentFolder }]}
           onNavigate={onBreadcrumbNavigate}
-          className="mb-4"
+          className="mb-3"
         />
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Title & Stats */}
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-surface-900 dark:text-white">
+            <h1 className="text-lg font-bold text-slate-950 dark:text-white leading-snug">
               {currentFolder}
             </h1>
-            <p className="text-sm text-surface-500 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
               {folderCount > 0 && (
                 <span>
                   {folderCount} folder{folderCount !== 1 ? "s" : ""}
@@ -356,7 +375,7 @@ export function MainContent({
                   {fileCount} file{fileCount !== 1 ? "s" : ""}
                 </span>
               )}
-              {sortedFiles.length === 0 && "Empty"}
+              {sortedFiles.length === 0 && "Empty Workspace"}
             </p>
           </div>
 
@@ -366,14 +385,14 @@ export function MainContent({
             {currentFolder === "Trash" && sortedFiles.length > 0 && (
               <button
                 onClick={onEmptyTrash}
-                className="btn-secondary text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-950/50 border-danger-200 dark:border-danger-800"
+                className="flex items-center gap-1.5 h-9 px-3 border border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 rounded-lg text-xs font-semibold shadow-sm transition-all"
               >
-                <Trash2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Empty Trash</span>
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Empty Trash</span>
               </button>
             )}
 
-            {/* Sort Dropdown */}
+            {/* Sort Button */}
             <div className="relative">
               <button
                 ref={sortButtonRef}
@@ -382,45 +401,19 @@ export function MainContent({
                   setShowFilterMenu(false);
                 }}
                 className={cn(
-                  "group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 rounded-xl border transition-all duration-200",
-                  "hover:shadow-md hover:border-primary-300 dark:hover:border-primary-700",
+                  "flex items-center gap-1.5 h-9 px-3 bg-white dark:bg-slate-900 border rounded-lg text-xs font-semibold shadow-sm transition-all text-slate-700 dark:text-slate-350",
                   showSortMenu 
-                    ? "bg-primary-50 dark:bg-primary-950/50 border-primary-300 dark:border-primary-700 shadow-md" 
-                    : "bg-white dark:bg-surface-800 border-surface-200 dark:border-surface-700"
+                    ? "border-indigo-500 dark:border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400"
+                    : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
                 )}
               >
-                <div className={cn(
-                  "p-1 sm:p-1.5 rounded-lg transition-colors",
-                  showSortMenu 
-                    ? "bg-primary-100 dark:bg-primary-900/50" 
-                    : "bg-surface-100 dark:bg-surface-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50"
-                )}>
-                  {sortOrder === "asc" ? (
-                    <SortAsc className={cn(
-                      "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                      showSortMenu ? "text-primary-600 dark:text-primary-400" : "text-surface-500 group-hover:text-primary-600 dark:group-hover:text-primary-400"
-                    )} />
-                  ) : (
-                    <SortDesc className={cn(
-                      "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                      showSortMenu ? "text-primary-600 dark:text-primary-400" : "text-surface-500 group-hover:text-primary-600 dark:group-hover:text-primary-400"
-                    )} />
-                  )}
-                </div>
-                <div className="hidden sm:flex flex-col items-start">
-                  <span className="text-[10px] font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wider leading-none">Sort by</span>
-                  <span className="text-sm font-semibold text-surface-700 dark:text-surface-200 leading-tight">
-                    {sortOptions.find((o) => o.value === sortBy)?.label}
-                  </span>
-                </div>
-                <ChevronDown className={cn(
-                  "w-3.5 h-3.5 sm:w-4 sm:h-4 text-surface-400 transition-transform duration-200",
-                  showSortMenu && "rotate-180"
-                )} />
+                {sortOrder === "asc" ? <SortAsc className="w-3.5 h-3.5" /> : <SortDesc className="w-3.5 h-3.5" />}
+                <span>Sort: {sortOptions.find((o) => o.value === sortBy)?.label}</span>
+                <ChevronDown className={cn("w-3 h-3 text-slate-400 transition-transform duration-150", showSortMenu && "rotate-180")} />
               </button>
             </div>
 
-            {/* Filter Dropdown */}
+            {/* Filter Button */}
             <div className="relative">
               <button
                 ref={filterButtonRef}
@@ -429,76 +422,87 @@ export function MainContent({
                   setShowSortMenu(false);
                 }}
                 className={cn(
-                  "group flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 rounded-xl border transition-all duration-200",
-                  "hover:shadow-md hover:border-primary-300 dark:hover:border-primary-700",
+                  "flex items-center gap-1.5 h-9 px-3 bg-white dark:bg-slate-900 border rounded-lg text-xs font-semibold shadow-sm transition-all text-slate-700 dark:text-slate-350",
                   showFilterMenu || filterType !== "all"
-                    ? "bg-primary-50 dark:bg-primary-950/50 border-primary-300 dark:border-primary-700 shadow-md" 
-                    : "bg-white dark:bg-surface-800 border-surface-200 dark:border-surface-700"
+                    ? "border-indigo-500 dark:border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400"
+                    : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
                 )}
               >
-                <div className={cn(
-                  "p-1 sm:p-1.5 rounded-lg transition-colors",
-                  showFilterMenu || filterType !== "all"
-                    ? "bg-primary-100 dark:bg-primary-900/50" 
-                    : "bg-surface-100 dark:bg-surface-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50"
-                )}>
-                  <Filter className={cn(
-                    "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                    showFilterMenu || filterType !== "all"
-                      ? "text-primary-600 dark:text-primary-400" 
-                      : "text-surface-500 group-hover:text-primary-600 dark:group-hover:text-primary-400"
-                  )} />
-                </div>
-                <div className="hidden sm:flex flex-col items-start">
-                  <span className="text-[10px] font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wider leading-none">Filter</span>
-                  <span className="text-sm font-semibold text-surface-700 dark:text-surface-200 leading-tight">
-                    {filterType === "all" ? "All files" : filterOptions.find((o) => o.value === filterType)?.label}
-                  </span>
-                </div>
+                <Filter className="w-3.5 h-3.5" />
+                <span>Filter: {filterType === "all" ? "All files" : filterOptions.find((o) => o.value === filterType)?.label}</span>
                 {filterType !== "all" && (
-                  <span className="flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 text-[9px] sm:text-[10px] font-bold text-white bg-primary-500 rounded-full">
+                  <span className="flex items-center justify-center w-4 h-4 text-[9px] font-bold text-white bg-indigo-600 rounded-full">
                     1
                   </span>
                 )}
-                <ChevronDown className={cn(
-                  "w-3.5 h-3.5 sm:w-4 sm:h-4 text-surface-400 transition-transform duration-200",
-                  showFilterMenu && "rotate-180"
-                )} />
+                <ChevronDown className={cn("w-3 h-3 text-slate-400 transition-transform duration-150", showFilterMenu && "rotate-180")} />
               </button>
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center bg-surface-100 dark:bg-surface-800 rounded-xl p-1">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 border border-slate-200/80 dark:border-slate-700">
               <Tooltip content="Grid view" side="bottom">
                 <button
                   onClick={() => onViewModeChange("grid")}
                   className={cn(
-                    "p-2 rounded-lg transition-all duration-200",
+                    "p-1.5 rounded-md transition-all duration-150",
                     viewMode === "grid"
-                      ? "bg-white dark:bg-surface-700 shadow-soft text-primary-600 dark:text-primary-400"
-                      : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
+                      ? "bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                   )}
                   aria-label="Grid view"
                 >
-                  <Grid3X3 className="w-4 h-4" />
+                  <Grid3X3 className="w-3.5 h-3.5" />
                 </button>
               </Tooltip>
               <Tooltip content="List view" side="bottom">
                 <button
                   onClick={() => onViewModeChange("list")}
                   className={cn(
-                    "p-2 rounded-lg transition-all duration-200",
+                    "p-1.5 rounded-md transition-all duration-150",
                     viewMode === "list"
-                      ? "bg-white dark:bg-surface-700 shadow-soft text-primary-600 dark:text-primary-400"
-                      : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
+                      ? "bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                   )}
                   aria-label="List view"
                 >
-                  <List className="w-4 h-4" />
+                  <List className="w-3.5 h-3.5" />
                 </button>
               </Tooltip>
             </div>
           </div>
+        </div>
+
+        {/* Intelligence Row */}
+        <div className="mt-4 grid grid-cols-2 xl:grid-cols-4 gap-3">
+          {insightCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <motion.div
+                key={card.label}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/40 p-3 shadow-sm flex items-center justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">
+                    {card.label}
+                  </p>
+                  <div className="mt-0.5 flex items-baseline gap-1.5">
+                    <span className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      {card.value}
+                    </span>
+                    <span className="truncate text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                      {card.detail}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-50 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+                  <Icon className="h-3.5 w-3.5 text-slate-600 dark:text-slate-350" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Selection Bar */}
@@ -508,61 +512,56 @@ export function MainContent({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-4 overflow-hidden"
+              className="mt-3 overflow-hidden"
             >
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-primary-50 dark:bg-primary-950/30 border border-primary-200/50 dark:border-primary-800/50">
-                <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 py-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/25 border border-indigo-100 dark:border-indigo-900/50">
+                <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-350">
                   {selectedFiles.length} selected
                 </span>
-                <div className="hidden sm:block h-4 w-px bg-primary-200 dark:bg-primary-700" />
+                <div className="hidden sm:block h-3.5 w-px bg-indigo-200/60 dark:bg-indigo-900/40" />
                 
-                {/* Selection controls */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-xs">
                   <button
                     onClick={() => onSelectionChange([])}
-                    className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                    className="font-semibold text-indigo-600 dark:text-indigo-405 hover:underline"
                   >
-                    Clear
+                    Clear selection
                   </button>
                   <button
                     onClick={() => onSelectionChange(sortedFiles.map((f) => f.id))}
-                    className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                    className="font-semibold text-indigo-600 dark:text-indigo-405 hover:underline"
                   >
                     Select all
                   </button>
                 </div>
                 
-                {/* Batch Action Buttons */}
-                <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+                <div className="flex items-center gap-1.5 ml-auto">
                   {currentFolder !== "Trash" && (
                     <>
-                      {/* Star Selected */}
                       <Tooltip content="Star selected" side="bottom">
                         <button
                           onClick={() => onBatchStar?.(selectedFiles)}
-                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                          className="p-1.5 rounded-md bg-white dark:bg-slate-800 text-amber-500 hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors shadow-sm border border-slate-200 dark:border-slate-700"
                         >
-                          <Star className="w-4 h-4" />
+                          <Star className="w-3.5 h-3.5" />
                         </button>
                       </Tooltip>
                       
-                      {/* Download Selected */}
                       <Tooltip content="Download selected" side="bottom">
                         <button
                           onClick={() => onBatchDownload?.(selectedFiles)}
-                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                          className="p-1.5 rounded-md bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors shadow-sm border border-slate-200 dark:border-slate-700"
                         >
-                          <Download className="w-4 h-4" />
+                          <Download className="w-3.5 h-3.5" />
                         </button>
                       </Tooltip>
                       
-                      {/* Move to Trash */}
                       <Tooltip content="Move to trash" side="bottom">
                         <button
                           onClick={() => onBatchDelete?.(selectedFiles)}
-                          className="p-1.5 sm:p-2 rounded-lg bg-white dark:bg-surface-800 text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-950/30 transition-colors shadow-sm border border-primary-200/50 dark:border-primary-800/50"
+                          className="p-1.5 rounded-md bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition-colors shadow-sm border border-slate-200 dark:border-slate-700"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </Tooltip>
                     </>
@@ -575,24 +574,22 @@ export function MainContent({
       </header>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-8">
         {isLoading ? (
-          // Skeleton Loaders
           viewMode === "grid" ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
               {[...Array(12)].map((_, i) => (
                 <FileCardSkeleton key={i} />
               ))}
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {[...Array(8)].map((_, i) => (
                 <FileListSkeleton key={i} />
               ))}
             </div>
           )
         ) : sortedFiles.length === 0 ? (
-          // Empty State
           <EmptyState
             folder={currentFolder}
             onUploadClick={onUploadClick}
@@ -600,11 +597,10 @@ export function MainContent({
             onClearFilter={() => setFilterType("all")}
           />
         ) : viewMode === "grid" ? (
-          // Grid View
           <LayoutGroup>
             <motion.div
               layout
-              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"
             >
               <AnimatePresence mode="popLayout">
                 {sortedFiles.map((file) => (
@@ -632,15 +628,15 @@ export function MainContent({
           </LayoutGroup>
         ) : (
           // List View
-          <div className="card rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
             {/* List Header */}
-            <div className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-surface-200/60 dark:border-surface-700/50 bg-surface-50 dark:bg-surface-800/50 text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+            <div className="grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               <div className="col-span-6 flex items-center gap-2">
                 <button
                   onClick={() => handleSort("name")}
                   className={cn(
-                    "flex items-center gap-1 hover:text-surface-700 dark:hover:text-surface-200 transition-colors",
-                    sortBy === "name" && "text-primary-600 dark:text-primary-400"
+                    "flex items-center gap-1 hover:text-slate-700 dark:hover:text-slate-300 transition-colors",
+                    sortBy === "name" && "text-indigo-650 dark:text-indigo-400"
                   )}
                 >
                   Name
@@ -653,8 +649,8 @@ export function MainContent({
                 <button
                   onClick={() => handleSort("modified")}
                   className={cn(
-                    "flex items-center gap-1 hover:text-surface-700 dark:hover:text-surface-200 transition-colors",
-                    sortBy === "modified" && "text-primary-600 dark:text-primary-400"
+                    "flex items-center gap-1 hover:text-slate-700 dark:hover:text-slate-300 transition-colors",
+                    sortBy === "modified" && "text-indigo-650 dark:text-indigo-400"
                   )}
                 >
                   Modified
@@ -667,8 +663,8 @@ export function MainContent({
                 <button
                   onClick={() => handleSort("size")}
                   className={cn(
-                    "flex items-center gap-1 hover:text-surface-700 dark:hover:text-surface-200 transition-colors",
-                    sortBy === "size" && "text-primary-600 dark:text-primary-400"
+                    "flex items-center gap-1 hover:text-slate-700 dark:hover:text-slate-300 transition-colors",
+                    sortBy === "size" && "text-indigo-650 dark:text-indigo-400"
                   )}
                 >
                   Size
@@ -717,17 +713,17 @@ export function MainContent({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+                className="fixed inset-0 bg-transparent z-[9998]"
                 onClick={() => setShowSortMenu(false)}
               />
               {/* Sort Dropdown Menu */}
               <motion.div
                 ref={sortDropdownRef}
-                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                initial={{ opacity: 0, y: 4, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                transition={{ duration: 0.15 }}
-                className="fixed w-[calc(100%-2rem)] sm:w-64 bg-white dark:bg-surface-800 rounded-2xl shadow-2xl border border-surface-200 dark:border-surface-700 p-2 z-[9999]"
+                exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                transition={{ duration: 0.1 }}
+                className="fixed w-[calc(100%-2rem)] sm:w-64 bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 p-1.5 z-[9999]"
                 style={{
                   top: window.innerWidth >= 640 ? sortDropdownPos.top : 'auto',
                   right: window.innerWidth >= 640 ? sortDropdownPos.right : 16,
@@ -735,13 +731,13 @@ export function MainContent({
                   left: window.innerWidth < 640 ? 16 : 'auto',
                 }}
               >
-                <div className="px-3 py-2 mb-1 flex items-center justify-between">
-                  <p className="text-xs font-semibold text-surface-400 dark:text-surface-500 uppercase tracking-wider">Sort by</p>
+                <div className="px-3 py-1.5 mb-1 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Sort by</p>
                   <button
                     onClick={() => setShowSortMenu(false)}
-                    className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+                    className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors"
                   >
-                    <X className="w-4 h-4 text-surface-400" />
+                    <X className="w-3.5 h-3.5 text-slate-450 text-slate-400" />
                   </button>
                 </div>
                 <div className="space-y-0.5 max-h-[60vh] overflow-y-auto">
@@ -756,36 +752,21 @@ export function MainContent({
                           setShowSortMenu(false);
                         }}
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-xl transition-all duration-150 active:scale-[0.98]",
+                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-all duration-150 text-xs font-semibold text-left",
                           isActive 
-                            ? "bg-primary-50 dark:bg-primary-950/50 text-primary-700 dark:text-primary-300" 
-                            : "text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50"
+                            ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400" 
+                            : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
                         )}
                       >
-                        <div className={cn(
-                          "p-1.5 rounded-lg",
-                          isActive 
-                            ? "bg-primary-100 dark:bg-primary-900/50" 
-                            : "bg-surface-100 dark:bg-surface-700"
-                        )}>
-                          <OptionIcon className={cn(
-                            "w-4 h-4",
-                            isActive ? "text-primary-600 dark:text-primary-400" : "text-surface-400"
-                          )} />
-                        </div>
-                        <span className={cn(
-                          "flex-1 text-left font-medium text-sm",
-                          isActive && "font-semibold"
-                        )}>{option.label}</span>
+                        <OptionIcon className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                        <span className="flex-1 truncate">{option.label}</span>
                         {isActive && (
-                          <div className="flex items-center gap-1">
-                            <div className="p-1 rounded-md bg-primary-100 dark:bg-primary-900/50">
-                              {sortOrder === "asc" ? (
-                                <SortAsc className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
-                              ) : (
-                                <SortDesc className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
-                              )}
-                            </div>
+                          <div className="p-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50">
+                            {sortOrder === "asc" ? (
+                              <SortAsc className="w-3 h-3 text-indigo-650 dark:text-indigo-400" />
+                            ) : (
+                              <SortDesc className="w-3 h-3 text-indigo-650 dark:text-indigo-400" />
+                            )}
                           </div>
                         )}
                       </button>
@@ -803,17 +784,17 @@ export function MainContent({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+                className="fixed inset-0 bg-transparent z-[9998]"
                 onClick={() => setShowFilterMenu(false)}
               />
               {/* Filter Dropdown Menu */}
               <motion.div
                 ref={filterDropdownRef}
-                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                initial={{ opacity: 0, y: 4, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                transition={{ duration: 0.15 }}
-                className="fixed w-[calc(100%-2rem)] sm:w-64 bg-white dark:bg-surface-800 rounded-2xl shadow-2xl border border-surface-200 dark:border-surface-700 p-2 z-[9999]"
+                exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                transition={{ duration: 0.1 }}
+                className="fixed w-[calc(100%-2rem)] sm:w-64 bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 p-1.5 z-[9999]"
                 style={{
                   top: window.innerWidth >= 640 ? filterDropdownPos.top : 'auto',
                   right: window.innerWidth >= 640 ? filterDropdownPos.right : 16,
@@ -821,25 +802,25 @@ export function MainContent({
                   left: window.innerWidth < 640 ? 16 : 'auto',
                 }}
               >
-                <div className="px-3 py-2 mb-1 flex items-center justify-between">
-                  <p className="text-xs font-semibold text-surface-400 dark:text-surface-500 uppercase tracking-wider">Filter by type</p>
-                  <div className="flex items-center gap-2">
+                <div className="px-3 py-1.5 mb-1 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Filter by type</p>
+                  <div className="flex items-center gap-1.5">
                     {filterType !== "all" && (
                       <button
                         onClick={() => {
                           setFilterType("all");
                           setShowFilterMenu(false);
                         }}
-                        className="text-xs font-medium text-danger-600 dark:text-danger-400 hover:underline"
+                        className="text-[10px] font-bold text-red-600 dark:text-red-400 hover:underline"
                       >
-                        Clear
+                        Reset
                       </button>
                     )}
                     <button
                       onClick={() => setShowFilterMenu(false)}
-                      className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+                      className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors"
                     >
-                      <X className="w-4 h-4 text-surface-400" />
+                      <X className="w-3.5 h-3.5 text-slate-400" />
                     </button>
                   </div>
                 </div>
@@ -855,29 +836,16 @@ export function MainContent({
                           setShowFilterMenu(false);
                         }}
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-xl transition-all duration-150 active:scale-[0.98]",
+                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-all duration-150 text-xs font-semibold text-left",
                           isActive 
-                            ? "bg-primary-50 dark:bg-primary-950/50 text-primary-700 dark:text-primary-300" 
-                            : "text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50"
+                            ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400" 
+                            : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
                         )}
                       >
-                        <div className={cn(
-                          "p-1.5 rounded-lg",
-                          isActive 
-                            ? "bg-primary-100 dark:bg-primary-900/50" 
-                            : "bg-surface-100 dark:bg-surface-700"
-                        )}>
-                          <OptionIcon className={cn(
-                            "w-4 h-4",
-                            isActive ? "text-primary-600 dark:text-primary-400" : "text-surface-400"
-                          )} />
-                        </div>
-                        <span className={cn(
-                          "flex-1 text-left font-medium text-sm",
-                          isActive && "font-semibold"
-                        )}>{option.label}</span>
+                        <OptionIcon className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                        <span className="flex-1 truncate">{option.label}</span>
                         {isActive && (
-                          <Check className="w-4 h-4 text-primary-500" />
+                          <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                         )}
                       </button>
                     );

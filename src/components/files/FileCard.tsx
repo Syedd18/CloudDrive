@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import NextImage from "next/image";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,93 +40,72 @@ import toast from "react-hot-toast";
 
 // Extension-based color configuration
 const extensionColors: Record<string, { bg: string; icon: string; gradient: string }> = {
-  // Spreadsheets - Green family
-  csv: { bg: "bg-green-50 dark:bg-green-950/30", icon: "text-green-600 dark:text-green-400", gradient: "from-green-500 to-green-600" },
-  xlsx: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
-  xls: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
-  
-  // PDF - Red
-  pdf: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-red-600" },
-  
-  // Presentations - Dark red/Orange
-  pptx: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
-  ppt: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
-  
-  // Documents - Blue family
-  doc: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
-  docx: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
-  txt: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-400 to-slate-600" },
-  rtf: { bg: "bg-sky-50 dark:bg-sky-950/30", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-sky-600" },
-  odt: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
-  
-  // Images - Purple/Pink family
-  jpg: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
-  jpeg: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
-  png: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-pink-500" },
-  gif: { bg: "bg-pink-50 dark:bg-pink-950/30", icon: "text-pink-600 dark:text-pink-400", gradient: "from-pink-500 to-rose-500" },
-  svg: { bg: "bg-violet-50 dark:bg-violet-950/30", icon: "text-violet-600 dark:text-violet-400", gradient: "from-violet-500 to-purple-500" },
-  webp: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-purple-500" },
-  ico: { bg: "bg-amber-50 dark:bg-amber-950/30", icon: "text-amber-600 dark:text-amber-400", gradient: "from-amber-500 to-orange-500" },
-  bmp: { bg: "bg-rose-50 dark:bg-rose-950/30", icon: "text-rose-600 dark:text-rose-400", gradient: "from-rose-500 to-pink-500" },
-  
-  // Videos - Rose/Pink family
-  mp4: { bg: "bg-rose-50 dark:bg-rose-950/30", icon: "text-rose-600 dark:text-rose-400", gradient: "from-rose-500 to-red-500" },
-  mov: { bg: "bg-pink-50 dark:bg-pink-950/30", icon: "text-pink-600 dark:text-pink-400", gradient: "from-pink-500 to-rose-500" },
-  avi: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-500 dark:text-red-400", gradient: "from-red-400 to-rose-500" },
-  mkv: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
-  webm: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-rose-500" },
-  wmv: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-indigo-500" },
-  flv: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
-  
-  // Audio - Cyan/Teal family
-  mp3: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-teal-500" },
-  wav: { bg: "bg-teal-50 dark:bg-teal-950/30", icon: "text-teal-600 dark:text-teal-400", gradient: "from-teal-500 to-cyan-500" },
-  ogg: { bg: "bg-emerald-50 dark:bg-emerald-950/30", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-teal-500" },
-  flac: { bg: "bg-sky-50 dark:bg-sky-950/30", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-cyan-500" },
-  aac: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-cyan-500" },
-  m4a: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-blue-500" },
-  
-  // Archives - Slate/Gray family
-  zip: { bg: "bg-amber-50 dark:bg-amber-950/30", icon: "text-amber-600 dark:text-amber-400", gradient: "from-amber-500 to-yellow-500" },
-  rar: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-violet-500" },
-  "7z": { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-500 to-gray-600" },
-  tar: { bg: "bg-stone-50 dark:bg-stone-950/30", icon: "text-stone-600 dark:text-stone-400", gradient: "from-stone-500 to-gray-600" },
-  gz: { bg: "bg-zinc-50 dark:bg-zinc-950/30", icon: "text-zinc-600 dark:text-zinc-400", gradient: "from-zinc-500 to-slate-600" },
-  
-  // Code files - Various vibrant colors
-  js: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-yellow-400 to-amber-500" },
-  ts: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
-  jsx: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-400 to-blue-500" },
-  tsx: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-400 to-cyan-500" },
-  py: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-blue-500 to-yellow-500" },
-  java: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-orange-500" },
-  cpp: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-600" },
-  c: { bg: "bg-gray-50 dark:bg-gray-950/30", icon: "text-gray-600 dark:text-gray-400", gradient: "from-gray-500 to-blue-500" },
-  html: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
-  css: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-purple-500" },
-  json: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-700 dark:text-yellow-400", gradient: "from-yellow-500 to-amber-500" },
-  xml: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-400 to-amber-500" },
-  md: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-600 dark:text-slate-400", gradient: "from-slate-500 to-gray-600" },
-  sql: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-yellow-500" },
-  php: { bg: "bg-indigo-50 dark:bg-indigo-950/30", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-purple-500" },
-  rb: { bg: "bg-red-50 dark:bg-red-950/30", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-rose-500" },
-  go: { bg: "bg-cyan-50 dark:bg-cyan-950/30", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-blue-500" },
-  rs: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-700 dark:text-orange-400", gradient: "from-orange-600 to-red-600" },
-  swift: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-600 dark:text-orange-400", gradient: "from-orange-500 to-red-500" },
-  kt: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-violet-500" },
-  
-  // Executable/System files
-  exe: { bg: "bg-slate-50 dark:bg-slate-950/30", icon: "text-slate-700 dark:text-slate-400", gradient: "from-slate-600 to-gray-700" },
-  msi: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-600" },
-  dmg: { bg: "bg-gray-50 dark:bg-gray-950/30", icon: "text-gray-600 dark:text-gray-400", gradient: "from-gray-500 to-slate-600" },
-  iso: { bg: "bg-neutral-50 dark:bg-neutral-950/30", icon: "text-neutral-600 dark:text-neutral-400", gradient: "from-neutral-500 to-gray-600" },
-  
-  // Design files
-  psd: { bg: "bg-blue-50 dark:bg-blue-950/30", icon: "text-blue-700 dark:text-blue-400", gradient: "from-blue-600 to-indigo-700" },
-  ai: { bg: "bg-orange-50 dark:bg-orange-950/30", icon: "text-orange-700 dark:text-orange-400", gradient: "from-orange-600 to-amber-600" },
-  sketch: { bg: "bg-yellow-50 dark:bg-yellow-950/30", icon: "text-yellow-600 dark:text-yellow-400", gradient: "from-yellow-500 to-orange-500" },
-  figma: { bg: "bg-purple-50 dark:bg-purple-950/30", icon: "text-purple-600 dark:text-purple-400", gradient: "from-purple-500 to-pink-500" },
-  xd: { bg: "bg-fuchsia-50 dark:bg-fuchsia-950/30", icon: "text-fuchsia-600 dark:text-fuchsia-400", gradient: "from-fuchsia-500 to-purple-500" },
+  csv: { bg: "bg-emerald-50 dark:bg-emerald-950/20", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
+  xlsx: { bg: "bg-emerald-50 dark:bg-emerald-950/20", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
+  xls: { bg: "bg-emerald-50 dark:bg-emerald-950/20", icon: "text-emerald-600 dark:text-emerald-400", gradient: "from-emerald-500 to-emerald-600" },
+  pdf: { bg: "bg-red-50 dark:bg-red-950/20", icon: "text-red-600 dark:text-red-400", gradient: "from-red-500 to-red-600" },
+  pptx: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
+  ppt: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-455", gradient: "from-amber-500 to-amber-600" },
+  doc: { bg: "bg-blue-50 dark:bg-blue-950/20", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
+  docx: { bg: "bg-blue-50 dark:bg-blue-950/20", icon: "text-blue-600 dark:text-blue-400", gradient: "from-blue-500 to-blue-600" },
+  txt: { bg: "bg-slate-50 dark:bg-slate-900/40", icon: "text-slate-655 text-slate-500 dark:text-slate-400", gradient: "from-slate-400 to-slate-500" },
+  rtf: { bg: "bg-sky-50 dark:bg-sky-950/20", icon: "text-sky-600 dark:text-sky-400", gradient: "from-sky-500 to-sky-600" },
+  odt: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  jpg: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  jpeg: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  png: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  gif: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  svg: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  webp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  ico: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  bmp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  mp4: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  mov: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  avi: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  mkv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  webm: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  wmv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  flv: { bg: "bg-rose-50 dark:bg-rose-950/20", icon: "text-rose-600 dark:text-rose-455", gradient: "from-rose-500 to-rose-600" },
+  mp3: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  wav: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  ogg: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  flac: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  aac: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  m4a: { bg: "bg-cyan-50 dark:bg-cyan-950/20", icon: "text-cyan-600 dark:text-cyan-400", gradient: "from-cyan-500 to-cyan-600" },
+  zip: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-655 text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  rar: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  "7z": { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  tar: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  gz: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  js: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  ts: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  jsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  tsx: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  py: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  java: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  cpp: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  c: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  html: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  css: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  json: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  xml: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-650" },
+  md: { bg: "bg-slate-50 dark:bg-slate-900/40", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-400 to-slate-500" },
+  sql: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  php: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  rb: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  go: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  rs: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  swift: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  kt: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-655" },
+  exe: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  msi: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  dmg: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  iso: { bg: "bg-slate-100 dark:bg-slate-800/50", icon: "text-slate-500 dark:text-slate-400", gradient: "from-slate-500 to-slate-600" },
+  psd: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-650 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  ai: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
+  sketch: { bg: "bg-amber-50 dark:bg-amber-950/20", icon: "text-amber-600 dark:text-amber-450", gradient: "from-amber-500 to-amber-600" },
+  figma: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
+  xd: { bg: "bg-indigo-50 dark:bg-indigo-950/20", icon: "text-indigo-600 dark:text-indigo-400", gradient: "from-indigo-500 to-indigo-600" },
 };
 
 // Helper to get file extension
@@ -143,7 +122,6 @@ export function getFileColors(file: FileItem): { bg: string; icon: string; gradi
     return extensionColors[ext];
   }
   
-  // Fallback to type-based colors
   return fileTypeColors[file.type] || fileTypeColors.file;
 }
 
@@ -180,58 +158,56 @@ const fileTypeIcons: Record<FileItem["type"], typeof File> = {
 
 const fileTypeColors: Record<FileItem["type"], { bg: string; icon: string; gradient: string }> = {
   folder: {
-    bg: "bg-amber-50 dark:bg-amber-950/30",
-    icon: "text-amber-500 dark:text-amber-400",
-    gradient: "from-amber-400 to-orange-500",
+    bg: "bg-indigo-50/50 dark:bg-indigo-950/25",
+    icon: "text-indigo-600 dark:text-indigo-400",
+    gradient: "from-indigo-500 to-indigo-600",
   },
   document: {
-    bg: "bg-blue-50 dark:bg-blue-950/30",
-    icon: "text-blue-500 dark:text-blue-400",
-    gradient: "from-blue-400 to-blue-600",
+    bg: "bg-blue-50 dark:bg-blue-950/20",
+    icon: "text-blue-600 dark:text-blue-400",
+    gradient: "from-blue-500 to-blue-650",
   },
   spreadsheet: {
-    bg: "bg-emerald-50 dark:bg-emerald-950/30",
-    icon: "text-emerald-500 dark:text-emerald-400",
-    gradient: "from-emerald-400 to-emerald-600",
+    bg: "bg-emerald-50 dark:bg-emerald-950/20",
+    icon: "text-emerald-600 dark:text-emerald-400",
+    gradient: "from-emerald-500 to-emerald-650",
   },
   presentation: {
-    bg: "bg-orange-50 dark:bg-orange-950/30",
-    icon: "text-orange-500 dark:text-orange-400",
-    gradient: "from-orange-400 to-red-500",
+    bg: "bg-amber-50 dark:bg-amber-950/20",
+    icon: "text-amber-605 dark:text-amber-400",
+    gradient: "from-amber-500 to-amber-650",
   },
   pdf: {
-    bg: "bg-red-50 dark:bg-red-950/30",
-    icon: "text-red-500 dark:text-red-400",
-    gradient: "from-red-400 to-rose-600",
+    bg: "bg-red-50 dark:bg-red-950/20",
+    icon: "text-red-655 text-red-600 dark:text-red-400",
+    gradient: "from-red-500 to-red-600",
   },
   image: {
-    bg: "bg-purple-50 dark:bg-purple-950/30",
-    icon: "text-purple-500 dark:text-purple-400",
-    gradient: "from-purple-400 to-pink-500",
+    bg: "bg-indigo-50 dark:bg-indigo-950/20",
+    icon: "text-indigo-600 dark:text-indigo-400",
+    gradient: "from-indigo-500 to-indigo-650",
   },
   video: {
-    bg: "bg-pink-50 dark:bg-pink-950/30",
-    icon: "text-pink-500 dark:text-pink-400",
-    gradient: "from-pink-400 to-rose-500",
+    bg: "bg-rose-50 dark:bg-rose-950/20",
+    icon: "text-rose-600 dark:text-rose-455",
+    gradient: "from-rose-500 to-rose-650",
   },
   audio: {
-    bg: "bg-cyan-50 dark:bg-cyan-950/30",
-    icon: "text-cyan-500 dark:text-cyan-400",
-    gradient: "from-cyan-400 to-teal-500",
+    bg: "bg-cyan-50 dark:bg-cyan-950/20",
+    icon: "text-cyan-600 dark:text-cyan-400",
+    gradient: "from-cyan-500 to-cyan-650",
   },
   archive: {
-    bg: "bg-slate-50 dark:bg-slate-950/30",
-    icon: "text-slate-500 dark:text-slate-400",
-    gradient: "from-slate-400 to-slate-600",
+    bg: "bg-slate-100 dark:bg-slate-800/50",
+    icon: "text-slate-655 text-slate-500 dark:text-slate-400",
+    gradient: "from-slate-500 to-slate-600",
   },
   file: {
-    bg: "bg-surface-50 dark:bg-surface-900/30",
-    icon: "text-surface-500 dark:text-surface-400",
-    gradient: "from-surface-400 to-surface-600",
+    bg: "bg-slate-50 dark:bg-slate-900/40",
+    icon: "text-slate-500 dark:text-slate-400",
+    gradient: "from-slate-400 to-slate-500",
   },
 };
-
-import React from "react";
 
 export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
   file,
@@ -258,7 +234,7 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
-  const longPressTriggered = useRef(false); // Use ref for immediate sync check
+  const longPressTriggered = useRef(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
@@ -273,23 +249,15 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
       const rect = menuButtonRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
-      const menuHeight = 380; // Increased to account for all menu items
-      // w-52 on mobile (208px), w-56 on desktop (224px)
-      const menuWidth = window.innerWidth < 640 ? 208 : 224;
+      const menuHeight = 350;
+      const menuWidth = 208;
       
       let top: number;
-      
-      // Check if menu fits below
       if (spaceBelow >= menuHeight) {
         top = rect.bottom + 4;
-      } 
-      // Check if menu fits above
-      else if (spaceAbove >= menuHeight) {
+      } else if (spaceAbove >= menuHeight) {
         top = rect.top - menuHeight - 4;
-      }
-      // If neither fits, position to maximize visible area and ensure it doesn't go off-screen
-      else {
-        // Place where there's more space, but ensure minimum 8px from edges
+      } else {
         if (spaceBelow > spaceAbove) {
           top = Math.min(rect.bottom + 4, window.innerHeight - menuHeight - 8);
         } else {
@@ -297,18 +265,11 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         }
       }
       
-      // Ensure top is never negative
       top = Math.max(8, top);
-      
-      // For mobile, center the menu or position from left if needed
       let right = window.innerWidth - rect.right;
-      
-      // If menu would go off the left edge, adjust position
       if (window.innerWidth - right < menuWidth + 8) {
-        // Position from left instead
         right = Math.max(8, window.innerWidth - menuWidth - 8);
       }
-      
       right = Math.max(8, right);
 
       setMenuCoords({ top, right });
@@ -374,7 +335,6 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
       const headers: Record<string, string> = {};
       if (token) headers.Authorization = `Bearer ${token}`;
 
-      // Use direct download to get proper filename
       const response = await fetch(`/api/files/${file.id}/download?direct=true`, {
         method: "GET",
         headers,
@@ -383,7 +343,6 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
 
       if (!response.ok) throw new Error("Failed to download file");
 
-      // Get filename from Content-Disposition header or use file.name
       const contentDisposition = response.headers.get('Content-Disposition');
       let filename = file.name;
       if (contentDisposition) {
@@ -434,23 +393,20 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
     if (coords) setMenuCoords(coords);
   };
 
-  // Touch handlers for long-press selection on mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     setIsLongPressing(false);
-    longPressTriggered.current = false; // Reset the ref
+    longPressTriggered.current = false;
     
     longPressTimer.current = setTimeout(() => {
-      longPressTriggered.current = true; // Set ref immediately (sync)
+      longPressTriggered.current = true;
       setIsLongPressing(true);
-      // Vibrate for haptic feedback if available
       if (navigator.vibrate) {
         navigator.vibrate(50);
       }
-      // Trigger selection on long press
       onClick(e as unknown as React.MouseEvent);
-    }, 500); // 500ms for long press
+    }, 500);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -459,7 +415,6 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
       const dx = Math.abs(touch.clientX - touchStartPos.current.x);
       const dy = Math.abs(touch.clientY - touchStartPos.current.y);
       
-      // Cancel long press if user moved finger significantly (scrolling)
       if (dx > 10 || dy > 10) {
         if (longPressTimer.current) {
           clearTimeout(longPressTimer.current);
@@ -474,10 +429,6 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
       clearTimeout(longPressTimer.current);
       longPressTimer.current = null;
     }
-    
-    // Mobile: Long press toggles selection, tap does nothing (use 3-dot menu for preview)
-    // This prevents accidental taps while scrolling
-    
     setIsLongPressing(false);
     longPressTriggered.current = false;
     touchStartPos.current = null;
@@ -492,7 +443,6 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
     touchStartPos.current = null;
   };
 
-  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (longPressTimer.current) {
@@ -501,21 +451,17 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
     };
   }, []);
 
-  // Track if we're using touch (to prevent click from firing after touch)
   const isTouchDevice = useRef(false);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Skip click handling if this was a touch interaction (touch already handled it)
     if (isTouchDevice.current) {
       isTouchDevice.current = false;
       return;
     }
-    // Desktop: normal click to select
     onClick(e);
   };
 
   const handleDoubleClick = () => {
-    // Desktop: double-click to open
     onDoubleClick();
   };
 
@@ -524,11 +470,10 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
     handleTouchStart(e);
   };
 
-  // Quick action bar items
   const quickActions = isInTrash
     ? [
         { icon: RotateCcw, label: "Restore", onClick: () => { onRestore?.(); }, color: "text-emerald-500" },
-        { icon: Trash2, label: "Delete", onClick: () => { onPermanentDelete?.(); }, color: "text-danger-500" },
+        { icon: Trash2, label: "Delete", onClick: () => { onPermanentDelete?.(); }, color: "text-red-500" },
       ]
     : [
         { icon: FileText, label: "View Summary", onClick: () => onDetails?.(), color: "text-purple-500", hidden: true, mobileHidden: true },
@@ -536,7 +481,7 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         { icon: Star, label: file.starred ? "Unstar" : "Star", onClick: onStar, active: file.starred },
         { icon: Download, label: "Download", onClick: handleDownload, disabled: file.type === "folder", mobileHidden: true },
         { icon: Share2, label: "Share", onClick: handleShare, hidden: true, mobileHidden: true },
-        { icon: MoreHorizontal, label: "More", onClick: handleMenuToggle, isMenuButton: true },
+        { icon: MoreHorizontal, label: "More Actions", onClick: handleMenuToggle, isMenuButton: true },
       ];
 
   // Grid View
@@ -545,19 +490,20 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
       <motion.div
         ref={ref}
         layout
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        whileHover={{ y: -4 }}
+        exit={{ opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.15 }}
+        whileHover={{ y: -2 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         className={cn(
           "file-card group relative cursor-pointer",
-          "rounded-2xl overflow-hidden",
-          "transition-all duration-300 ease-out",
-          isSelected && "ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-surface-900",
-          isLongPressing && "scale-95 ring-2 ring-primary-400"
+          "rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800",
+          "bg-white dark:bg-slate-900 shadow-sm",
+          "transition-all duration-150 hover:shadow hover:border-slate-300 dark:hover:border-slate-700",
+          isSelected && "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-950",
+          isLongPressing && "scale-[0.98] ring-2 ring-indigo-400"
         )}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
@@ -569,16 +515,16 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         {/* Selection Checkbox */}
         <div
           className={cn(
-            "absolute top-3 left-3 z-20 pointer-events-auto transition-opacity duration-200",
+            "absolute top-2.5 left-2.5 z-20 pointer-events-auto transition-opacity duration-150",
             (isSelected || isHovered) ? "opacity-100" : "opacity-0"
           )}
-          title="Select this file"
+          title="Select file"
         >
           <input 
             type="checkbox"
             checked={isSelected}
             disabled={isInTrash}
-            className="w-5 h-5 rounded cursor-pointer accent-primary-500 shadow-sm"
+            className="w-4.5 h-4.5 rounded cursor-pointer accent-indigo-600 shadow-sm"
             onClick={(e) => e.stopPropagation()}
             onChange={(e) => onSelect && onSelect(file.id, e.nativeEvent as any)}
           />
@@ -596,102 +542,92 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
                 alt={file.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               />
-              {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <motion.div
-                animate={isHovered ? { scale: 1.1, rotate: [0, -5, 5, 0] } : { scale: 1, rotate: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                transition={{ duration: 0.15 }}
                 className={cn(
-                  "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center",
-                  "bg-gradient-to-br shadow-lg",
+                  "w-12 h-12 rounded-lg flex items-center justify-center shadow-sm text-white bg-gradient-to-br",
                   colors.gradient
                 )}
               >
-                <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                <Icon className="w-5 h-5 text-white" />
               </motion.div>
             </div>
           )}
 
-          {/* Badges */}
-          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+          {/* Star Badge */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
             <AnimatePresence>
-              {file.starred && (
+              {file.starred && !isSelected && !isHovered && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
-                  className="w-7 h-7 rounded-full bg-amber-400 shadow-lg flex items-center justify-center"
+                  className="w-5 h-5 rounded-full bg-amber-450 dark:bg-amber-500 shadow flex items-center justify-center text-white"
                 >
-                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                  <Star className="w-3 h-3 fill-current text-white" />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 flex items-center gap-1.5 z-10">
-            {/* Mobile-only more button - always visible */}
+          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
             <button
               ref={menuButtonRef}
               onClick={handleMenuToggle}
-              className="lg:hidden w-8 h-8 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-surface-800/95 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-surface-700 transition-colors border border-surface-200/50 dark:border-surface-700/50"
+              className="lg:hidden w-7 h-7 rounded-full bg-white/95 dark:bg-slate-800/95 shadow flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-750"
             >
-              <MoreHorizontal className="w-4 h-4 text-surface-600 dark:text-surface-300" />
+              <MoreHorizontal className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             </button>
             {file.shared && (
-              <div className="w-7 h-7 rounded-full bg-primary-500 shadow-lg flex items-center justify-center">
-                <Users className="w-3.5 h-3.5 text-white" />
+              <div className="w-6 h-6 rounded-full bg-indigo-650 dark:bg-indigo-500 shadow flex items-center justify-center text-white">
+                <Users className="w-3 h-3 text-white" />
               </div>
             )}
           </div>
 
-          {/* Quick Action Bar - appears on hover on desktop, always visible on mobile */}
+          {/* Quick Action Overlay (Desktop) */}
           <AnimatePresence>
             {(isHovered || isSelected) && !isRenaming && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.2 }}
-                className="absolute bottom-2 left-2 right-2"
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.1 }}
+                className="absolute bottom-2 left-2 right-2 hidden lg:block"
               >
-                <div className="flex items-center justify-center gap-1.5 p-2 sm:p-2.5 rounded-2xl bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm shadow-xl border border-surface-200/50 dark:border-surface-700/50">
+                <div className="flex items-center justify-center gap-1 p-1 rounded-lg bg-white/95 dark:bg-slate-900/95 shadow-lg border border-slate-200 dark:border-slate-800">
                   {quickActions.map((action, idx) => {
                     const ActionIcon = action.icon;
                     const isMenuBtn = (action as any).isMenuButton;
                     return (
                       !(action as any).hidden && (
-                      <div key={idx} className={cn((action as any).mobileHidden && "hidden sm:block")}>
-                        <Tooltip content={action.label} side="top">
-                          <button
-                            ref={isMenuBtn ? menuButtonRef : undefined}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              action.onClick(e);
-                            }}
-                            disabled={(action as any).disabled}
-                            className={cn(
-                              "w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl transition-all duration-150",
-                              "hover:bg-surface-100 dark:hover:bg-surface-700",
-                              "disabled:opacity-40 disabled:cursor-not-allowed",
-                              (action as any).color,
-                              (action as any).active ? "text-amber-500 hover:text-amber-600" : "text-surface-600 hover:text-surface-900"
-                            )}
-                          >
-                            <ActionIcon
+                        <div key={idx} className={cn((action as any).mobileHidden && "hidden sm:block")}>
+                          <Tooltip content={action.label} side="top">
+                            <button
+                              ref={isMenuBtn ? menuButtonRef : undefined}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                action.onClick(e);
+                              }}
+                              disabled={(action as any).disabled}
                               className={cn(
-                                "w-4 h-4",
-                                (action as any).active && "fill-amber-500",
-                                (action as any).color
+                                "w-7 h-7 flex items-center justify-center rounded transition-all duration-150",
+                                "hover:bg-slate-100 dark:hover:bg-slate-800",
+                                "disabled:opacity-40 disabled:cursor-not-allowed",
+                                (action as any).active ? "text-amber-500" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                               )}
-                            />
-                          </button>
-                        </Tooltip>
-                      </div>
+                            >
+                              <ActionIcon className={cn("w-3.5 h-3.5", (action as any).active && "fill-amber-500")} />
+                            </button>
+                          </Tooltip>
+                        </div>
                       )
                     );
                   })}
@@ -702,10 +638,10 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         </div>
 
         {/* File Info */}
-        <div className="p-3 sm:p-4 bg-white dark:bg-surface-800/50">
-          <div className="space-y-1.5">
+        <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800/60">
+          <div className="space-y-1">
             {isRenaming ? (
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <input
                   ref={inputRef}
                   type="text"
@@ -720,53 +656,37 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
                     }
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className={cn(
-                    "flex-1 px-2 py-1 text-sm font-medium rounded-lg",
-                    "bg-surface-100 dark:bg-surface-700",
-                    "border-2 border-primary-500",
-                    "focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                  )}
+                  className="flex-1 px-1.5 py-0.5 text-xs font-semibold rounded border border-indigo-500 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none"
                 />
                 <button
                   onClick={(e) => { e.stopPropagation(); handleRename(); }}
-                  className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+                  className="p-1 rounded bg-indigo-650 hover:bg-indigo-700 text-white transition-colors"
                 >
-                  <Check className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setNewName(file.name); setIsRenaming(false); }}
-                  className="p-1.5 rounded-lg bg-surface-200 dark:bg-surface-600 hover:bg-surface-300 dark:hover:bg-surface-500 transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
+                  <Check className="w-3 h-3" />
                 </button>
               </div>
             ) : (
-              <h3 className="text-sm font-medium text-surface-900 dark:text-white truncate leading-tight">
+              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate leading-snug">
                 {file.name}
               </h3>
             )}
             
-            {/* AI Tags display in Grid View */}
+            {/* AI Tags */}
             {file.tags && file.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1">
+              <div className="flex flex-wrap gap-1 mt-0.5">
                 {file.tags.slice(0, 2).map((tag, i) => (
-                  <span key={i} className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 truncate max-w-[60px]">
+                  <span key={i} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 truncate max-w-[65px]">
                     {tag}
                   </span>
                 ))}
-                {file.tags.length > 2 && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400">
-                    +{file.tags.length - 2}
-                  </span>
-                )}
               </div>
             )}
 
-            <div className="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-400 mt-1">
+            <div className="flex items-center gap-1 text-[10px] text-slate-400 font-medium mt-1">
               <span>{formatDate(file.modified)}</span>
               {file.size > 0 && (
                 <>
-                  <span className="text-surface-300 dark:text-surface-600">•</span>
+                  <span>•</span>
                   <span>{formatFileSize(file.size)}</span>
                 </>
               )}
@@ -774,21 +694,21 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
           </div>
         </div>
 
-        {/* Selection indicator */}
+        {/* Selection Indicator */}
         <AnimatePresence>
           {isSelected && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
-              className="absolute top-2 left-2 w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center shadow-lg z-10"
+              className="absolute top-2.5 left-2.5 w-4.5 h-4.5 rounded bg-indigo-600 flex items-center justify-center shadow z-10 text-white"
             >
-              <Check className="w-3.5 h-3.5 text-white" />
+              <Check className="w-3 h-3 text-white" />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Context Menu */}
+        {/* Context Menu Portal */}
         {showMenu && menuCoords && typeof window !== "undefined" && createPortal(
           <ContextMenu
             menuRef={menuRef}
@@ -811,55 +731,41 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
           document.body
         )}
 
-        {/* Share Modal */}
-        <ShareModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          file={file}
-        />
-
-        {/* Summary Modal */}
-        <SummaryModal
-          isOpen={isSummaryModalOpen}
-          onClose={() => setIsSummaryModalOpen(false)}
-          file={file}
-        />
+        <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} file={file} />
+        <SummaryModal isOpen={isSummaryModalOpen} onClose={() => setIsSummaryModalOpen(false)} file={file} />
       </motion.div>
     );
   }
 
-  // List View
+  // List View (As fallback)
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, x: -10 }}
+      initial={{ opacity: 0, x: -5 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -10 }}
-      transition={{ duration: 0.2 }}
+      exit={{ opacity: 0, x: -5 }}
+      transition={{ duration: 0.15 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className={cn(
         "file-card group relative cursor-pointer",
-        "flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl",
-        "transition-all duration-200",
-        isSelected && "ring-2 ring-primary-500 bg-primary-50/50 dark:bg-primary-950/20"
+        "flex items-center gap-3 px-4 py-2 rounded-md",
+        "transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40",
+        isSelected && "bg-indigo-50/50 dark:bg-indigo-950/20"
       )}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
     >
-      {/* Icon */}
       <div className={cn(
-        "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0",
-        "bg-gradient-to-br shadow-sm",
+        "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white bg-gradient-to-br",
         colors.gradient
       )}>
-        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+        <Icon className="w-4 h-4 text-white" />
       </div>
 
-      {/* File Info */}
       <div className="flex-1 min-w-0">
         {isRenaming ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <input
               ref={inputRef}
               type="text"
@@ -874,41 +780,35 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
                 }
               }}
               onClick={(e) => e.stopPropagation()}
-              className="flex-1 px-2 py-1 text-sm font-medium bg-surface-100 dark:bg-surface-700 rounded-lg border-2 border-primary-500 focus:outline-none"
+              className="flex-1 px-1.5 py-0.5 text-xs font-semibold rounded border border-indigo-500 bg-slate-50 dark:bg-slate-800 focus:outline-none"
             />
             <button
               onClick={(e) => { e.stopPropagation(); handleRename(); }}
-              className="p-1.5 rounded-lg bg-primary-500 text-white"
+              className="p-1 rounded bg-indigo-650 text-white"
             >
               <Check className="w-3.5 h-3.5" />
             </button>
           </div>
         ) : (
           <>
-            <h3 className="text-sm font-medium text-surface-900 dark:text-white truncate">
+            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
               {file.name}
             </h3>
-            <div className="flex items-center gap-2 sm:gap-3 text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+            <div className="flex items-center gap-2 text-[10px] text-slate-450 dark:text-slate-400 mt-0.5">
               <span>{formatDate(file.modified)}</span>
-              {file.size > 0 && <span className="hidden sm:inline">{formatFileSize(file.size)}</span>}
+              {file.size > 0 && <span>• {formatFileSize(file.size)}</span>}
             </div>
           </>
         )}
       </div>
 
-      {/* Badges */}
       <div className="flex items-center gap-2">
-        {file.starred && (
-          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-        )}
-        {file.shared && (
-          <Users className="w-4 h-4 text-primary-500" />
-        )}
+        {file.starred && <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />}
+        {file.shared && <Users className="w-3.5 h-3.5 text-indigo-500" />}
       </div>
 
-      {/* Actions */}
       <div className={cn(
-        "flex items-center gap-1.5 transition-opacity duration-200",
+        "flex items-center gap-1 transition-opacity duration-150",
         isHovered ? "opacity-100" : "opacity-0"
       )}>
         {quickActions.slice(0, -1).map((action, idx) => {
@@ -918,18 +818,9 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
               <button
                 onClick={(e) => { e.stopPropagation(); action.onClick(e); }}
                 disabled={(action as any).disabled}
-                className={cn(
-                  "w-9 h-9 flex items-center justify-center rounded-xl transition-colors",
-                  "hover:bg-surface-100 dark:hover:bg-surface-700",
-                  "disabled:opacity-40 disabled:cursor-not-allowed"
-                )}
+                className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40"
               >
-                <ActionIcon
-                  className={cn(
-                    "w-4 h-4 text-surface-500",
-                    (action as any).active && "text-amber-500 fill-amber-500"
-                  )}
-                />
+                <ActionIcon className={cn("w-3.5 h-3.5 text-slate-400", (action as any).active && "text-amber-500 fill-amber-500")} />
               </button>
             </Tooltip>
           );
@@ -937,13 +828,12 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         <button
           ref={menuButtonRef}
           onClick={handleMenuToggle}
-          className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-100 dark:hover:bg-surface-700"
+          className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-slate-800"
         >
-          <MoreHorizontal className="w-4 h-4 text-surface-500" />
+          <MoreHorizontal className="w-3.5 h-3.5 text-slate-400" />
         </button>
       </div>
 
-      {/* Context Menu */}
       {showMenu && menuCoords && typeof window !== "undefined" && createPortal(
         <ContextMenu
           menuRef={menuRef}
@@ -965,33 +855,21 @@ export const FileCard = React.forwardRef<HTMLDivElement, FileCardProps>(({
         document.body
       )}
 
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        file={file}
-      />
-
-      {/* Summary Modal */}
-      <SummaryModal
-        isOpen={isSummaryModalOpen}
-        onClose={() => setIsSummaryModalOpen(false)}
-        file={file}
-      />
+      <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} file={file} />
+      <SummaryModal isOpen={isSummaryModalOpen} onClose={() => setIsSummaryModalOpen(false)} file={file} />
     </motion.div>
   );
 });
 
 FileCard.displayName = "FileCard";
 
-// Context Menu Component
 interface ContextMenuProps {
   menuRef: React.RefObject<HTMLDivElement>;
   menuCoords: { top: number; right: number };
   file: FileItem;
-  isInTrash: boolean;
+  isInTrash?: boolean;
   onClose: () => void;
-  onStar: () => void;
+  onStar?: () => void;
   onRename: () => void;
   onEditContent?: () => void;
   onShare: () => void;
@@ -1000,8 +878,8 @@ interface ContextMenuProps {
   onDelete: () => void;
   onRestore?: () => void;
   onPermanentDelete?: () => void;
-  onPreview?: () => void;
   onDetails?: () => void;
+  onPreview?: () => void;
 }
 
 function ContextMenu({
@@ -1025,10 +903,10 @@ function ContextMenu({
   return (
     <motion.div
       ref={menuRef}
-      initial={{ opacity: 0, scale: 0.95, y: -8 }}
+      initial={{ opacity: 0, scale: 0.98, y: -4 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.1 }}
       style={{
         position: "fixed",
         top: menuCoords.top,
@@ -1036,7 +914,7 @@ function ContextMenu({
         maxHeight: "calc(100vh - 16px)",
         maxWidth: "calc(100vw - 16px)",
       }}
-      className="w-52 sm:w-56 dropdown-menu p-1.5 z-[100] overflow-y-auto"
+      className="w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-1 z-[100] overflow-y-auto"
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >
@@ -1044,14 +922,14 @@ function ContextMenu({
         <>
           <MenuItem
             icon={RotateCcw}
-            label="Restore"
+            label="Restore file"
             iconColor="text-emerald-500"
             onClick={() => { onRestore?.(); onClose(); }}
           />
-          <div className="dropdown-divider" />
+          <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
           <MenuItem
             icon={Trash2}
-            label="Delete forever"
+            label="Delete permanently"
             variant="danger"
             onClick={() => { onPermanentDelete?.(); onClose(); }}
           />
@@ -1061,39 +939,39 @@ function ContextMenu({
           {onPreview && file.type !== "folder" && (
             <MenuItem
               icon={ExternalLink}
-              label="Preview"
+              label="Preview file"
               onClick={() => { onPreview(); onClose(); }}
             />
           )}
           <MenuItem
             icon={Star}
-            label={file.starred ? "Remove star" : "Add star"}
+            label={file.starred ? "Remove star" : "Star file"}
             iconColor={file.starred ? "text-amber-500" : undefined}
             iconFill={file.starred}
-            onClick={() => { onStar(); onClose(); }}
+            onClick={() => { onStar?.(); onClose(); }}
           />
           <MenuItem
             icon={Edit3}
-            label="Rename"
+            label="Rename item"
             shortcut="F2"
             onClick={onRename}
           />
           <MenuItem
             icon={Edit3}
-            label="Edit content"
-              disabled={!isEditableFile(file.name, file.mimeType)}
+            label="Edit contents"
+            disabled={!isEditableFile(file.name, file.mimeType)}
             onClick={() => { onEditContent?.(); onClose(); }}
           />
           <MenuItem
             icon={Sparkles}
-            label="AI Summary"
+            label="Generate summary"
             iconColor="text-purple-500"
             disabled={file.type === "folder"}
             onClick={() => { onSummary(); onClose(); }}
           />
           <MenuItem
             icon={Share2}
-            label="Share"
+            label="Share link"
             onClick={() => { onShare(); onClose(); }}
           />
           <MenuItem
@@ -1104,7 +982,7 @@ function ContextMenu({
           />
           <MenuItem
             icon={Copy}
-            label="Copy link"
+            label="Copy share link"
             onClick={() => {
               navigator.clipboard.writeText(`${window.location.origin}/share/${file.id}`);
               toast.success("Link copied!");
@@ -1113,13 +991,13 @@ function ContextMenu({
           />
           <MenuItem
             icon={Info}
-            label="Details"
+            label="View details"
             onClick={() => {
               onDetails?.();
               onClose();
             }}
           />
-          <div className="dropdown-divider" />
+          <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
           <MenuItem
             icon={Trash2}
             label="Move to trash"
@@ -1133,7 +1011,6 @@ function ContextMenu({
   );
 }
 
-// Menu Item Component
 interface MenuItemProps {
   icon: typeof File;
   label: string;
@@ -1160,23 +1037,23 @@ function MenuItem({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-        "disabled:opacity-50 disabled:cursor-not-allowed",
+        "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors text-left",
+        "disabled:opacity-40 disabled:cursor-not-allowed",
         variant === "danger"
-          ? "dropdown-item-danger"
-          : "dropdown-item"
+          ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+          : "text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800/60"
       )}
     >
       <Icon
         className={cn(
-          "w-4 h-4",
-          variant === "danger" ? "" : iconColor || "text-surface-400",
+          "w-3.5 h-3.5 flex-shrink-0",
+          variant === "danger" ? "" : iconColor || "text-slate-400",
           iconFill && "fill-current"
         )}
       />
-      <span className="flex-1 text-left">{label}</span>
+      <span className="flex-1 truncate">{label}</span>
       {shortcut && (
-        <kbd className="kbd text-[10px]">{shortcut}</kbd>
+        <kbd className="hidden sm:inline-block px-1 text-[9px] text-slate-400 font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded leading-none">{shortcut}</kbd>
       )}
     </button>
   );

@@ -16,6 +16,8 @@ import {
   HelpCircle,
   Cloud,
   X,
+  Bell,
+  Sparkles,
 } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { cn } from "@/lib/utils";
@@ -133,76 +135,75 @@ export function Navbar({
   }, [searchFocused]);
 
   return (
-    <header className="sticky top-0 z-50 h-16 glass border-b border-surface-200/50 dark:border-surface-800/50">
-      <div className="h-full px-3 sm:px-4 flex items-center justify-between gap-3">
+    <header className="sticky top-0 z-50 h-16 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
+      <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-4">
         {/* Left Section - Logo & Menu */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+            className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
             aria-label="Toggle menu"
           >
-            <Menu className="w-5 h-5 text-surface-600 dark:text-surface-400" />
+            <Menu className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 min-w-[36px] rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-soft hover-lift">
-              <Cloud className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center shadow-sm">
+              <Cloud className="w-4 h-4 text-white" />
             </div>
-            <span className="hidden sm:block text-lg font-semibold text-surface-900 dark:text-white tracking-tight whitespace-nowrap">
-              CloudDrive
-            </span>
+            <div className="hidden sm:block">
+              <span className="block text-sm font-semibold text-slate-900 dark:text-white whitespace-nowrap leading-tight">
+                CloudDrive
+              </span>
+              <span className="hidden xl:block text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight">
+                AI workspace
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Center - Search Bar */}
         <div className="flex-1 min-w-0 max-w-2xl mx-2 sm:mx-4">
-          <div
-            className={cn(
-              "relative flex items-center transition-all duration-200",
-              searchFocused && "scale-[1.01]"
-            )}
-          >
+          <div className="relative flex items-center">
             <Search
               className={cn(
-                "absolute left-4 w-5 h-5 transition-colors duration-200 pointer-events-none",
+                "absolute left-3 w-4 h-4 transition-colors duration-150 pointer-events-none",
                 searchFocused
-                  ? "text-primary-500"
-                  : "text-surface-400 dark:text-surface-500"
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-slate-400 dark:text-slate-500"
               )}
             />
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search files and folders..."
+              placeholder="Search files, folders, and AI summaries... (Press '/' to focus)"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
               className={cn(
-                "w-full h-11 pl-12 pr-24 rounded-2xl",
-                "bg-surface-100 dark:bg-surface-800/50",
-                "border-2 transition-all duration-200",
+                "w-full h-9 pl-9 pr-20 rounded-lg text-sm transition-all duration-150",
+                "bg-slate-50 dark:bg-slate-900/50",
+                "border text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500",
                 searchFocused
-                  ? "border-primary-500 bg-white dark:bg-surface-800 shadow-glow"
-                  : "border-transparent hover:bg-surface-200/50 dark:hover:bg-surface-700/50",
-                "text-surface-900 dark:text-white placeholder:text-surface-400 dark:placeholder:text-surface-500",
+                  ? "border-indigo-500 bg-white dark:bg-slate-900 shadow-sm ring-2 ring-indigo-500/10"
+                  : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/50 dark:hover:bg-slate-900/80",
                 "focus:outline-none"
               )}
             />
-            <div className="absolute right-3 flex items-center gap-2">
+            <div className="absolute right-2.5 flex items-center gap-1.5">
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange("")}
-                  className="p-1 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
+                  className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
                   aria-label="Clear search"
                 >
-                  <X className="w-4 h-4 text-surface-500" />
+                  <X className="w-3.5 h-3.5 text-slate-500" />
                 </button>
               )}
               {!searchFocused && !searchQuery && (
-                <div className="hidden sm:flex items-center gap-1 text-surface-400">
-                  <kbd className="kbd">/</kbd>
+                <div className="hidden sm:flex items-center gap-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700">
+                  <kbd className="font-sans">/</kbd>
                 </div>
               )}
             </div>
@@ -210,15 +211,34 @@ export function Navbar({
         </div>
 
         {/* Right Section - Actions */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-2">
           {/* Upload Button */}
           <Tooltip content="Upload files" side="bottom">
             <button
               onClick={onUploadClick}
-              className="btn-primary hidden sm:flex shadow-sm"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-505 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
             >
-              <Upload className="w-4 h-4" />
-              <span className="hidden md:inline">Upload</span>
+              <Upload className="w-3.5 h-3.5" />
+              <span>Upload</span>
+            </button>
+          </Tooltip>
+
+          <Tooltip content="AI insights" side="bottom">
+            <button
+              className="hidden md:flex p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              aria-label="AI insights"
+            >
+              <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Notifications" side="bottom">
+            <button
+              className="hidden sm:flex relative p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute right-1.5 top-1.5 w-1.5 h-1.5 rounded-full bg-indigo-600 ring-2 ring-white dark:ring-slate-950" />
             </button>
           </Tooltip>
 
@@ -226,21 +246,21 @@ export function Navbar({
           <Tooltip content={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} side="bottom">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+              className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
               aria-label="Toggle theme"
             >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={theme}
-                  initial={{ rotate: -90, opacity: 0 }}
+                  initial={{ rotate: -45, opacity: 0 }}
                   animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
+                  exit={{ rotate: 45, opacity: 0 }}
+                  transition={{ duration: 0.1 }}
                 >
                   {theme === "light" ? (
-                    <Moon className="w-5 h-5 text-surface-600" />
+                    <Moon className="w-4 h-4" />
                   ) : (
-                    <Sun className="w-5 h-5 text-surface-400" />
+                    <Sun className="w-4 h-4" />
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -250,74 +270,54 @@ export function Navbar({
           {/* User Menu */}
           <div className="relative" ref={userMenuRef}>
             {user && (
-              <Tooltip content="Account" side="bottom">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 p-1 pr-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
-                >
-                  {user.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-8 h-8 min-w-[32px] min-h-[32px] shrink-0 rounded-full ring-2 ring-surface-200 dark:ring-surface-700 object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 min-w-[32px] min-h-[32px] shrink-0 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center ring-2 ring-surface-200 dark:ring-surface-700">
-                      <span className="text-sm font-semibold text-white">
-                        {user.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                </button>
-              </Tooltip>
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 p-0.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-7 h-7 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-semibold text-xs border border-indigo-200 dark:border-indigo-800">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </button>
             )}
 
             <AnimatePresence>
               {showUserMenu && user && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  initial={{ opacity: 0, y: 4, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.15, ease: [0.175, 0.885, 0.32, 1.275] }}
-                  className="absolute right-0 mt-2 w-72 dropdown-menu p-0 overflow-hidden"
+                  exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                  transition={{ duration: 0.1 }}
+                  className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg py-1 z-50 overflow-hidden"
                 >
                   {/* User Info */}
-                  <div className="p-4 bg-surface-50 dark:bg-surface-100/50 border-b border-surface-200/60 dark:border-surface-200/40">
-                    <div className="flex items-center gap-3">
-                      {user.avatar ? (
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="w-12 h-12 min-w-[48px] min-h-[48px] shrink-0 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 min-w-[48px] min-h-[48px] shrink-0 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-                          <span className="text-xl font-semibold text-white">
-                            {user.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-surface-900 dark:text-surface-900 truncate">
-                          {user.name}
-                        </p>
-                        <p className="text-sm text-surface-500 dark:text-surface-400 truncate">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
+                  <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold">Signed in as</p>
+                    <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate mt-0.5">
+                      {user.name}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                      {user.email}
+                    </p>
                   </div>
 
                   {/* Menu Items */}
-                  <div className="p-1.5">
+                  <div className="p-1">
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
                         setIsProfileOpen(true);
                       }}
-                      className="dropdown-item"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-md transition-colors text-left"
                     >
-                      <User className="w-4 h-4 text-surface-500" />
+                      <User className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       <span>Profile</span>
                     </button>
                     <button
@@ -325,9 +325,9 @@ export function Navbar({
                         setShowUserMenu(false);
                         setIsSettingsOpen(true);
                       }}
-                      className="dropdown-item"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-md transition-colors text-left"
                     >
-                      <Settings className="w-4 h-4 text-surface-500" />
+                      <Settings className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       <span>Settings</span>
                     </button>
                     <button
@@ -335,21 +335,21 @@ export function Navbar({
                         setShowUserMenu(false);
                         setIsHelpOpen(true);
                       }}
-                      className="dropdown-item"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-md transition-colors text-left"
                     >
-                      <HelpCircle className="w-4 h-4 text-surface-500" />
+                      <HelpCircle className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       <span>Help & Support</span>
                     </button>
                   </div>
 
-                  <div className="dropdown-divider" />
+                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
 
-                  <div className="p-1.5">
+                  <div className="p-1">
                     <button
                       onClick={handleLogout}
-                      className="dropdown-item-danger"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors text-left"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-3.5 h-3.5" />
                       <span>Sign Out</span>
                     </button>
                   </div>

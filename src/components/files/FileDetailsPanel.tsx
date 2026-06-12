@@ -17,15 +17,12 @@ import {
   StarOff,
   Calendar,
   HardDrive,
-  Clock,
   Share2,
   Download,
   Trash2,
   Copy,
-  ExternalLink,
   Info,
   Sparkles,
-  Search,
   Edit3,
 } from "lucide-react";
 import { FileItem } from "@/types";
@@ -116,7 +113,6 @@ export function FileDetailsPanel({
     if (onDownload) {
       onDownload(file);
     } else {
-      // Fallback download
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`/api/files/${file.id}/download?direct=true`, {
@@ -173,7 +169,7 @@ export function FileDetailsPanel({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm pointer-events-auto"
+            className="absolute inset-0 bg-black/10 backdrop-blur-[2px] pointer-events-auto"
           />
 
           {/* Panel - slides in from right */}
@@ -182,30 +178,30 @@ export function FileDetailsPanel({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-surface-900 shadow-2xl pointer-events-auto flex flex-col"
+            className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl pointer-events-auto flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Info className="w-5 h-5 text-primary-500" />
-                <h2 className="font-semibold text-surface-900 dark:text-white">
+                <Info className="w-4 h-4 text-indigo-650" />
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                   File Details
                 </h2>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
+                className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-surface-500" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="flex-1 overflow-y-auto p-5 space-y-6">
               {/* File Preview/Icon */}
               <div className="flex flex-col items-center">
                 {file.thumbnail && file.type === "image" ? (
-                  <div className="w-full aspect-video rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800">
+                  <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750">
                     <Image
                       src={file.thumbnail}
                       alt={file.name}
@@ -216,21 +212,21 @@ export function FileDetailsPanel({
                   </div>
                 ) : (
                   <div
-                    className="w-24 h-24 rounded-2xl flex items-center justify-center"
+                    className="w-20 h-20 rounded-xl flex items-center justify-center"
                     style={{ backgroundColor: colors.bg }}
                   >
-                    <Icon className="w-12 h-12" style={{ color: colors.icon }} />
+                    <Icon className="w-10 h-10" style={{ color: colors.icon }} />
                   </div>
                 )}
 
                 {/* File Name */}
-                <h3 className="mt-4 text-lg font-semibold text-surface-900 dark:text-white text-center break-all px-2">
+                <h3 className="mt-4 text-sm font-bold text-slate-900 dark:text-white text-center break-all px-2 leading-snug">
                   {file.name}
                 </h3>
 
                 {/* Type Badge */}
                 <div
-                  className="mt-2 px-3 py-1 rounded-full text-xs font-medium"
+                  className="mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold"
                   style={{ backgroundColor: colors.bg, color: colors.icon }}
                 >
                   {extension}
@@ -238,26 +234,26 @@ export function FileDetailsPanel({
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-5 gap-1.5">
                 <button
                   onClick={() => onEdit?.(file)}
                   disabled={!isEditableFile(file.name, file.mimeType)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-750 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <Edit3 className="w-5 h-5 text-blue-500" />
-                  <span className="text-xs text-surface-600 dark:text-surface-400">Edit</span>
+                  <Edit3 className="w-4 h-4 text-blue-500" />
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Edit</span>
                 </button>
 
                 <button
                   onClick={() => onStar?.(file.id)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+                  className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-750 transition-colors"
                 >
                   {file.starred ? (
-                    <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                   ) : (
-                    <StarOff className="w-5 h-5 text-surface-500" />
+                    <StarOff className="w-4 h-4 text-slate-550" />
                   )}
-                  <span className="text-xs text-surface-600 dark:text-surface-400">
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
                     {file.starred ? "Unstar" : "Star"}
                   </span>
                 </button>
@@ -265,46 +261,46 @@ export function FileDetailsPanel({
                 <button
                   onClick={handleDownload}
                   disabled={file.type === "folder"}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-750 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <Download className="w-5 h-5 text-surface-500" />
-                  <span className="text-xs text-surface-600 dark:text-surface-400">Download</span>
+                  <Download className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Download</span>
                 </button>
 
                 <button
                   onClick={handleCopyLink}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+                  className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-750 transition-colors"
                 >
-                  <Share2 className="w-5 h-5 text-surface-500" />
-                  <span className="text-xs text-surface-600 dark:text-surface-400">Share</span>
+                  <Share2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Share</span>
                 </button>
 
                 <button
                   onClick={() => onDelete?.(file.id)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group"
+                  className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-slate-50 hover:bg-red-50 dark:bg-slate-855 dark:hover:bg-red-950/20 border border-slate-200 dark:border-slate-750 transition-colors group"
                 >
-                  <Trash2 className="w-5 h-5 text-surface-500 group-hover:text-red-500" />
-                  <span className="text-xs text-surface-600 dark:text-surface-400 group-hover:text-red-500">
+                  <Trash2 className="w-4 h-4 text-slate-605 group-hover:text-red-500 transition-colors" />
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 group-hover:text-red-550 transition-colors">
                     Trash
                   </span>
                 </button>
               </div>
 
               {/* File Information */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-semibold text-surface-900 dark:text-white">
+              <div className="space-y-3.5">
+                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                   Information
                 </h4>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {/* Type */}
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                    <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                      <File className="w-5 h-5 text-surface-500" />
+                  <div className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
+                    <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-250 dark:border-slate-700/65 flex items-center justify-center flex-shrink-0">
+                      <File className="w-4 h-4 text-slate-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-surface-500">Type</p>
-                      <p className="text-sm font-medium text-surface-900 dark:text-white capitalize">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 leading-none mb-1">Type</p>
+                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 capitalize">
                         {file.type}
                       </p>
                     </div>
@@ -312,13 +308,13 @@ export function FileDetailsPanel({
 
                   {/* Size */}
                   {file.type !== "folder" && (
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                      <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                        <HardDrive className="w-5 h-5 text-surface-500" />
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
+                      <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-250 dark:border-slate-700/65 flex items-center justify-center flex-shrink-0">
+                        <HardDrive className="w-4 h-4 text-slate-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-surface-500">Size</p>
-                        <p className="text-sm font-medium text-surface-900 dark:text-white">
+                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 leading-none mb-1">Size</p>
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                           {formatBytes(file.size)}
                         </p>
                       </div>
@@ -326,54 +322,26 @@ export function FileDetailsPanel({
                   )}
 
                   {/* Modified Date */}
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                    <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-surface-500" />
+                  <div className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
+                    <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 border border-slate-250 dark:border-slate-700/65 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-slate-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-surface-500">Modified</p>
-                      <p className="text-sm font-medium text-surface-900 dark:text-white">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 leading-none mb-1">Modified</p>
+                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                         {formatDate(file.modified)}
                       </p>
                     </div>
                   </div>
 
-                  {/* Starred Status */}
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                    <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                      <Star className={cn("w-5 h-5", file.starred ? "text-amber-500 fill-amber-500" : "text-surface-500")} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-surface-500">Starred</p>
-                      <p className="text-sm font-medium text-surface-900 dark:text-white">
-                        {file.starred ? "Yes" : "No"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Shared Status */}
-                  {file.shared && (
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                      <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                        <Share2 className="w-5 h-5 text-blue-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-surface-500">Shared</p>
-                        <p className="text-sm font-medium text-blue-500">
-                          Yes
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
                   {/* AI Summary */}
                   {file.summary ? (
-                    <div className="flex flex-col gap-2 p-4 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-100 dark:border-purple-800">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-purple-500" />
-                        <p className="text-xs font-bold text-purple-700 dark:text-purple-300">AI SUMMARY</p>
+                    <div className="flex flex-col gap-1.5 p-3.5 rounded-lg bg-indigo-50/40 dark:bg-indigo-950/15 border border-indigo-150 dark:border-indigo-900/50">
+                      <div className="flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-indigo-650" />
+                        <p className="text-[9px] font-bold text-indigo-700 dark:text-indigo-350 uppercase tracking-wider">AI SUMMARY</p>
                       </div>
-                      <p className="text-sm text-surface-700 dark:text-surface-300 leading-relaxed">
+                      <p className="text-xs text-slate-750 dark:text-slate-300 leading-relaxed font-semibold">
                         {file.summary}
                       </p>
                     </div>
@@ -382,37 +350,24 @@ export function FileDetailsPanel({
                       <button
                         onClick={handleGenerateSummary}
                         disabled={isGeneratingSummary}
-                        className="flex items-center justify-center gap-2 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors w-full"
+                        className="flex items-center justify-center gap-2 p-3 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/45 border border-indigo-200 dark:border-indigo-850 text-indigo-600 dark:text-indigo-400 transition-colors w-full"
                       >
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-sm font-semibold">{isGeneratingSummary ? "Generating AI Summary..." : "Generate AI Summary & Tags"}</span>
+                        <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+                        <span className="text-xs font-semibold">{isGeneratingSummary ? "Generating AI Summary..." : "Generate AI Summary & Tags"}</span>
                       </button>
                     )
                   )}
 
                   {/* AI Tags */}
                   {file.tags && file.tags.length > 0 && (
-                    <div className="flex flex-col border border-surface-200 dark:border-surface-800 gap-2 p-4 rounded-xl bg-surface-50 dark:bg-surface-800">
-                      <p className="text-xs text-surface-500 font-medium">SMART TAGS</p>
-                      <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col gap-2 p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                      <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">SMART TAGS</p>
+                      <div className="flex flex-wrap gap-1.5">
                         {file.tags.map(tag => (
-                          <span key={tag} className="px-2 py-1 rounded-md bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 text-xs text-surface-600 dark:text-surface-400">
+                          <span key={tag} className="px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-semibold text-slate-600 dark:text-slate-350">
                             {tag}
                           </span>
                         ))}
-                      </div>
-                    </div>
-                  )}
-                  {file.shared && (
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                      <div className="w-10 h-10 rounded-lg bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                        <Share2 className="w-5 h-5 text-primary-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-surface-500">Shared</p>
-                        <p className="text-sm font-medium text-surface-900 dark:text-white">
-                          Yes - Link is public
-                        </p>
                       </div>
                     </div>
                   )}
@@ -420,26 +375,26 @@ export function FileDetailsPanel({
               </div>
 
               {/* Location */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-semibold text-surface-900 dark:text-white">
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                   Location
                 </h4>
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-surface-50 dark:bg-surface-800">
-                  <Folder className="w-5 h-5 text-surface-500" />
-                  <span className="text-sm text-surface-600 dark:text-surface-400">
-                    {file.folderId ? "In folder" : "My Files (root)"}
+                <div className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
+                  <Folder className="w-4 h-4 text-slate-500" />
+                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    {file.folderId ? "In directory" : "My Files (root)"}
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-surface-200 dark:border-surface-700">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={handleCopyLink}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-colors"
+                className="w-full flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
               >
-                <Copy className="w-4 h-4" />
+                <Copy className="w-3.5 h-3.5" />
                 Copy Share Link
               </button>
             </div>

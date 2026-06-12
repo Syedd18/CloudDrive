@@ -297,70 +297,70 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
           />
 
           {/* Modal */}
           <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-surface-800 rounded-2xl shadow-2xl w-full max-w-lg pointer-events-auto overflow-hidden"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl w-full max-w-lg pointer-events-auto overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-5 border-b border-surface-200 dark:border-surface-700">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
                 <div>
-                  <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                     Share &ldquo;{file.name}&rdquo;
                   </h2>
-                  <p className="text-sm text-surface-500 mt-0.5">
+                  <p className="text-[11px] font-medium text-slate-500 mt-0.5">
                     {file.type === "folder" ? "Folder" : "File"} sharing options
                   </p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded-lg transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-surface-200 dark:border-surface-700">
+              <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
                 <button
                   onClick={() => setActiveTab("people")}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors relative ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold transition-colors relative ${
                     activeTab === "people"
-                      ? "text-primary-600 dark:text-primary-400"
-                      : "text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white"
+                      ? "text-indigo-650 dark:text-indigo-400"
+                      : "text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200"
                   }`}
                 >
-                  <Users className="w-4 h-4" />
+                  <Users className="w-3.5 h-3.5" />
                   Share with people
                   {activeTab === "people" && (
                     <motion.div
                       layoutId="shareTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-650 dark:bg-indigo-400"
                     />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab("link")}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors relative ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold transition-colors relative ${
                     activeTab === "link"
-                      ? "text-primary-600 dark:text-primary-400"
-                      : "text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white"
+                      ? "text-indigo-650 dark:text-indigo-400"
+                      : "text-slate-500 dark:text-slate-450 hover:text-slate-800 dark:hover:text-slate-200"
                   }`}
                 >
-                  <Link2 className="w-4 h-4" />
+                  <Link2 className="w-3.5 h-3.5" />
                   Get link
                   {activeTab === "link" && (
                     <motion.div
                       layoutId="shareTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-650 dark:bg-indigo-400"
                     />
                   )}
                 </button>
@@ -372,30 +372,30 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   {activeTab === "people" ? (
                     <motion.div
                       key="people"
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, x: 8 }}
+                      transition={{ duration: 0.15 }}
                       className="space-y-4"
                     >
                       {/* Email Input */}
                       <div>
-                        <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                        <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                           Add people
                         </label>
                         <div className="flex gap-2">
-                          <div className="flex-1 flex flex-wrap gap-1.5 p-2 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
+                          <div className="flex-1 flex flex-wrap gap-1.5 p-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all">
                             {emails.map((e) => (
                               <span
                                 key={e}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg text-sm"
+                                className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/30 rounded text-xs font-semibold"
                               >
                                 {e}
                                 <button
                                   onClick={() => handleRemoveEmail(e)}
-                                  className="hover:bg-primary-200 dark:hover:bg-primary-800 rounded p-0.5 transition-colors"
+                                  className="hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded p-0.5 transition-colors"
                                 >
-                                  <X className="w-3 h-3" />
+                                  <X className="w-2.5 h-2.5" />
                                 </button>
                               </span>
                             ))}
@@ -406,7 +406,7 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                               onChange={(e) => setEmail(e.target.value)}
                               onKeyDown={handleKeyDown}
                               placeholder={emails.length === 0 ? "Enter email addresses..." : ""}
-                              className="flex-1 min-w-[150px] bg-transparent text-sm text-surface-900 dark:text-white placeholder:text-surface-400 outline-none py-1"
+                              className="flex-1 min-w-[150px] bg-transparent text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none py-1"
                             />
                           </div>
                         </div>
@@ -414,58 +414,60 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
 
                       {/* Permission Selector */}
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-surface-600 dark:text-surface-400">
+                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                           Permission
                         </span>
                         <div className="relative">
                           <button
                             onClick={() => setShowPermissionDropdown(!showPermissionDropdown)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 rounded-lg text-sm font-medium text-surface-700 dark:text-surface-300 transition-colors"
+                            className="flex items-center gap-1.5 h-8 px-3 bg-slate-100 dark:bg-slate-850 hover:bg-slate-200/80 dark:hover:bg-slate-755 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
                           >
                             {permission === "view" ? (
                               <>
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-3.5 h-3.5" />
                                 Can view
                               </>
                             ) : (
                               <>
-                                <Edit3 className="w-4 h-4" />
+                                <Edit3 className="w-3.5 h-3.5" />
                                 Can edit
                               </>
                             )}
-                            <ChevronDown className="w-4 h-4" />
+                            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                           </button>
 
                           <AnimatePresence>
                             {showPermissionDropdown && (
                               <motion.div
-                                initial={{ opacity: 0, y: -10 }}
+                                initial={{ opacity: 0, y: -4 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-surface-700 rounded-xl shadow-lg border border-surface-200 dark:border-surface-600 overflow-hidden z-10"
+                                exit={{ opacity: 0, y: -4 }}
+                                className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden z-10"
                               >
                                 <button
+                                  type="button"
                                   onClick={() => {
                                     setPermission("view");
                                     setShowPermissionDropdown(false);
                                   }}
-                                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-100 dark:hover:bg-surface-600 transition-colors ${
-                                    permission === "view" ? "text-primary-600 dark:text-primary-400" : "text-surface-700 dark:text-surface-300"
+                                  className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
+                                    permission === "view" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                   }`}
                                 >
-                                  <Eye className="w-4 h-4" />
+                                  <Eye className="w-3.5 h-3.5" />
                                   Can view
                                 </button>
                                 <button
+                                  type="button"
                                   onClick={() => {
                                     setPermission("edit");
                                     setShowPermissionDropdown(false);
                                   }}
-                                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-100 dark:hover:bg-surface-600 transition-colors ${
-                                    permission === "edit" ? "text-primary-600 dark:text-primary-400" : "text-surface-700 dark:text-surface-300"
+                                  className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
+                                    permission === "edit" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                   }`}
                                 >
-                                  <Edit3 className="w-4 h-4" />
+                                  <Edit3 className="w-3.5 h-3.5" />
                                   Can edit
                                 </button>
                               </motion.div>
@@ -478,13 +480,13 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                       <button
                         onClick={handleShare}
                         disabled={emails.length === 0 || isLoading}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-surface-300 dark:disabled:bg-surface-600 text-white rounded-xl font-medium transition-colors disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-550 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:cursor-not-allowed"
                       >
                         {isLoading ? (
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
                           <>
-                            <UserPlus className="w-4 h-4" />
+                            <UserPlus className="w-3.5 h-3.5" />
                             Share
                           </>
                         )}
@@ -492,35 +494,35 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
 
                       {/* Shared Users List */}
                       {sharedUsers.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
-                          <h4 className="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                          <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">
                             People with access
                           </h4>
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
+                          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                             {sharedUsers.map((user) => (
                               <div
                                 key={user.email}
-                                className="flex items-center justify-between py-2 px-3 bg-surface-50 dark:bg-surface-900 rounded-lg"
+                                className="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-950 border border-slate-200/50 dark:border-slate-850 rounded-lg"
                               >
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-sm font-medium">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                  <div className="w-7 h-7 rounded-full bg-indigo-650 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                                     {user.email[0].toUpperCase()}
                                   </div>
-                                  <div>
-                                    <p className="text-sm font-medium text-surface-900 dark:text-white">
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                                       {user.email}
                                     </p>
-                                    <p className="text-xs text-surface-500">
+                                    <p className="text-[10px] font-medium text-slate-500">
                                       {user.canEdit ? "Can edit" : "Can view"}
                                     </p>
                                   </div>
                                 </div>
                                 <button
                                   onClick={() => handleRemoveShare(user.email)}
-                                  className="p-1.5 text-surface-400 hover:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-900/30 rounded-lg transition-colors"
+                                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors flex-shrink-0"
                                   title="Remove access"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             ))}
@@ -531,15 +533,15 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                   ) : (
                     <motion.div
                       key="link"
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: 8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: 0.15 }}
                       className="space-y-4"
                     >
                       {/* Link Access */}
-                      <div className="space-y-3">
-                        <label className="block text-sm font-medium text-surface-700 dark:text-surface-300">
+                      <div className="space-y-2.5">
+                        <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                           Link access
                         </label>
                         
@@ -549,33 +551,33 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                               setLinkAccess("restricted");
                               handleUpdateLinkAccess();
                             }}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                            className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
                               linkAccess === "restricted"
-                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                                : "border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
+                                ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/10"
+                                : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-950"
                             }`}
                           >
-                            <div className={`p-2 rounded-lg ${
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               linkAccess === "restricted"
-                                ? "bg-primary-100 dark:bg-primary-900/40"
-                                : "bg-surface-100 dark:bg-surface-700"
+                                ? "bg-indigo-100/50 dark:bg-indigo-950/30"
+                                : "bg-slate-100 dark:bg-slate-850"
                             }`}>
-                              <Lock className={`w-5 h-5 ${
+                              <Lock className={`w-4 h-4 ${
                                 linkAccess === "restricted"
-                                  ? "text-primary-600 dark:text-primary-400"
-                                  : "text-surface-500"
+                                  ? "text-indigo-650 dark:text-indigo-400"
+                                  : "text-slate-500"
                               }`} />
                             </div>
-                            <div className="text-left">
-                              <p className={`font-medium ${
+                            <div className="text-left min-w-0">
+                              <p className={`text-xs font-bold ${
                                 linkAccess === "restricted"
-                                  ? "text-primary-700 dark:text-primary-300"
-                                  : "text-surface-700 dark:text-surface-300"
+                                  ? "text-indigo-650 dark:text-indigo-300"
+                                  : "text-slate-800 dark:text-slate-200"
                               }`}>
                                 Restricted
                               </p>
-                              <p className="text-xs text-surface-500">
-                                Only people you share with can access
+                              <p className="text-[10px] font-medium text-slate-500 truncate">
+                                Only people with explicit access can open
                               </p>
                             </div>
                           </button>
@@ -585,32 +587,32 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                               setLinkAccess("anyone");
                               handleUpdateLinkAccess();
                             }}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                            className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
                               linkAccess === "anyone"
-                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                                : "border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
+                                ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/10"
+                                : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-950"
                             }`}
                           >
-                            <div className={`p-2 rounded-lg ${
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                               linkAccess === "anyone"
-                                ? "bg-primary-100 dark:bg-primary-900/40"
-                                : "bg-surface-100 dark:bg-surface-700"
+                                ? "bg-indigo-100/50 dark:bg-indigo-950/30"
+                                : "bg-slate-100 dark:bg-slate-850"
                             }`}>
-                              <Globe className={`w-5 h-5 ${
+                              <Globe className={`w-4 h-4 ${
                                 linkAccess === "anyone"
-                                  ? "text-primary-600 dark:text-primary-400"
-                                  : "text-surface-500"
+                                  ? "text-indigo-650 dark:text-indigo-400"
+                                  : "text-slate-500"
                               }`} />
                             </div>
-                            <div className="text-left">
-                              <p className={`font-medium ${
+                            <div className="text-left min-w-0">
+                              <p className={`text-xs font-bold ${
                                 linkAccess === "anyone"
-                                  ? "text-primary-700 dark:text-primary-300"
-                                  : "text-surface-700 dark:text-surface-300"
+                                  ? "text-indigo-650 dark:text-indigo-300"
+                                  : "text-slate-800 dark:text-slate-200"
                               }`}>
                                 Anyone with the link
                               </p>
-                              <p className="text-xs text-surface-500">
+                              <p className="text-[10px] font-medium text-slate-500 truncate">
                                 Anyone on the internet with the link can access
                               </p>
                             </div>
@@ -620,36 +622,36 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
 
                       {/* Link Permission (when anyone can access) */}
                       {linkAccess === "anyone" && (
-                        <div className="flex items-center justify-between py-2">
-                          <span className="text-sm text-surface-600 dark:text-surface-400">
+                        <div className="flex items-center justify-between py-1 border-t border-slate-200/50 dark:border-slate-850/50 pt-3">
+                          <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                             Link permission
                           </span>
                           <div className="relative">
                             <button
                               onClick={() => setShowLinkPermissionDropdown(!showLinkPermissionDropdown)}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 rounded-lg text-sm font-medium text-surface-700 dark:text-surface-300 transition-colors"
+                              className="flex items-center gap-1.5 h-8 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
                             >
                               {linkPermission === "view" ? (
                                 <>
-                                  <Eye className="w-4 h-4" />
+                                  <Eye className="w-3.5 h-3.5" />
                                   Can view
                                 </>
                               ) : (
                                 <>
-                                  <Edit3 className="w-4 h-4" />
+                                  <Edit3 className="w-3.5 h-3.5" />
                                   Can edit
                                 </>
                               )}
-                              <ChevronDown className="w-4 h-4" />
+                              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                             </button>
 
                             <AnimatePresence>
                               {showLinkPermissionDropdown && (
                                 <motion.div
-                                  initial={{ opacity: 0, y: -10 }}
+                                  initial={{ opacity: 0, y: -4 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -10 }}
-                                  className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-surface-700 rounded-xl shadow-lg border border-surface-200 dark:border-surface-600 overflow-hidden z-10"
+                                  exit={{ opacity: 0, y: -4 }}
+                                  className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden z-10"
                                 >
                                   <button
                                     onClick={() => {
@@ -657,11 +659,11 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                       setShowLinkPermissionDropdown(false);
                                       handleUpdateLinkAccess();
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-100 dark:hover:bg-surface-600 transition-colors ${
-                                      linkPermission === "view" ? "text-primary-600 dark:text-primary-400" : "text-surface-700 dark:text-surface-300"
+                                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
+                                      linkPermission === "view" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                     }`}
                                   >
-                                    <Eye className="w-4 h-4" />
+                                    <Eye className="w-3.5 h-3.5" />
                                     Can view
                                   </button>
                                   <button
@@ -670,11 +672,11 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                                       setShowLinkPermissionDropdown(false);
                                       handleUpdateLinkAccess();
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface-100 dark:hover:bg-surface-600 transition-colors ${
-                                      linkPermission === "edit" ? "text-primary-600 dark:text-primary-400" : "text-surface-700 dark:text-surface-300"
+                                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left ${
+                                      linkPermission === "edit" ? "text-indigo-650 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10" : "text-slate-700 dark:text-slate-300"
                                     }`}
                                   >
-                                    <Edit3 className="w-4 h-4" />
+                                    <Edit3 className="w-3.5 h-3.5" />
                                     Can edit
                                   </button>
                                 </motion.div>
@@ -685,32 +687,32 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                       )}
 
                       {/* Copy Link */}
-                      <div className="flex gap-2">
-                        <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-xl">
-                          <Link2 className="w-4 h-4 text-surface-400 flex-shrink-0" />
+                      <div className="flex gap-2 pt-2">
+                        <div className="flex-1 flex items-center gap-2 px-3 h-9 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg">
+                          <Link2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                           <input
                             type="text"
                             readOnly
                             value={shareLink}
-                            className="flex-1 bg-transparent text-sm text-surface-700 dark:text-surface-300 outline-none truncate"
+                            className="flex-1 bg-transparent text-xs font-semibold text-slate-700 dark:text-slate-300 outline-none truncate"
                           />
                         </div>
                         <button
                           onClick={handleCopyLink}
-                          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
+                          className={`flex items-center gap-1.5 px-4 h-9 rounded-lg font-bold text-xs transition-colors shadow-sm ${
                             copied
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                              : "bg-primary-600 hover:bg-primary-700 text-white"
+                              ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30"
+                              : "bg-indigo-650 hover:bg-indigo-700 text-white"
                           }`}
                         >
                           {copied ? (
                             <>
-                              <Check className="w-4 h-4" />
+                              <Check className="w-3.5 h-3.5" />
                               Copied
                             </>
                           ) : (
                             <>
-                              <Copy className="w-4 h-4" />
+                              <Copy className="w-3.5 h-3.5" />
                               Copy
                             </>
                           )}
@@ -718,10 +720,10 @@ export function ShareModal({ isOpen, onClose, file, onShareUpdate }: ShareModalP
                       </div>
 
                       {/* Info */}
-                      <p className="text-xs text-surface-500 text-center">
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium text-center">
                         {linkAccess === "restricted"
                           ? "Only people you've shared with can use this link"
-                          : "Anyone with this link can access the file"}
+                          : "Anyone on the internet with this link can access the file"}
                       </p>
                     </motion.div>
                   )}

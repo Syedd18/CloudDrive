@@ -51,44 +51,44 @@ export function CreateFolderModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-50"
           />
 
           {/* Modal */}
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.98, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.33, 1, 0.68, 1] }}
-              className="bg-white dark:bg-[#161b22] rounded-2xl shadow-2xl border border-surface-200/50 dark:border-surface-700/50 w-full max-w-md overflow-hidden"
+              exit={{ scale: 0.98, opacity: 0 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-sm overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 sm:p-5 border-b border-surface-200/60 dark:border-surface-700/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center">
-                    <FolderPlus className="w-5 h-5 text-amber-500" />
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/20 flex items-center justify-center flex-shrink-0">
+                    <FolderPlus className="w-4 h-4 text-amber-500" />
                   </div>
-                  <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                     New Folder
                   </h2>
                 </div>
                 <button
                   onClick={handleClose}
                   disabled={isCreating}
-                  className="p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors disabled:opacity-50"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors disabled:opacity-50"
                   aria-label="Close"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Content */}
-              <form onSubmit={handleSubmit} className="p-4 sm:p-5">
-                <div className="mb-5">
+              <form onSubmit={handleSubmit} className="p-5">
+                <div className="mb-4">
                   <label
                     htmlFor="folderName"
-                    className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2"
+                    className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2"
                   >
                     Folder name
                   </label>
@@ -100,29 +100,29 @@ export function CreateFolderModal({
                     placeholder="Untitled folder"
                     disabled={isCreating}
                     autoFocus
-                    className="w-full px-4 py-3 rounded-xl border-2 border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 text-surface-900 dark:text-white placeholder:text-surface-400 dark:placeholder:text-surface-500 focus:border-primary-500 focus:ring-0 focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150 disabled:opacity-50"
                   />
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={isCreating}
-                    className="btn-secondary flex-1 py-3 order-2 sm:order-1"
+                    className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-305 transition-colors shadow-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating || !folderName.trim()}
-                    className="btn-primary flex-1 py-3 order-1 sm:order-2"
+                    className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
                   >
                     {isCreating ? (
                       <>
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Creating...
+                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Creating...</span>
                       </>
                     ) : (
                       "Create"

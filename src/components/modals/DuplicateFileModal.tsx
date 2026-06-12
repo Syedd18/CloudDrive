@@ -44,22 +44,22 @@ export function DuplicateFileModal({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop - Full screen with high z-index */}
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]"
+            className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[9999]"
             style={{ touchAction: 'none' }}
           />
 
-          {/* Modal Container - Centered on all devices */}
+          {/* Modal Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 50 }}
+            initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 50 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            exit={{ opacity: 0, scale: 0.98, y: 10 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
             className={cn(
               "fixed z-[10000]",
               // Mobile: bottom sheet style
@@ -69,9 +69,9 @@ export function DuplicateFileModal({
             )}
           >
             <div className={cn(
-              "bg-white dark:bg-surface-900 shadow-2xl overflow-hidden",
+              "bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden",
               // Mobile: rounded top corners only, Desktop: all corners
-              "rounded-t-3xl lg:rounded-2xl",
+              "rounded-t-2xl lg:rounded-lg",
               // Desktop: constrain width and max-height
               "lg:w-full lg:max-w-md lg:max-h-[90vh] lg:overflow-y-auto",
               // Safe area padding for iOS
@@ -79,45 +79,38 @@ export function DuplicateFileModal({
             )}>
               {/* Drag handle for mobile */}
               <div className="lg:hidden flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1 rounded-full bg-surface-300 dark:bg-surface-600" />
+                <div className="w-10 h-1 rounded-full bg-slate-200 dark:bg-slate-800" />
               </div>
 
               {/* Header */}
-              <div className="flex items-center justify-between p-4 lg:p-5 border-b border-surface-200 dark:border-surface-700">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "w-11 h-11 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center",
-                    "bg-gradient-to-br from-warning-100 to-warning-200",
-                    "dark:from-warning-500/30 dark:to-warning-600/20"
-                  )}>
-                    <AlertTriangle className="w-5 h-5 lg:w-6 lg:h-6 text-warning-600 dark:text-warning-400" />
+                  <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/20 flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle className="w-4 h-4 text-amber-500" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-base lg:text-lg text-surface-900 dark:text-white">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">
                       {isSingle ? "File Exists" : `${duplicates.length} Files Exist`}
                     </h3>
-                    <p className="text-xs lg:text-sm text-surface-500 dark:text-surface-400">
-                      Choose an action
-                    </p>
                   </div>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 lg:p-2.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors active:scale-95"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-4 lg:p-5">
+              <div className="p-5">
                 {/* File info */}
                 {isSingle ? (
-                  <div className="p-3 lg:p-4 rounded-xl bg-surface-50 dark:bg-surface-800/50 border border-surface-200 dark:border-surface-700 mb-4">
-                    <p className="text-sm lg:text-base font-medium text-surface-900 dark:text-white truncate">
+                  <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 mb-4">
+                    <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                       {firstFile.file.name}
                     </p>
-                    <p className="text-xs lg:text-sm text-surface-500 mt-1">
+                    <p className="text-[10px] font-medium text-slate-500 mt-1">
                       {formatFileSize(firstFile.file.size)}
                     </p>
                   </div>
@@ -126,12 +119,12 @@ export function DuplicateFileModal({
                     {duplicates.map((dup, index) => (
                       <div
                         key={index}
-                        className="p-2.5 lg:p-3 rounded-lg bg-surface-50 dark:bg-surface-800/50 border border-surface-200/50 dark:border-surface-700/50"
+                        className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80"
                       >
-                        <p className="text-sm text-surface-900 dark:text-white truncate">
+                        <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                           {dup.file.name}
                         </p>
-                        <p className="text-xs text-surface-500">
+                        <p className="text-[10px] font-medium text-slate-500 mt-0.5">
                           {formatFileSize(dup.file.size)}
                         </p>
                       </div>
@@ -139,60 +132,35 @@ export function DuplicateFileModal({
                   </div>
                 )}
 
-                <p className="text-xs lg:text-sm text-surface-600 dark:text-surface-400 mb-5 lg:mb-6 text-center">
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-5 text-center">
                   {isSingle
-                    ? "A file with this name already exists."
-                    : "These files already exist in this folder."}
+                    ? "A file with this name already exists in this directory."
+                    : "These files already exist in this directory."}
                 </p>
 
-                {/* Actions - Large touch targets for mobile */}
-                <div className="space-y-2.5 lg:space-y-3">
+                {/* Actions */}
+                <div className="flex flex-col gap-2">
                   <button
                     onClick={() => onReplace(duplicates)}
-                    className={cn(
-                      "w-full flex items-center justify-center gap-2.5",
-                      "py-3.5 lg:py-4 px-4 rounded-xl lg:rounded-2xl",
-                      "bg-gradient-to-r from-warning-500 to-warning-600",
-                      "hover:from-warning-600 hover:to-warning-700",
-                      "text-white font-semibold text-sm lg:text-base",
-                      "shadow-lg shadow-warning-500/25",
-                      "transition-all duration-200 active:scale-[0.98]"
-                    )}
+                    className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition-colors"
                   >
-                    <RefreshCw className="w-4 h-4 lg:w-5 lg:h-5" />
+                    <RefreshCw className="w-3.5 h-3.5" />
                     Replace {isSingle ? "Existing" : "All"}
                   </button>
 
                   <button
                     onClick={() => onRename(duplicates)}
-                    className={cn(
-                      "w-full flex items-center justify-center gap-2.5",
-                      "py-3.5 lg:py-4 px-4 rounded-xl lg:rounded-2xl",
-                      "bg-gradient-to-r from-primary-500 to-primary-600",
-                      "hover:from-primary-600 hover:to-primary-700",
-                      "text-white font-semibold text-sm lg:text-base",
-                      "shadow-lg shadow-primary-500/25",
-                      "transition-all duration-200 active:scale-[0.98]"
-                    )}
+                    className="w-full flex items-center justify-center gap-1.5 h-9 rounded-lg bg-indigo-650 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition-colors"
                   >
-                    <Copy className="w-4 h-4 lg:w-5 lg:h-5" />
-                    Keep Both
+                    <Copy className="w-3.5 h-3.5" />
+                    Keep Both (Rename)
                   </button>
 
                   <button
                     onClick={onSkip}
-                    className={cn(
-                      "w-full flex items-center justify-center gap-2.5",
-                      "py-3.5 lg:py-4 px-4 rounded-xl lg:rounded-2xl",
-                      "bg-surface-100 dark:bg-surface-800",
-                      "hover:bg-surface-200 dark:hover:bg-surface-700",
-                      "text-surface-700 dark:text-surface-300",
-                      "font-semibold text-sm lg:text-base",
-                      "border border-surface-200 dark:border-surface-700",
-                      "transition-all duration-200 active:scale-[0.98]"
-                    )}
+                    className="w-full flex items-center justify-center gap-1.5 h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
                   >
-                    <SkipForward className="w-4 h-4 lg:w-5 lg:h-5" />
+                    <SkipForward className="w-3.5 h-3.5" />
                     Skip
                   </button>
                 </div>

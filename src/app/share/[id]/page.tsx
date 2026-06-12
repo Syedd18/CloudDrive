@@ -210,7 +210,7 @@ export default function SharePage() {
       <header className="bg-white/80 dark:bg-surface-800/80 backdrop-blur-xl border-b border-surface-200 dark:border-surface-700 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/25">
+            <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center shadow-sm">
               <Cloud className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg text-surface-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
@@ -300,7 +300,7 @@ export default function SharePage() {
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-surface-300 dark:disabled:bg-surface-600 text-white rounded-xl font-medium transition-colors shadow-lg shadow-primary-500/25"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-surface-300 dark:disabled:bg-surface-600 text-white rounded-xl font-medium transition-colors shadow-sm"
               >
                 {downloading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

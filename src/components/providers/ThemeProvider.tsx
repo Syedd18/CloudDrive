@@ -36,7 +36,7 @@ function resolveTheme(theme: Theme): ResolvedTheme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -44,7 +44,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Initialize theme from localStorage
   useEffect(() => {
     const stored = localStorage.getItem(THEME_KEY) as Theme | null;
-    const initialTheme = stored || "system";
+    const initialTheme = stored || "light";
     setThemeState(initialTheme);
     setResolvedTheme(resolveTheme(initialTheme));
     setMounted(true);

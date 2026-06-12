@@ -1029,7 +1029,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex flex-col">
+    <div className="app-shell min-h-screen bg-surface-50 dark:bg-surface-950 flex flex-col">
       {/* Navbar */}
       <Navbar
         searchQuery={searchQuery}
@@ -1039,7 +1039,7 @@ export default function Home() {
       />
 
       {/* Main Layout */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative z-10">
         {/* Sidebar */}
         <Sidebar
           isOpen={sidebarOpen}

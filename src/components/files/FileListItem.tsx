@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-  MoreVertical,
   Star,
   Download,
   Trash2,
@@ -21,9 +20,10 @@ import {
   Users,
   RotateCcw,
   Info,
-  MoreHorizontal,
+  MoreVertical,
   ExternalLink,
   Sparkles,
+  Check,
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { cn, formatFileSize, formatDate } from "@/lib/utils";
@@ -88,7 +88,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
-  const longPressTriggered = useRef(false); // Use ref for immediate sync check
+  const longPressTriggered = useRef(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -97,27 +97,20 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
   const Icon = fileTypeIcons[file.type];
   const colors = getFileColors(file);
 
-  // Calculate menu position based on available space
   const calculateMenuPosition = () => {
     if (menuButtonRef.current) {
       const rect = menuButtonRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      const menuHeight = 300; // Increased to account for all menu items
-      const menuWidth = 208; // w-52 = 13rem = 208px
+      const menuHeight = 300;
+      const menuWidth = 208;
       
-      // Vertical positioning
       const position = spaceBelow < menuHeight ? 'top' : 'bottom';
       setMenuPosition(position);
       
-      // Calculate horizontal position - ensure menu doesn't go off screen
       let right = window.innerWidth - rect.right;
-      
-      // If menu would go off the left edge, adjust position
       if (window.innerWidth - right < menuWidth + 8) {
         right = Math.max(8, window.innerWidth - menuWidth - 8);
       }
-      
-      // Ensure minimum margin from right edge
       right = Math.max(8, right);
       
       setMenuRightPos(right);
@@ -151,21 +144,18 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
     setIsRenaming(false);
   };
 
-  // Touch handlers for long-press selection on mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     setIsLongPressing(false);
-    longPressTriggered.current = false; // Reset the ref
+    longPressTriggered.current = false;
     
     longPressTimer.current = setTimeout(() => {
-      longPressTriggered.current = true; // Set ref immediately (sync)
+      longPressTriggered.current = true;
       setIsLongPressing(true);
-      // Vibrate for haptic feedback if available
       if (navigator.vibrate) {
         navigator.vibrate(50);
       }
-      // Trigger selection on long press
       onClick(e as unknown as React.MouseEvent);
     }, 500);
   };
@@ -190,10 +180,6 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
       clearTimeout(longPressTimer.current);
       longPressTimer.current = null;
     }
-    
-    // Mobile: Long press toggles selection, tap does nothing (use 3-dot menu for preview)
-    // This prevents accidental taps while scrolling
-    
     setIsLongPressing(false);
     longPressTriggered.current = false;
     touchStartPos.current = null;
@@ -208,7 +194,6 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
     touchStartPos.current = null;
   };
 
-  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (longPressTimer.current) {
@@ -217,21 +202,17 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
     };
   }, []);
 
-  // Track if we're using touch (to prevent click from firing after touch)
   const isTouchDevice = useRef(false);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Skip click handling if this was a touch interaction (touch already handled it)
     if (isTouchDevice.current) {
       isTouchDevice.current = false;
       return;
     }
-    // Desktop: normal click to select
     onClick(e);
   };
 
   const handleDoubleClick = () => {
-    // Desktop: double-click to open
     onDoubleClick();
   };
 
@@ -246,13 +227,13 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "group grid grid-cols-12 gap-4 px-4 py-3.5 items-center cursor-pointer",
-        "border-b border-surface-100/80 dark:border-surface-800/50 last:border-0",
+        "group grid grid-cols-12 gap-4 px-4 py-2.5 items-center cursor-pointer",
+        "border-b border-slate-100 dark:border-slate-800/80 last:border-0",
         "transition-all duration-150",
         isSelected
-          ? "bg-primary-50/80 dark:bg-primary-500/10"
-          : "hover:bg-surface-50 dark:hover:bg-surface-800/30",
-        isLongPressing && "bg-primary-100/80 dark:bg-primary-500/20"
+          ? "bg-indigo-50/50 dark:bg-indigo-950/20"
+          : "hover:bg-slate-50/60 dark:hover:bg-slate-900/30",
+        isLongPressing && "bg-indigo-100/50 dark:bg-indigo-950/30"
       )}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -264,16 +245,16 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
       {/* Selection Checkbox */}
       <div
         className={cn(
-          "w-8 flex items-center justify-center flex-shrink-0 transition-opacity duration-200",
+          "w-8 flex items-center justify-center flex-shrink-0 transition-opacity duration-150",
           (isSelected || isHovered) ? "opacity-100" : "opacity-0"
         )}
-        title="Select this file"
+        title="Select file"
       >
         <input
           type="checkbox"
           checked={isSelected}
           disabled={isInTrash}
-          className="w-4 h-4 rounded cursor-pointer accent-primary-500"
+          className="w-4 h-4 rounded cursor-pointer accent-indigo-600"
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => onSelect && onSelect(file.id, e.nativeEvent as any)}
         />
@@ -283,11 +264,11 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
       <div className="col-span-5 sm:col-span-6 flex items-center gap-3 min-w-0">
         <div
           className={cn(
-            "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center",
-            colors.bg
+            "flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-white bg-gradient-to-br",
+            colors.gradient
           )}
         >
-          <Icon className={cn("w-5 h-5", colors.icon)} />
+          <Icon className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
           {isRenaming ? (
@@ -304,36 +285,31 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                   setIsRenaming(false);
                 }
               }}
-              className="w-full px-2 py-1 text-sm font-medium bg-white dark:bg-surface-700 rounded-lg border border-primary-500 focus:outline-none"
+              className="w-full px-2 py-0.5 text-xs font-semibold rounded border border-indigo-500 bg-slate-50 dark:bg-slate-805 dark:bg-slate-800 focus:outline-none"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-surface-900 dark:text-white truncate">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                   {file.name}
                 </span>
                 {file.starred && (
-                  <Star className="flex-shrink-0 w-4 h-4 text-amber-400 fill-amber-400" />
+                  <Star className="flex-shrink-0 w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                 )}
                 {file.shared && (
-                  <Users className="flex-shrink-0 w-4 h-4 text-primary-500" />
+                  <Users className="flex-shrink-0 w-3.5 h-3.5 text-indigo-500" />
                 )}
               </div>
               
-              {/* AI Tags display in List View */}
+              {/* AI Tags */}
               {!isRenaming && file.tags && file.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 mt-0.5">
                   {file.tags.slice(0, 3).map((tag, i) => (
-                    <span key={i} className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 max-w-[80px] truncate">
+                    <span key={i} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-650 dark:bg-indigo-950/40 dark:text-indigo-400 max-w-[80px] truncate">
                       {tag}
                     </span>
                   ))}
-                  {file.tags.length > 3 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400">
-                      +{file.tags.length - 3}
-                    </span>
-                  )}
                 </div>
               )}
             </div>
@@ -343,18 +319,18 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
 
       {/* Modified Column */}
       <div className="col-span-3 sm:col-span-2 hidden sm:block">
-        <span className="text-sm text-surface-500">{formatDate(file.modified)}</span>
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{formatDate(file.modified)}</span>
       </div>
 
       {/* Size Column */}
       <div className="col-span-2 hidden sm:block">
-        <span className="text-sm text-surface-500">
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
           {file.type === "folder" ? "—" : formatFileSize(file.size)}
         </span>
       </div>
 
       {/* Actions Column */}
-      <div className="col-span-4 sm:col-span-2 flex items-center justify-end gap-1">
+      <div className="col-span-4 sm:col-span-2 flex items-center justify-end gap-0.5">
         {onDetails && file.type !== "folder" && (
           <button
             onClick={(e) => {
@@ -362,9 +338,9 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
               onDetails();
             }}
             title="View AI Summary"
-            className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-surface-100 dark:hover:bg-surface-700 transition-all duration-200"
+            className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100"
           >
-            <FileText className="w-4 h-4 text-purple-500 hover:text-purple-600 dark:hover:text-purple-400" />
+            <FileText className="w-3.5 h-3.5 text-purple-500" />
           </button>
         )}
         <button
@@ -373,9 +349,9 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
             onEdit?.();
           }}
           disabled={!isEditableFile(file.name, file.mimeType)}
-          className="p-2 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-surface-100 dark:hover:bg-surface-700 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Edit3 className="w-4 h-4 text-blue-500" />
+          <Edit3 className="w-3.5 h-3.5 text-blue-500" />
         </button>
 
         <button
@@ -384,18 +360,16 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
             onStar();
           }}
           className={cn(
-            "p-2 rounded-lg transition-all duration-200",
-            "opacity-0 group-hover:opacity-100",
-            "hover:bg-surface-100 dark:hover:bg-surface-700",
-            file.starred && "opacity-100"
+            "p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+            file.starred ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           )}
         >
           <Star
             className={cn(
-              "w-4 h-4",
+              "w-3.5 h-3.5",
               file.starred
-                ? "text-amber-400 fill-amber-400"
-                : "text-surface-400 hover:text-amber-400"
+                ? "text-amber-500 fill-amber-500"
+                : "text-slate-400"
             )}
           />
         </button>
@@ -433,9 +407,9 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
               toast.error("Failed to download file", { id: `download-${file.id}` });
             }
           }}
-          className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-surface-100 dark:hover:bg-surface-700 transition-all duration-200"
+          className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 group-hover:opacity-100"
         >
-          <Download className="w-4 h-4 text-surface-400 hover:text-surface-600 dark:hover:text-surface-300" />
+          <Download className="w-3.5 h-3.5 text-slate-450 dark:text-slate-400" />
         </button>
 
         {/* More Menu */}
@@ -448,14 +422,13 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
               setShowMenu(!showMenu);
             }}
             className={cn(
-              "p-2.5 sm:p-2 rounded-lg transition-all duration-200",
-              "hover:bg-surface-100 dark:hover:bg-surface-700",
-              // Always visible on mobile, hover-visible on desktop
+              "p-1.5 rounded transition-all duration-150",
+              "hover:bg-slate-100 dark:hover:bg-slate-800",
               "opacity-100 sm:opacity-0 sm:group-hover:opacity-100",
-              showMenu && "opacity-100 bg-surface-100 dark:bg-surface-700"
+              showMenu && "opacity-100 bg-slate-100 dark:bg-slate-800"
             )}
           >
-            <MoreVertical className="w-5 h-5 sm:w-4 sm:h-4 text-surface-500" />
+            <MoreVertical className="w-3.5 h-3.5 text-slate-500" />
           </button>
 
           {showMenu && (
@@ -470,7 +443,7 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                 right: menuRightPos,
                 transform: menuPosition === 'top' ? 'translateY(-100%)' : 'none',
               }}
-              className="w-52 bg-white dark:bg-[#1c2128] rounded-xl shadow-xl border border-surface-200/80 dark:border-surface-700/60 py-1.5 z-[100] max-h-[60vh] overflow-y-auto"
+              className="w-52 bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 py-1 z-[100] max-h-[60vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {isInTrash ? (
@@ -480,21 +453,21 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                       onRestore?.();
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <RotateCcw className="w-4 h-4 text-emerald-500" />
-                    Restore
+                    <RotateCcw className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Restore</span>
                   </button>
-                  <div className="h-px bg-surface-200 dark:bg-surface-700/60 my-1.5 mx-2" />
+                  <div className="border-t border-slate-100 dark:border-slate-805 dark:border-slate-800 my-1" />
                   <button
                     onClick={() => {
                       onPermanentDelete?.();
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-red-655 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left"
                   >
-                    <Trash2 className="w-4 h-4" />
-                    Delete forever
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete forever</span>
                   </button>
                 </>
               ) : (
@@ -505,10 +478,10 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                         onPreview();
                         setShowMenu(false);
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                     >
-                      <ExternalLink className="w-4 h-4 text-surface-400" />
-                      Preview
+                      <ExternalLink className="w-3.5 h-3.5 text-slate-405 dark:text-slate-450" />
+                      <span>Preview</span>
                     </button>
                   )}
                   <button
@@ -517,30 +490,30 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                       setShowMenu(false);
                     }}
                     disabled={!isEditableFile(file.name, file.mimeType)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    <Edit3 className="w-4 h-4 text-blue-500" />
-                    Edit
+                    <Edit3 className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Edit</span>
                   </button>
                   <button
                     onClick={() => {
                       setIsRenaming(true);
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Edit3 className="w-4 h-4 text-surface-400" />
-                    Rename
+                    <Edit3 className="w-3.5 h-3.5 text-slate-450" />
+                    <span>Rename</span>
                   </button>
                   <button
                     onClick={() => {
                       setIsShareModalOpen(true);
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Share2 className="w-4 h-4 text-surface-400" />
-                    Share
+                    <Share2 className="w-3.5 h-3.5 text-slate-450" />
+                    <span>Share</span>
                   </button>
                   {file.type !== "folder" && (
                     <button
@@ -548,10 +521,10 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                         setIsSummaryModalOpen(true);
                         setShowMenu(false);
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 dark:text-purple-400 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-purple-650 dark:text-purple-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                     >
-                      <Sparkles className="w-4 h-4 text-purple-500" />
-                      AI Summary
+                      <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                      <span>AI Summary</span>
                     </button>
                   )}
                   <button
@@ -559,22 +532,22 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
                       onDetails?.();
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700/50 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                   >
-                    <Info className="w-4 h-4 text-surface-400" />
-                    Details
+                    <Info className="w-3.5 h-3.5 text-slate-450" />
+                    <span>Details</span>
                   </button>
-                  <div className="h-px bg-surface-200 dark:bg-surface-700/60 my-1.5 mx-2" />
+                  <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
                   <button
                     onClick={() => {
                       onDelete();
                       toast.success("Moved to trash");
                       setShowMenu(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-red-655 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left"
                   >
-                    <Trash2 className="w-4 h-4" />
-                    Move to trash
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Move to trash</span>
                   </button>
                 </>
               )}
@@ -583,14 +556,11 @@ export const FileListItem = React.forwardRef<HTMLDivElement, FileListItemProps>(
         </div>
       </div>
 
-      {/* Share Modal */}
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         file={file}
       />
-
-      {/* Summary Modal */}
       <SummaryModal
         isOpen={isSummaryModalOpen}
         onClose={() => setIsSummaryModalOpen(false)}

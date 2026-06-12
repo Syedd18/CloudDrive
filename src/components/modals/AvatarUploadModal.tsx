@@ -82,7 +82,6 @@ export function AvatarUploadModal({
   // Connect camera stream to video element when both are available
   useEffect(() => {
     if (cameraStream && showCamera) {
-      // Use a small delay to ensure the video element is rendered
       const connectStream = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = cameraStream;
@@ -92,12 +91,9 @@ export function AvatarUploadModal({
             });
           };
         } else {
-          // Retry after a short delay if video element is not ready
           setTimeout(connectStream, 50);
         }
       };
-      
-      // Initial delay to allow DOM to render
       setTimeout(connectStream, 100);
     }
   }, [cameraStream, showCamera]);
@@ -125,7 +121,6 @@ export function AvatarUploadModal({
       canvas.height = video.videoHeight;
 
       if (ctx) {
-        // Flip horizontally for selfie mode
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0);
@@ -141,14 +136,12 @@ export function AvatarUploadModal({
     }
   };
 
-  // Load image and get its dimensions
   const loadImageWithDimensions = (dataUrl: string) => {
     const img = new Image();
     img.onload = () => {
       setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
       setSelectedImage(dataUrl);
       setMode("crop");
-      // Reset position and zoom
       setPosition({ x: 0, y: 0 });
       setZoom(1);
     };
@@ -214,7 +207,6 @@ export function AvatarUploadModal({
     e.stopPropagation();
   };
 
-  // Crop/Pan handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -282,53 +274,40 @@ export function AvatarUploadModal({
           return;
         }
 
-        // Calculate the base scale to fit image in container
-        // The image is scaled to fit within CONTAINER_SIZE while maintaining aspect ratio
         const aspectRatio = img.width / img.height;
         let baseDisplayWidth: number;
         let baseDisplayHeight: number;
         
         if (aspectRatio > 1) {
-          // Landscape image
           baseDisplayWidth = CONTAINER_SIZE;
           baseDisplayHeight = CONTAINER_SIZE / aspectRatio;
         } else {
-          // Portrait or square image
           baseDisplayHeight = CONTAINER_SIZE;
           baseDisplayWidth = CONTAINER_SIZE * aspectRatio;
         }
         
-        // Apply zoom
         const displayWidth = baseDisplayWidth * zoom;
         const displayHeight = baseDisplayHeight * zoom;
         
-        // Scale ratio from display to original image
         const scaleX = img.width / displayWidth;
         const scaleY = img.height / displayHeight;
         
-        // The crop circle is CROP_SIZE (200px) in display coordinates, centered
-        // Convert to original image coordinates
         const cropWidthInImage = CROP_SIZE * scaleX;
         const cropHeightInImage = CROP_SIZE * scaleY;
         
-        // Position offset in original image coordinates
         const offsetX = position.x * scaleX;
         const offsetY = position.y * scaleY;
         
-        // Calculate source rectangle (centered on image, with offset from panning)
         const srcX = (img.width / 2) - (cropWidthInImage / 2) - offsetX;
         const srcY = (img.height / 2) - (cropHeightInImage / 2) - offsetY;
 
-        // Create circular clip for output
         ctx.beginPath();
         ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
         ctx.clip();
 
-        // Fill with white background
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, outputSize, outputSize);
 
-        // Draw the cropped portion of the image
         ctx.drawImage(
           img,
           srcX,
@@ -407,47 +386,47 @@ export function AvatarUploadModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
           />
 
           {/* Modal */}
           <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md bg-white dark:bg-surface-900 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto"
+              className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden pointer-events-auto"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-surface-200 dark:border-surface-700">
-                <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                   {mode === "select" ? "Update Profile Photo" : "Adjust Photo"}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-205 transition-colors"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-6">
+              <div className="p-5">
                 {mode === "select" && !showCamera && (
                   <div className="space-y-4">
                     {/* Current Avatar Preview */}
                     {currentAvatar && (
-                      <div className="flex justify-center mb-6">
+                      <div className="flex justify-center mb-4">
                         <div className="relative">
                           <img
                             src={currentAvatar}
                             alt="Current avatar"
-                            className="w-24 h-24 rounded-full object-cover ring-4 ring-surface-200 dark:ring-surface-700"
+                            className="w-20 h-20 rounded-full object-cover ring-4 ring-slate-100 dark:ring-slate-850"
                           />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 hover:opacity-100 transition-opacity">
-                            <span className="text-white text-xs font-medium">Current</span>
+                            <span className="text-white text-[10px] font-bold">Current</span>
                           </div>
                         </div>
                       </div>
@@ -458,17 +437,17 @@ export function AvatarUploadModal({
                       onDrop={handleDrop}
                       onDragOver={handleDragOver}
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-surface-300 dark:border-surface-600 rounded-2xl p-8 text-center cursor-pointer hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-all"
+                      className="border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-950/10 rounded-lg p-8 text-center cursor-pointer hover:border-indigo-550 hover:border-indigo-500 transition-all"
                     >
                       <div className="flex flex-col items-center gap-3">
-                        <div className="w-14 h-14 rounded-2xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-                          <Upload className="w-7 h-7 text-primary-600 dark:text-primary-400" />
+                        <div className="w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center">
+                          <Upload className="w-6 h-6 text-indigo-650" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-surface-900 dark:text-white">
+                          <p className="text-xs font-bold text-slate-700 dark:text-white">
                             Drag & drop or click to upload
                           </p>
-                          <p className="text-xs text-surface-500 mt-1">
+                          <p className="text-[10px] font-medium text-slate-450 dark:text-slate-500 mt-1">
                             JPG, PNG or GIF (max 5MB)
                           </p>
                         </div>
@@ -484,32 +463,28 @@ export function AvatarUploadModal({
                     />
 
                     {/* Divider */}
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1 h-px bg-surface-200 dark:bg-surface-700" />
-                      <span className="text-xs text-surface-500 font-medium">OR</span>
-                      <div className="flex-1 h-px bg-surface-200 dark:bg-surface-700" />
+                    <div className="flex items-center gap-4 py-1">
+                      <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">OR</span>
+                      <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
                     </div>
 
                     {/* Camera Button */}
                     <button
                       onClick={startCamera}
-                      className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-xl transition-colors"
+                      className="w-full flex items-center justify-center gap-1.5 px-4 h-9 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                     >
-                      <Camera className="w-5 h-5 text-surface-600 dark:text-surface-400" />
-                      <span className="text-sm font-medium text-surface-700 dark:text-surface-300">
-                        Take a Photo
-                      </span>
+                      <Camera className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                      <span>Take a Photo</span>
                     </button>
 
                     {/* Gallery Button (for mobile) */}
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-xl transition-colors"
+                      className="w-full flex items-center justify-center gap-1.5 px-4 h-9 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                     >
-                      <ImageIcon className="w-5 h-5 text-surface-600 dark:text-surface-400" />
-                      <span className="text-sm font-medium text-surface-700 dark:text-surface-300">
-                        Choose from Gallery
-                      </span>
+                      <ImageIcon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                      <span>Choose from Gallery</span>
                     </button>
                   </div>
                 )}
@@ -517,7 +492,7 @@ export function AvatarUploadModal({
                 {/* Camera View */}
                 {showCamera && (
                   <div className="space-y-4">
-                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-black">
+                    <div className="relative aspect-square rounded-lg overflow-hidden bg-black">
                       <video
                         ref={videoRef}
                         autoPlay
@@ -527,22 +502,22 @@ export function AvatarUploadModal({
                       />
                       {/* Camera overlay with circle guide */}
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-52 h-52 rounded-full border-4 border-white/50 shadow-lg" />
+                        <div className="w-52 h-52 rounded-full border-4 border-white/40 shadow-lg" />
                       </div>
                     </div>
                     <canvas ref={canvasRef} className="hidden" />
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
                       <button
                         onClick={stopCamera}
-                        className="flex-1 px-4 py-3 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-xl text-surface-700 dark:text-surface-300 font-medium transition-colors"
+                        className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
                       >
-                        <Camera className="w-4 h-4" />
+                        <Camera className="w-3.5 h-3.5" />
                         Capture
                       </button>
                     </div>
@@ -555,7 +530,7 @@ export function AvatarUploadModal({
                     {/* Crop Area - fixed size container */}
                     <div
                       ref={cropAreaRef}
-                      className="relative mx-auto rounded-2xl overflow-hidden bg-surface-900 cursor-move"
+                      className="relative mx-auto rounded-lg overflow-hidden bg-slate-950 cursor-move"
                       style={{ width: CONTAINER_SIZE, height: CONTAINER_SIZE }}
                       onMouseDown={handleMouseDown}
                       onTouchStart={(e) => {
@@ -625,7 +600,7 @@ export function AvatarUploadModal({
                       {/* Drag hint */}
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 bg-black/70 rounded-full">
                         <Move className="w-3.5 h-3.5 text-white/70" />
-                        <span className="text-xs text-white/70">Drag to reposition</span>
+                        <span className="text-[10px] font-bold text-white/70">Drag to reposition</span>
                       </div>
                     </div>
 
@@ -633,34 +608,34 @@ export function AvatarUploadModal({
                     <div className="flex items-center justify-center gap-4">
                       <button
                         onClick={handleZoomOut}
-                        className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
+                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                         disabled={zoom <= 0.5}
                       >
-                        <ZoomOut className="w-5 h-5 text-surface-600 dark:text-surface-400" />
+                        <ZoomOut className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                       </button>
-                      <div className="w-32 h-2 bg-surface-200 dark:bg-surface-700 rounded-full overflow-hidden">
+                      <div className="w-32 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary-500 rounded-full transition-all"
+                          className="h-full bg-indigo-650 transition-all"
                           style={{ width: `${((zoom - 0.5) / 2.5) * 100}%` }}
                         />
                       </div>
                       <button
                         onClick={handleZoomIn}
-                        className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
+                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                         disabled={zoom >= 3}
                       >
-                        <ZoomIn className="w-5 h-5 text-surface-600 dark:text-surface-400" />
+                        <ZoomIn className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                       </button>
                       <button
                         onClick={handleReset}
-                        className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
+                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                       >
-                        <RotateCcw className="w-4 h-4 text-surface-600 dark:text-surface-400" />
+                        <RotateCcw className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                       </button>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex gap-2 pt-2">
                       <button
                         onClick={() => {
                           setMode("select");
@@ -668,24 +643,24 @@ export function AvatarUploadModal({
                           setZoom(1);
                           setPosition({ x: 0, y: 0 });
                         }}
-                        className="flex-1 px-4 py-3 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-xl text-surface-700 dark:text-surface-300 font-medium transition-colors"
+                        className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
                       >
                         Back
                       </button>
                       <button
                         onClick={handleSave}
                         disabled={isUploading}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 h-9 bg-indigo-650 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
                       >
                         {isUploading ? (
                           <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Saving...
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Saving...</span>
                           </>
                         ) : (
                           <>
-                            <Check className="w-4 h-4" />
-                            Save Photo
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Save Photo</span>
                           </>
                         )}
                       </button>

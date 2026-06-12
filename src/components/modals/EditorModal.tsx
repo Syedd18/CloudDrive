@@ -133,7 +133,7 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
 
     try {
       const pyodide = await ensurePyodide();
-        const runnerBootstrap = `
+      const runnerBootstrap = `
         import sys, io, re, textwrap, traceback
 
         async def __run_user_code(source):
@@ -187,13 +187,13 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
           return stdout_io.getvalue() + stderr_io.getvalue()
         `;
 
-        const normalizedRunnerBootstrap = runnerBootstrap
+      const normalizedRunnerBootstrap = runnerBootstrap
         .replace(/^\n/, "")
         .split("\n")
         .map((line) => line.replace(/^ {8}/, ""))
         .join("\n");
 
-        await pyodide.runPythonAsync(normalizedRunnerBootstrap);
+      await pyodide.runPythonAsync(normalizedRunnerBootstrap);
 
       pyodide.globals.set("source", content);
       const result = await pyodide.runPythonAsync("await __run_user_code(source)");
@@ -212,32 +212,32 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[70]"
+        className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[70]"
       />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-        className="fixed inset-2 sm:inset-4 md:inset-8 bg-surface-50 dark:bg-surface-900 rounded-lg shadow-2xl z-[75] flex flex-col overflow-hidden border border-surface-200 dark:border-surface-800"
+        exit={{ opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+        className="fixed inset-2 sm:inset-4 md:inset-8 bg-white dark:bg-slate-900 rounded-lg shadow-xl z-[75] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-800"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-3 sm:p-4 bg-white dark:bg-surface-900 border-b border-surface-200 dark:border-surface-800 z-10">
+        <div className="flex items-center justify-between px-5 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600">
-              <Edit3 className="w-5 h-5" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 flex-shrink-0">
+              <Edit3 className="w-4 h-4 text-indigo-650" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-surface-900 dark:text-white">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
                 {file.name}
               </h3>
-              <p className="text-sm text-surface-500">
+              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
                 {isLoading
                   ? "Loading content..."
                   : useCodeEditor
-                    ? "Code editor"
-                    : "Text editor"}
+                    ? "Code Editor"
+                    : "Text Workspace"}
               </p>
             </div>
           </div>
@@ -246,33 +246,33 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
               <button
                 onClick={handleRunInBrowser}
                 disabled={isLoading || isSaving || isRunning}
-                className="btn-secondary"
+                className="flex items-center gap-1.5 h-8 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold shadow-sm transition-colors"
               >
                 {isRunning ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  <Play className="w-4 h-4" />
+                  <Play className="w-3.5 h-3.5" />
                 )}
-                <span className="hidden sm:inline">Run in Browser</span>
+                <span>Run</span>
               </button>
             )}
             <button
               onClick={handleSave}
               disabled={isLoading || isSaving}
-              className="btn-primary"
+              className="flex items-center gap-1.5 h-8 px-3.5 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
             >
               {isSaving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <Save className="w-4 h-4" />
+                <Save className="w-3.5 h-3.5" />
               )}
-              <span className="hidden sm:inline">Save</span>
+              <span>Save</span>
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-surface-500 hover:text-surface-700 hover:bg-surface-100 rounded-xl transition-colors"
+              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -281,7 +281,7 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
         <div className="flex-1 relative bg-white dark:bg-[#1e1e1e]">
           {isLoading ? (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
+              <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
             </div>
           ) : useCodeEditor ? (
             <Editor
@@ -292,7 +292,7 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
               onChange={(val) => setContent(val || "")}
               options={{
                 minimap: { enabled: false },
-                fontSize: 14,
+                fontSize: 13,
                 wordWrap: "on",
                 scrollBeyondLastLine: false,
               }}
@@ -302,10 +302,9 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
               value={content}
               onChange={(event) => setContent(event.target.value)}
               className={cn(
-                "w-full h-full resize-none outline-none border-0 p-4 sm:p-6",
-                "bg-white dark:bg-[#1e1e1e] text-surface-900 dark:text-surface-100",
-                "font-mono text-sm leading-6",
-                "focus:ring-0"
+                "w-full h-full resize-none outline-none border-0 p-5",
+                "bg-white dark:bg-[#1e1e1e] text-slate-900 dark:text-slate-100",
+                "font-mono text-xs leading-5 focus:ring-0"
               )}
               spellCheck={false}
               autoCorrect="off"
@@ -315,18 +314,18 @@ export function EditorModal({ file, onClose, onUpdated }: EditorModalProps) {
         </div>
 
         {isPython && (
-          <div className="border-t border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900 p-3 sm:p-4">
+          <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-semibold text-surface-800 dark:text-surface-200">Browser Output</p>
+              <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Browser Output</p>
               <button
                 onClick={() => setRunOutput("")}
-                className="text-xs text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
+                className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
               >
-                Clear
+                Clear console
               </button>
             </div>
-            <pre className="max-h-40 overflow-auto rounded-xl bg-surface-950 text-surface-100 p-3 text-xs sm:text-sm whitespace-pre-wrap break-words">
-              {runOutput || "Run the Python file to see output here."}
+            <pre className="max-h-32 overflow-auto rounded-lg bg-slate-950 text-slate-200 border border-slate-900 p-3 font-mono text-[11px] whitespace-pre-wrap break-words">
+              {runOutput || "Run the Python script to display browser-side stdout/stderr."}
             </pre>
           </div>
         )}

@@ -97,38 +97,40 @@ export function CreateFileModal({ isOpen, onClose, onCreateFile, existingFileNam
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-50"
           />
 
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.98, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.33, 1, 0.68, 1] }}
-              className="bg-white dark:bg-[#161b22] rounded-2xl shadow-2xl border border-surface-200/50 dark:border-surface-700/50 w-full max-w-2xl overflow-hidden"
+              exit={{ scale: 0.98, opacity: 0 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-lg overflow-hidden"
             >
-              <div className="flex items-center justify-between p-4 sm:p-5 border-b border-surface-200/60 dark:border-surface-700/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
-                    <FilePlus className="w-5 h-5 text-blue-500" />
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
+                    <FilePlus className="w-4 h-4 text-indigo-650" />
                   </div>
-                  <h2 className="text-lg font-semibold text-surface-900 dark:text-white">New File</h2>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white font-semibold">New File</h2>
                 </div>
                 <button
                   onClick={handleClose}
                   disabled={isCreating}
-                  className="p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors disabled:opacity-50"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors disabled:opacity-50"
                   aria-label="Close"
                 >
-                  <X className="w-5 h-5 text-surface-500" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Content */}
+              <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                    <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                       File name
                     </label>
                     <input
@@ -140,21 +142,21 @@ export function CreateFileModal({ isOpen, onClose, onCreateFile, existingFileNam
                       }}
                       placeholder="script"
                       disabled={isCreating}
-                      className="w-full px-4 py-2.5 rounded-xl border-2 border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 text-surface-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150 disabled:opacity-50"
                     />
                     {nameError && (
-                      <p className="mt-2 text-sm text-red-500">{nameError}</p>
+                      <p className="mt-1.5 text-xs text-red-500 font-semibold">{nameError}</p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                    <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                       Type
                     </label>
                     <select
                       value={extension}
                       onChange={(event) => handleExtensionChange(event.target.value as "py" | "txt" | "md" | "json")}
                       disabled={isCreating}
-                      className="w-full px-3 py-2.5 rounded-xl border-2 border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 text-surface-900 dark:text-white focus:border-primary-500 focus:outline-none"
+                      className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-semibold text-slate-750 dark:text-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all duration-150"
                     >
                       <option value="py">Python (.py)</option>
                       <option value="txt">Text (.txt)</option>
@@ -165,31 +167,31 @@ export function CreateFileModal({ isOpen, onClose, onCreateFile, existingFileNam
                 </div>
 
                 <div>
-                  <p className="text-xs text-surface-500 dark:text-surface-400 mb-2">Will create: {fileName}</p>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+                  <p className="text-[10px] text-slate-450 dark:text-slate-450 font-bold mb-2">Will create: {fileName}</p>
+                  <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                     Initial content
                   </label>
                   <textarea
                     value={content}
                     onChange={(event) => setContent(event.target.value)}
                     disabled={isCreating}
-                    className="w-full h-52 px-4 py-3 rounded-xl border-2 border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800/50 text-surface-900 dark:text-white font-mono text-sm leading-6 focus:border-primary-500 focus:outline-none resize-none"
+                    className="w-full h-44 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-xs leading-5 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none resize-none"
                   />
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={isCreating}
-                    className="btn-secondary flex-1 py-3"
+                    className="flex-1 flex items-center justify-center h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-305 transition-colors shadow-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating || !name.trim()}
-                    className="btn-primary flex-1 py-3"
+                    className="flex-1 flex items-center justify-center h-9 bg-indigo-650 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
                   >
                     {isCreating ? "Creating..." : "Create & Open"}
                   </button>

@@ -69,7 +69,7 @@ export function ZipDownloadButton({
     <button
       onClick={handleZipDownload}
       disabled={isZipping}
-      className="btn-primary fixed bottom-6 right-6 shadow-2xl z-50 py-3 px-6 rounded-full text-base font-bold tracking-wide"
+      className="btn-primary fixed bottom-6 right-6 z-50 py-3 px-6 rounded-full text-base font-semibold"
     >
       {isZipping ? (
         <Loader2 className="w-5 h-5 animate-spin mr-2" />

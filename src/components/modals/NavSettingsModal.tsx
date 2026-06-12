@@ -58,6 +58,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
     setMounted(true);
   }, []);
 
+  // Load settings from localStorage on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem("driveSettings");
     if (savedSettings) {
@@ -65,7 +66,7 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
         const parsed = JSON.parse(savedSettings);
         setSettings({ ...parsed, theme: currentTheme });
       } catch {
-        // Use defaults
+        // Use defaults if parsing fails
       }
     } else {
       setSettings({ ...defaultSettings, theme: currentTheme });
@@ -80,12 +81,10 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
     setSettings(newSettings);
     localStorage.setItem("driveSettings", JSON.stringify(newSettings));
     
-    // Apply theme immediately using ThemeProvider
     if (key === "theme") {
       setTheme(value as ThemeOption);
     }
     
-    // Dispatch custom event for view mode change so page.tsx can listen
     if (key === "defaultView") {
       window.dispatchEvent(new CustomEvent("viewModeChange", { detail: value }));
     }
@@ -105,326 +104,312 @@ export function NavSettingsModal({ isOpen, onClose }: NavSettingsModalProps) {
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999]">
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{ touchAction: 'none' }}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
           />
 
           {/* Modal */}
-          <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl max-h-[85vh] sm:max-h-[80vh] bg-white dark:bg-surface-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-surface-200 dark:border-surface-700">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-                    <Settings className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
-                      Settings
-                    </h2>
-                    <p className="text-sm text-surface-500">
-                      Customize your Cloud Drive experience
-                    </p>
-                  </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-2xl max-h-[85vh] sm:max-h-[80vh] mx-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/20 flex items-center justify-center flex-shrink-0">
+                  <Settings className="w-4 h-4 text-indigo-650" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <AnimatePresence>
-                    {saved && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10 }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-xs font-medium"
-                      >
-                        <Check className="w-3.5 h-3.5" />
-                        Saved
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <button
-                    onClick={onClose}
-                    className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-xl transition-colors"
-                  >
-                    <X className="w-5 h-5 text-surface-500" />
-                  </button>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Settings
+                  </h2>
+                  <p className="text-[10px] text-slate-450 dark:text-slate-500 font-bold mt-0.5 uppercase tracking-wider">
+                    Customize your Cloud Drive experience
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <AnimatePresence>
+                  {saved && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                      className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded text-[10px] font-bold"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Saved</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <button
+                  onClick={onClose}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
+              {/* Section Tabs - Desktop */}
+              <div className="w-44 border-r border-slate-200 dark:border-slate-800 p-3 hidden sm:block flex-shrink-0 bg-slate-50/50 dark:bg-slate-950/10">
+                <nav className="space-y-0.5">
+                  {sections.map((section) => (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={cn(
+                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all text-left",
+                        activeSection === section.id
+                          ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-855 dark:hover:bg-slate-850"
+                      )}
+                    >
+                      <section.icon className="w-4 h-4" />
+                      <span>{section.label}</span>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Mobile Section Tabs */}
+              <div className="sm:hidden px-3 pt-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+                <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+                  {sections.map((section) => (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={cn(
+                        "flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-bold transition-all whitespace-nowrap min-w-0",
+                        activeSection === section.id
+                          ? "bg-white dark:bg-slate-700 text-indigo-650 dark:text-indigo-400 shadow-sm"
+                          : "text-slate-500"
+                      )}
+                    >
+                      <section.icon className="w-3.5 h-3.5" />
+                      <span>{section.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
-                {/* Section Tabs - Desktop */}
-                <div className="w-48 border-r border-surface-200 dark:border-surface-700 p-3 hidden sm:block flex-shrink-0">
-                  <nav className="space-y-1">
-                    {sections.map((section) => (
-                      <button
-                        key={section.id}
-                        onClick={() => setActiveSection(section.id)}
-                        className={cn(
-                          "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
-                          activeSection === section.id
-                            ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                            : "text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800"
-                        )}
-                      >
-                        <section.icon className="w-4 h-4" />
-                        {section.label}
-                      </button>
-                    ))}
-                  </nav>
-                </div>
-
-                {/* Mobile Section Tabs */}
-                <div className="sm:hidden px-3 pt-3 pb-2 border-b border-surface-200 dark:border-surface-700 flex-shrink-0">
-                  <div className="flex gap-1 bg-surface-100 dark:bg-surface-800 p-1 rounded-xl overflow-x-auto">
-                    {sections.map((section) => (
-                      <button
-                        key={section.id}
-                        onClick={() => setActiveSection(section.id)}
-                        className={cn(
-                          "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap min-w-0",
-                          activeSection === section.id
-                            ? "bg-white dark:bg-surface-700 text-primary-600 dark:text-primary-400 shadow-sm"
-                            : "text-surface-500"
-                        )}
-                      >
-                        <section.icon className="w-3.5 h-3.5" />
-                        {section.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Settings Content */}
-                <div className="flex-1 p-3 sm:p-6 overflow-y-auto">
-                  <AnimatePresence mode="wait">
-                    {activeSection === "appearance" && (
-                      <motion.div
-                        key="appearance"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-5"
-                      >
-                        {/* Theme Selection */}
-                        <div>
-                          <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-3">
-                            Theme
-                          </h3>
-                          <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                            {[
-                              { id: "light", icon: Sun, label: "Light" },
-                              { id: "dark", icon: Moon, label: "Dark" },
-                              { id: "system", icon: Monitor, label: "System" },
-                            ].map((option) => (
-                              <button
-                                key={option.id}
-                                onClick={() => handleSettingChange("theme", option.id as ThemeOption)}
-                                className={cn(
-                                  "flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-4 rounded-xl border-2 transition-all",
-                                  settings.theme === option.id
-                                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                                    : "border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
-                                )}
-                              >
-                                <option.icon className={cn(
-                                  "w-5 h-5 sm:w-6 sm:h-6",
-                                  settings.theme === option.id
-                                    ? "text-primary-600 dark:text-primary-400"
-                                    : "text-surface-500"
-                                )} />
-                                <span className={cn(
-                                  "text-xs sm:text-sm font-medium",
-                                  settings.theme === option.id
-                                    ? "text-primary-600 dark:text-primary-400"
-                                    : "text-surface-600 dark:text-surface-400"
-                                )}>
-                                  {option.label}
-                                </span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Default View */}
-                        <div>
-                          <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-3">
-                            Default View
-                          </h3>
-                          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                            {[
-                              { id: "grid", icon: Grid3X3, label: "Grid View" },
-                              { id: "list", icon: List, label: "List View" },
-                            ].map((option) => (
-                              <button
-                                key={option.id}
-                                onClick={() => handleSettingChange("defaultView", option.id as ViewOption)}
-                                className={cn(
-                                  "flex items-center justify-center gap-2 sm:gap-3 p-2.5 sm:p-4 rounded-xl border-2 transition-all",
-                                  settings.defaultView === option.id
-                                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                                    : "border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
-                                )}
-                              >
-                                <option.icon className={cn(
-                                  "w-5 h-5",
-                                  settings.defaultView === option.id
-                                    ? "text-primary-600 dark:text-primary-400"
-                                    : "text-surface-500"
-                                )} />
-                                <span className={cn(
-                                  "text-sm font-medium",
-                                  settings.defaultView === option.id
-                                    ? "text-primary-600 dark:text-primary-400"
-                                    : "text-surface-600 dark:text-surface-400"
-                                )}>
-                                  {option.label}
-                                </span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {activeSection === "preferences" && (
-                      <motion.div
-                        key="preferences"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-4"
-                      >
-                        {[
-                          {
-                            key: "notifications",
-                            icon: settings.notifications ? Bell : BellOff,
-                            label: "Notifications",
-                            description: "Get notified about file uploads and shares",
-                          },
-                          {
-                            key: "confirmBeforeDelete",
-                            icon: Trash2,
-                            label: "Confirm before delete",
-                            description: "Show confirmation dialog before deleting files",
-                          },
-                          {
-                            key: "autoDownloadOnClick",
-                            icon: Download,
-                            label: "Auto-download on click",
-                            description: "Automatically download files when clicked",
-                          },
-                        ].map((setting) => (
-                          <div
-                            key={setting.key}
-                            className="flex items-center justify-between p-4 rounded-xl bg-surface-50 dark:bg-surface-800/50"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                                <setting.icon className="w-5 h-5 text-surface-600 dark:text-surface-400" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-surface-900 dark:text-white">
-                                  {setting.label}
-                                </p>
-                                <p className="text-xs text-surface-500">
-                                  {setting.description}
-                                </p>
-                              </div>
-                            </div>
+              {/* Settings Content */}
+              <div className="flex-1 p-5 overflow-y-auto">
+                <AnimatePresence mode="wait">
+                  {activeSection === "appearance" && (
+                    <motion.div
+                      key="appearance"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.1 }}
+                      className="space-y-5"
+                    >
+                      {/* Theme Selection */}
+                      <div>
+                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                          Theme
+                        </h3>
+                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                          {[
+                            { id: "light", icon: Sun, label: "Light" },
+                            { id: "dark", icon: Moon, label: "Dark" },
+                            { id: "system", icon: Monitor, label: "System" },
+                          ].map((option) => (
                             <button
-                              onClick={() =>
-                                handleSettingChange(
-                                  setting.key as keyof SettingsState,
-                                  !settings[setting.key as keyof SettingsState]
-                                )
-                              }
+                              key={option.id}
+                              onClick={() => handleSettingChange("theme", option.id as ThemeOption)}
                               className={cn(
-                                "relative w-11 h-6 rounded-full transition-colors",
-                                settings[setting.key as keyof SettingsState]
-                                  ? "bg-primary-500"
-                                  : "bg-surface-300 dark:bg-surface-600"
+                                "flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border transition-all text-center",
+                                settings.theme === option.id
+                                  ? "border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-650 dark:text-indigo-455"
+                                  : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-900/50"
                               )}
                             >
-                              <motion.div
-                                layout
-                                className={cn(
-                                  "absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm",
-                                  settings[setting.key as keyof SettingsState]
-                                    ? "right-1"
-                                    : "left-1"
-                                )}
-                              />
+                              <option.icon className={cn(
+                                "w-5 h-5",
+                                settings.theme === option.id ? "text-indigo-605 dark:text-indigo-400" : "text-slate-400"
+                              )} />
+                              <span className="text-xs font-bold mt-1">
+                                {option.label}
+                              </span>
                             </button>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-
-                    {activeSection === "privacy" && (
-                      <motion.div
-                        key="privacy"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="space-y-4"
-                      >
-                        <div className="p-4 rounded-xl bg-surface-50 dark:bg-surface-800/50">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-700 flex items-center justify-center">
-                              <Shield className="w-5 h-5 text-surface-600 dark:text-surface-400" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-surface-900 dark:text-white">
-                                Your data is secure
-                              </p>
-                              <p className="text-xs text-surface-500">
-                                Files are encrypted and stored securely
-                              </p>
-                            </div>
-                          </div>
+                          ))}
                         </div>
+                      </div>
 
-                        <div className="p-4 rounded-xl border border-surface-200 dark:border-surface-700">
-                          <h4 className="text-sm font-medium text-surface-900 dark:text-white mb-2">
-                            Data Management
-                          </h4>
-                          <p className="text-xs text-surface-500 mb-4">
-                            Manage your stored data and preferences
-                          </p>
-                          <div className="flex gap-2">
+                      {/* Default View */}
+                      <div>
+                        <h3 className="text-xs font-bold text-slate-405 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+                          Default View Mode
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                          {[
+                            { id: "grid", icon: Grid3X3, label: "Grid Layout" },
+                            { id: "list", icon: List, label: "List Table" },
+                          ].map((option) => (
                             <button
-                              onClick={() => {
-                                localStorage.removeItem("driveSettings");
-                                setSettings(defaultSettings);
-                                setSaved(true);
-                                setTimeout(() => setSaved(false), 2000);
-                              }}
-                              className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors"
+                              key={option.id}
+                              onClick={() => handleSettingChange("defaultView", option.id as ViewOption)}
+                              className={cn(
+                                "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all",
+                                settings.defaultView === option.id
+                                  ? "border-indigo-505 bg-indigo-50/20 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-455"
+                                  : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-900/50"
+                              )}
                             >
-                              Reset Settings
+                              <option.icon className={cn(
+                                "w-4 h-4",
+                                settings.defaultView === option.id ? "text-indigo-605 dark:text-indigo-400" : "text-slate-400"
+                              )} />
+                              <span className="text-xs font-bold">
+                                {option.label}
+                              </span>
                             </button>
-                          </div>
+                          ))}
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeSection === "preferences" && (
+                    <motion.div
+                      key="preferences"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.1 }}
+                      className="space-y-3"
+                    >
+                      {[
+                        {
+                          key: "notifications",
+                          icon: settings.notifications ? Bell : BellOff,
+                          label: "Notifications",
+                          description: "Get notifications for uploads and sharing updates",
+                        },
+                        {
+                          key: "confirmBeforeDelete",
+                          icon: Trash2,
+                          label: "Confirm before delete",
+                          description: "Display warning modal before trashing files",
+                        },
+                        {
+                          key: "autoDownloadOnClick",
+                          icon: Download,
+                          label: "Auto-download on tap",
+                          description: "Download file files on click instead of preview",
+                        },
+                      ].map((setting) => (
+                        <div
+                          key={setting.key}
+                          className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/10"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded bg-white dark:bg-slate-850 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
+                              <setting.icon className="w-4 h-4 text-slate-500" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-slate-850 dark:text-slate-200 leading-snug">
+                                {setting.label}
+                              </p>
+                              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-medium leading-none mt-0.5 truncate">
+                                {setting.description}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() =>
+                              handleSettingChange(
+                                setting.key as keyof SettingsState,
+                                !settings[setting.key as keyof SettingsState]
+                              )
+                            }
+                            className={cn(
+                              "relative w-9 h-5 rounded-full transition-colors flex-shrink-0 focus:outline-none",
+                              settings[setting.key as keyof SettingsState]
+                                ? "bg-indigo-606 bg-indigo-600"
+                                : "bg-slate-200 dark:bg-slate-750"
+                            )}
+                          >
+                            <motion.div
+                              layout
+                              className={cn(
+                                "absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm",
+                                settings[setting.key as keyof SettingsState]
+                                  ? "right-0.5"
+                                  : "left-0.5"
+                              )}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+
+                  {activeSection === "privacy" && (
+                    <motion.div
+                      key="privacy"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.1 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded bg-white dark:bg-slate-850 border border-slate-250 dark:border-slate-750 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-4 h-4 text-indigo-650" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                            Your workspace data is secure
+                          </p>
+                          <p className="text-[10px] text-slate-500 mt-0.5 font-medium leading-tight">
+                            Files are stored securely. Privacy keys are encrypted.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                        <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
+                          Data Options
+                        </h4>
+                        <p className="text-[10px] text-slate-500 mb-3 font-medium">
+                          Reset your preferences back to default variables.
+                        </p>
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem("driveSettings");
+                            setSettings(defaultSettings);
+                            setSaved(true);
+                            setTimeout(() => setSaved(false), 2000);
+                          }}
+                          className="px-3 py-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-xs font-bold text-slate-655 text-slate-600 dark:text-slate-350 transition-colors shadow-sm"
+                        >
+                          Reset settings cache
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       )}
     </AnimatePresence>

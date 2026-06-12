@@ -13,7 +13,6 @@ import {
   Plus,
   ChevronLeft,
   FolderPlus,
-  FileUp,
   Cloud,
   HelpCircle,
   Settings,
@@ -41,11 +40,11 @@ interface StorageInfo {
 }
 
 const navItems = [
-  { id: "My Files", icon: HardDrive, label: "My Files", color: "text-blue-500" },
-  { id: "Starred", icon: Star, label: "Starred", color: "text-amber-500" },
-  { id: "Recent", icon: Clock, label: "Recent", color: "text-emerald-500" },
-  { id: "Shared", icon: Users, label: "Shared with me", color: "text-purple-500" },
-  { id: "Trash", icon: Trash2, label: "Trash", color: "text-surface-500" },
+  { id: "My Files", icon: HardDrive, label: "My Files" },
+  { id: "Starred", icon: Star, label: "Starred" },
+  { id: "Recent", icon: Clock, label: "Recent" },
+  { id: "Shared", icon: Users, label: "Shared with me" },
+  { id: "Trash", icon: Trash2, label: "Trash" },
 ];
 
 export function Sidebar({
@@ -118,278 +117,190 @@ export function Sidebar({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:relative z-50 lg:z-0 w-[280px]",
+          "fixed lg:relative z-40 lg:z-0 w-[240px]",
           "top-0 left-0",
-          "bg-white dark:bg-[#0d1117]",
-          "border-r border-surface-200/60 dark:border-surface-800/60",
+          "bg-slate-50 dark:bg-slate-900/40",
+          "border-r border-slate-200 dark:border-slate-800",
           "flex flex-col",
-          "transition-transform duration-300 ease-in-out",
+          "transition-transform duration-200 ease-in-out",
           // Mobile: stop above bottom nav (64px + safe area). Desktop: full height
-          "h-[calc(100dvh-4rem)] lg:h-screen",
+          "h-[calc(100dvh-4rem)] lg:h-[calc(100vh-4rem)]",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Mobile Header - Close button only */}
-        <div className="lg:hidden flex items-center justify-between p-3 border-b border-surface-200/60 dark:border-surface-800/60 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm">
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
               <Cloud className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-base text-surface-900 dark:text-white">CloudDrive</span>
+            <span className="font-bold text-sm text-slate-900 dark:text-white">CloudDrive</span>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
             aria-label="Close menu"
           >
-            <ChevronLeft className="w-5 h-5 text-surface-600 dark:text-surface-400" />
+            <ChevronLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           </button>
         </div>
 
-        {/* New Button */}
-        <div className="px-3 lg:px-4 pt-3 lg:pt-4 pb-2 lg:pb-3 flex-shrink-0">
-          <motion.button
+        {/* Upload Button */}
+        <div className="p-4 pb-2 flex-shrink-0">
+          <button
             onClick={onUploadClick}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            className="w-full btn-primary py-3 lg:py-3.5 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-200"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-505 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
           >
-            <Plus className="w-5 h-5" />
-            <span className="font-semibold">New</span>
-          </motion.button>
+            <Plus className="w-3.5 h-3.5" />
+            <span>Upload New File</span>
+          </button>
         </div>
 
         {/* Quick Actions */}
-        <div className="px-3 lg:px-4 pb-3 lg:pb-4 flex gap-2 flex-shrink-0">
+        <div className="px-4 pb-4 flex gap-2 flex-shrink-0">
           <button
             onClick={onFolderClick}
-            className="flex-1 btn-secondary py-2.5 text-sm gap-1.5 hover:border-primary-300 dark:hover:border-primary-700"
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all shadow-sm"
           >
-            <FolderPlus className="w-4 h-4 text-amber-500" />
-            <span>Folder</span>
-          </button>
-          <button
-            onClick={onUploadClick}
-            className="flex-1 btn-secondary py-2.5 text-sm gap-1.5 hover:border-primary-300 dark:hover:border-primary-700"
-          >
-            <FileUp className="w-4 h-4 text-blue-500" />
-            <span>Upload</span>
+            <FolderPlus className="w-3.5 h-3.5 text-amber-500" />
+            <span>New Folder</span>
           </button>
         </div>
 
-        {/* Divider */}
-        <div className="mx-3 lg:mx-4 border-t border-surface-200/60 dark:border-surface-800/60 flex-shrink-0" />
-
         {/* Navigation */}
-        <nav className="px-3 py-2">
-          <ul className="space-y-0.5">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentFolder === item.id;
+        <nav className="px-3 py-2 flex-1 overflow-y-auto space-y-6">
+          {/* Files section */}
+          <div>
+            <p className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Files</p>
+            <ul className="space-y-0.5">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentFolder === item.id;
 
-              return (
-                <li key={item.id}>
-                  <motion.button
-                    onClick={() => onFolderChange(item.id)}
-                    whileHover={{ x: 2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
-                      "text-sm font-medium",
-                      isActive
-                        ? "bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-400 shadow-sm"
-                        : "text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60"
-                    )}
-                  >
-                    <Icon
+                return (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => onFolderChange(item.id)}
                       className={cn(
-                        "w-5 h-5 transition-colors flex-shrink-0",
-                        isActive ? "text-primary-500" : item.color
+                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 text-left",
+                        "text-xs font-semibold",
+                        isActive
+                          ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200"
                       )}
-                    />
-                    <span className="truncate">{item.label}</span>
-                    {isActive && (
-                      <motion.div
-                        layoutId="sidebar-active-indicator"
-                        className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-500"
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    >
+                      <Icon
+                        className={cn(
+                          "w-4 h-4 flex-shrink-0 transition-colors",
+                          isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500"
+                        )}
                       />
-                    )}
-                  </motion.button>
-                </li>
-              );
-            })}
-            <li>
-              <motion.button
-                onClick={() => setIsQuickSummarizerOpen(true)}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
-                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60"
-                )}
-              >
-                <Sparkles className="w-5 h-5 text-purple-500 flex-shrink-0" />
-                <span className="truncate">Summarize</span>
-              </motion.button>
-            </li>
-            <li>
-              <motion.button
-                onClick={onEditorClick}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
-                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60",
-                  !onEditorClick && "opacity-50 cursor-not-allowed"
-                )}
-                disabled={!onEditorClick}
-              >
-                <Edit3 className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                <span className="truncate">Editor</span>
-              </motion.button>
-            </li>
-            <li>
-              <motion.button
-                onClick={onCreateFileClick}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 lg:px-4 lg:py-3 rounded-xl transition-all duration-200 focus-ring",
-                  "text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100/80 dark:hover:bg-surface-800/60",
-                  !onCreateFileClick && "opacity-50 cursor-not-allowed"
-                )}
-                disabled={!onCreateFileClick}
-              >
-                <FilePlus className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="truncate">New File</span>
-              </motion.button>
-            </li>
-          </ul>
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Tools section */}
+          <div>
+            <p className="px-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Tools</p>
+            <ul className="space-y-0.5">
+              <li>
+                <button
+                  onClick={() => setIsQuickSummarizerOpen(true)}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200"
+                >
+                  <Sparkles className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="truncate">AI Summarizer</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onEditorClick}
+                  disabled={!onEditorClick}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200",
+                    !onEditorClick && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <Edit3 className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span className="truncate">Workspace Editor</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onCreateFileClick}
+                  disabled={!onCreateFileClick}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-150 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200",
+                    !onCreateFileClick && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <FilePlus className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span className="truncate">Create Document</span>
+                </button>
+              </li>
+            </ul>
+          </div>
         </nav>
 
-        {/* Spacer to push storage to bottom */}
-        <div className="flex-1" />
-
-        {/* Storage Section - Premium Design */}
-        <div className="p-3 lg:p-4 mt-auto">
-          <div className={cn(
-            "relative overflow-hidden rounded-2xl",
-            "bg-gradient-to-br from-primary-500/10 via-primary-500/5 to-transparent",
-            "dark:from-primary-400/15 dark:via-primary-500/10 dark:to-surface-800/50",
-            "border border-primary-200/50 dark:border-primary-500/20",
-            "p-3 lg:p-4"
-          )}>
-            {/* Decorative background circles */}
-            <div className="absolute -top-6 -right-6 w-20 h-20 bg-primary-400/10 rounded-full blur-2xl" />
-            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary-500/10 rounded-full blur-xl" />
-            
+        {/* Storage Section */}
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/20 flex-shrink-0">
+          <div className="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-3 shadow-sm">
             {isLoading ? (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 skeleton rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-2 skeleton rounded-full w-full" />
-                  <div className="h-3 skeleton rounded w-16" />
-                </div>
+              <div className="animate-pulse space-y-2">
+                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/3" />
+                <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded w-full" />
+                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
               </div>
             ) : (
-              <div className="relative z-10">
-                {/* Header with icon */}
-                <div className="flex items-start gap-3 mb-3">
-                  <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-                    "shadow-sm",
-                    isStorageLow
-                      ? "bg-danger-100 dark:bg-danger-500/20"
-                      : isStorageWarning
-                        ? "bg-warning-100 dark:bg-warning-500/20"
-                        : "bg-primary-100 dark:bg-primary-500/20"
-                  )}>
-                    <Cloud className={cn(
-                      "w-5 h-5",
-                      isStorageLow ? "text-danger-500" :
-                      isStorageWarning ? "text-warning-500" :
-                      "text-primary-500"
-                    )} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-sm font-semibold text-surface-800 dark:text-surface-200">
-                        Storage
-                      </span>
-                      <span className={cn(
-                        "text-xs font-bold px-1.5 py-0.5 rounded-full",
-                        isStorageLow
-                          ? "bg-danger-100 text-danger-600 dark:bg-danger-500/20 dark:text-danger-400"
-                          : isStorageWarning
-                            ? "bg-warning-100 text-warning-600 dark:bg-warning-500/20 dark:text-warning-400"
-                            : "bg-primary-100 text-primary-600 dark:bg-primary-500/20 dark:text-primary-400"
-                      )}>
-                        {storagePercentage < 0.1 && storage.used > 0
-                          ? '<0.1'
-                          : storagePercentage.toFixed(0)}%
-                      </span>
-                    </div>
-                    <p className="text-xs text-surface-500 dark:text-surface-400">
-                      {formatFileSize(storage.used)} of {formatFileSize(storage.total)}
-                    </p>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Storage</span>
+                  <span className="font-bold text-slate-500 dark:text-slate-400">
+                    {storagePercentage.toFixed(0)}%
+                  </span>
                 </div>
-
-                {/* Progress Bar - Enhanced */}
-                <div className="h-2.5 bg-surface-200/80 dark:bg-surface-700/80 rounded-full overflow-hidden shadow-inner">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${storage.used > 0 ? Math.max(storagePercentage, 2) : 0}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    style={{ width: `${storagePercentage}%` }}
                     className={cn(
-                      "h-full rounded-full shadow-sm",
-                      isStorageLow
-                        ? "bg-gradient-to-r from-danger-400 via-danger-500 to-danger-600"
-                        : isStorageWarning
-                          ? "bg-gradient-to-r from-warning-400 via-warning-500 to-warning-600"
-                          : "bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600"
+                      "h-full rounded-full transition-all duration-300",
+                      isStorageLow ? "bg-red-500" : isStorageWarning ? "bg-amber-500" : "bg-indigo-600 dark:bg-indigo-500"
                     )}
                   />
                 </div>
-
-                {/* Upgrade hint - Desktop only */}
-                <div className="hidden lg:block mt-3 pt-3 border-t border-primary-200/30 dark:border-primary-500/10">
-                  <p className="text-[11px] text-surface-500 dark:text-surface-400 leading-relaxed">
-                    {isStorageLow ? (
-                      <span className="text-danger-500 font-medium">Storage almost full!</span>
-                    ) : isStorageWarning ? (
-                      <span className="text-warning-600 dark:text-warning-400">Running low on space</span>
-                    ) : (
-                      <span>Free plan • 15 GB included</span>
-                    )}
-                  </p>
+                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                  <span>{formatFileSize(storage.used)} used</span>
+                  <span>{formatFileSize(storage.total)}</span>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Quick Links - Desktop only */}
-          <div className="mt-3 hidden lg:flex gap-2">
+          
+          {/* Quick Links */}
+          <div className="flex items-center gap-1 mt-2.5">
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-surface-600 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800/80 transition-all duration-200 active:scale-95"
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-3.5 h-3.5" />
               <span>Settings</span>
             </button>
             <button
               onClick={() => setIsHelpOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium text-surface-600 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800/80 transition-all duration-200 active:scale-95"
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
-              <HelpCircle className="w-4 h-4" />
+              <HelpCircle className="w-3.5 h-3.5" />
               <span>Help</span>
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Modals - Desktop only */}
+      {/* Modals */}
       <QuickSummarizerModal
         isOpen={isQuickSummarizerOpen}
         onClose={() => setIsQuickSummarizerOpen(false)}
